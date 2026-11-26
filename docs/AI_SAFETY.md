@@ -1,6 +1,14 @@
 # AI safety
 
-**Status: requirements. To be implemented with the coach (Phase 8).**
+**Status: implemented in Phase 8** (`services/backend/app/coaching/safety.py`, prompt `ai/prompts/coach.v1.md`). Rule wording and crisis resources still need professional review (KNOWN_ISSUES K-13, K-14).
+
+## What happens on each turn
+
+1. Input screen. Crisis language (self-harm, harm to others, abuse) returns a fixed support message with emergency guidance, 988 (US and Canada), Samaritans 116 123 (UK and Ireland) and findahelpline.com. The model is not called, the daily limit does not apply, and an audit event records only the category. Later turns tell the model support was shown, without sending the crisis messages.
+2. Input flags (prompt injection, requests for other users' data, diagnosis requests) are stored as rule names on the message. The model handles these through its instructions.
+3. Streaming output guard. Every chunk is checked with the text so far before it is sent. Diagnosis of the user, claims to be a licensed professional, percentile or population comparisons, relationship or hiring predictions, and the prompt's canary string stop the provider stream; the client is told to retract the partial text and a fixed safe reply is stored instead. Negated or hedged phrasing ("can't tell whether you have ADHD") is not blocked.
+4. Provider refusals and empty replies are replaced the same way. Truncated replies are flagged.
+5. Grounding check. A score the reply attributes to a trait must match the context exactly; mismatches are flagged for review (not retracted, to avoid false positives).
 
 ## Hard rules for the coach
 

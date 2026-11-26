@@ -5,7 +5,7 @@
 | Item | Why it's needed | Phase |
 | --- | --- | --- |
 | Supabase project (or decision to self-host auth) | Production accounts | 5 |
-| Anthropic and/or OpenAI API keys + spending cap | Real AI coaching (mock provider works without) | 8 |
+| Anthropic API key, spending cap and data-retention choice | Real AI coaching and the live evaluation run (the stand-in works without) | 8 |
 | Stripe, RevenueCat, Apple and Google developer accounts | Payments, app stores | 16, 25 |
 | Trademark search for "PersonalityDNA" and archetype names | Brand risk | 1 |
 | Independent psychometrics reviewer | Any scientific claim, wording review | 1, 24 |
@@ -27,3 +27,8 @@
 | K-9 | Email is sent in-process after the response (FastAPI background task) | A crash can drop an email; user can request again | Move to a job queue with retries |
 | K-10 | No breached-password check | Weak but uncommon passwords accepted | Add k-anonymity breach check (needs approval to call an external service) |
 | K-11 | No MFA or social login | Lower account security options | Phase 21 / app store requirements |
+| K-12 | Coach "one reply at a time" guard and rate limiter are per process | Two instances could stream into one conversation at once (the database unique sequence still prevents corruption) | Shared lock (Redis/Postgres advisory lock) before scaling out |
+| K-13 | Crisis and output rules are English, phrase-based | Misses paraphrases and other languages; the model prompt is the main defence | Live evaluation, model-based classifier, localized rules with i18n |
+| K-14 | Coach prompt and safety wording not yet reviewed by a clinician or lawyer | Crisis resources and disclaimers need professional review | Owner to arrange review before launch |
+| K-15 | Data-encryption key rotation not automated | Re-encryption needed if the key is replaced | Versioned ciphertext prefix (`v1:`) is in place; add rotation job |
+

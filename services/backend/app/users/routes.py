@@ -15,7 +15,8 @@ from app.auth.deps import CurrentUser
 from app.auth.routes import REFRESH_COOKIE, user_out
 from app.auth.schemas import ClaimIn, DeleteAccountIn, HistoryItem, HistoryOut, UpdateMeIn, UserOut
 from app.auth.service import AuthService
-from app.database.models import AssessmentSession, ConsentRecord
+from app.coaching.service import CoachService
+from app.database.models import AssessmentSession, CoachConversation, ConsentRecord
 
 router = APIRouter(prefix="/api/v1", tags=["account"], responses={401: {"model": ErrorResponse}})
 Db = Annotated[Session, Depends(get_db)]
@@ -85,8 +86,15 @@ def history(user: CurrentUser, db: Db, content: Content) -> HistoryOut:
 
 
 @router.get("/privacy/export", tags=["privacy"])
-def export(user: CurrentUser, db: Db, content: Content) -> dict[str, Any]:
+def export(request: Request, user: CurrentUser, db: Db, content: Content) -> dict[str, Any]:
     """Everything stored about the signed-in user, as JSON (data portability)."""
+    coach: CoachService = request.app.state.coach
+    conversations = db.scalars(
+        select(CoachConversation)
+        .where(CoachConversation.user_id == user.id)
+        .options(selectinload(CoachConversation.messages))
+        .order_by(CoachConversation.created_at)
+    ).all()
     consents = db.scalars(select(ConsentRecord).where(ConsentRecord.user_id == user.id)).all()
     sessions = []
     for s in _user_sessions(db, user.id):
@@ -122,6 +130,10 @@ def export(user: CurrentUser, db: Db, content: Content) -> dict[str, Any]:
             for c in consents
         ],
         "assessments": sessions,
+        "coach_conversations": [
+            coach.conversation_out(c).model_dump(mode="json", exclude={"message_count"})
+            for c in conversations
+        ],
     }
 
 

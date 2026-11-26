@@ -45,6 +45,19 @@ Machine-readable contract: `packages/api-client/openapi.json` (generated; served
 
 Session and result endpoints accept either the device `X-Session-Token` or the owner's bearer token.
 
+## AI coach (implemented)
+
+Signed-in, verified users only. Conversations belong to one user; others get 404.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/coach/status` | Enabled, demo mode, consent policy version, daily limit, used, remaining, reset time, whether results exist |
+| GET | `/api/v1/coach/conversations` | The user's conversations, newest first |
+| POST | `/api/v1/coach/conversations` | `{consent: {accepted, policy_version}, topic, use_results, result_id?}`; 409 `consent_outdated` |
+| GET | `/api/v1/coach/conversations/{id}` | Conversation with decrypted messages |
+| DELETE | `/api/v1/coach/conversations/{id}` | Permanent delete (usage counts are kept) |
+| POST | `/api/v1/coach/conversations/{id}/messages` | `{content}` (1–4000 chars). 429 `coach_limit_reached` (details.resets_at), 409 `coach_busy`. Otherwise `text/event-stream` with events `start`, `delta {text}`, `retract` (discard text so far), `done {user_message, assistant_message, remaining}` or `error {code, message, retryable}`. On `error` nothing is saved |
+
 ## Planned (from MASTER_PROMPT.md §14)
 
-Auth and profile, personality profile/history, coach conversations and messages (streaming via SSE), careers, growth plans and exercises, relationship invitations and shares, reports, subscriptions status, payment webhooks (signature-verified, idempotent), privacy export, account deletion, admin and enterprise APIs. Pagination will use opaque cursors (`?cursor=&limit=`). Idempotency keys (`Idempotency-Key` header) on payment and report-creation POSTs.
+Careers, growth plans and exercises, relationship invitations and shares, reports, subscriptions status, payment webhooks (signature-verified, idempotent), privacy export, account deletion, admin and enterprise APIs. Pagination will use opaque cursors (`?cursor=&limit=`). Idempotency keys (`Idempotency-Key` header) on payment and report-creation POSTs.

@@ -15,7 +15,8 @@ Last updated: 2026-11-26.
 | 5 | Authentication | Tested | Email/password accounts, verification, reset, rotating sessions, claim, history, export, deletion (ADR-010). No social login or MFA yet. |
 | 6 | Assessment engine | Tested | Instruments, sessions, autosave, resume, deterministic scoring, versioning, audit. History is device-local until accounts exist. |
 | 7 | Personality intelligence | In Progress | Big Five results, archetypes, trait explanations, strengths and growth. No shareable card or comparison yet. |
-| 8–25 | Coaching onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
+| 8 | AI coaching | Tested | Provider interface (stand-in + Anthropic), consented context from scores only, versioned prompt, crisis routing, input flags, streaming output guard, grounding check, encrypted messages, daily limits, usage records, evaluation suite, web chat (ADR-011). Live model not yet run: needs the owner's API key and spending cap. |
+| 9–25 | Career intelligence onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
 
 ## Task log
 
@@ -47,17 +48,24 @@ Last updated: 2026-11-26.
 | A-004 | Security | Production settings guards; auth rate limiting; generic errors; no account enumeration on register/reset | P0 | Tested | `test_production_settings_guards`, `test_login_rate_limited`, `test_registration_does_not_reveal_existing_accounts` |
 | A-005 | Web | Register, login, verify, forgot/reset password, account page (profile, export, sign out, delete), account history | P0 | Tested | e2e (8 account runs) + axe |
 | A-006 | Auth | Social login (Apple/Google), MFA, purge job for unverified accounts | P1 | Not Started | Apple/Google need developer accounts |
-| C-001 | Coaching | LLM provider interface + mock provider + safety layer | P0 | Not Started | Phase 8; real providers need API keys |
+| C-001 | Coaching | LLM provider interface; deterministic stand-in; Anthropic provider (streaming, prompt caching of shared instructions only, effort setting, refusal and error mapping) | P0 | Tested | tests/test_coach.py provider tests (fake SDK client); no live call made |
+| C-002 | Coaching | Conversations: consent record, result authorization, history window, encryption at rest (AES-256-GCM bound to row id), export and deletion | P0 | Tested | tests/test_coach.py (conversation, privacy, cipher tests) |
+| C-003 | Safety | Crisis routing before the model (also at the limit), input flags, streaming output guard with retraction, refusal handling, grounding check, audit events without content | P0 | Tested | tests/test_coach.py safety tests; docs/AI_SAFETY.md |
+| C-004 | Coaching | Rolling 24-hour message limit, one reply at a time per conversation, usage records (tokens, latency, outcome) | P0 | Tested | `test_daily_limit`, `test_one_reply_at_a_time_per_conversation` |
+| C-005 | Evaluation | Case suite (crisis, diagnosis, grounding, hallucination, claims, injection, privacy, bias) and runner; stand-in passes all thresholds in CI | P0 | Tested | ai/evaluations/coach/cases.json; scripts/run_coach_eval.py; `test_evaluation_*` |
+| C-006 | Web | Coach home (status, demo notice, topics, consent), streaming chat, crisis support card, delete, sign-in redirect back, results-page entry | P0 | Tested | e2e coach.spec.ts (desktop + mobile) + axe; vitest SSE parser and safe text renderer |
+| C-007 | Coaching | Live evaluation against Claude; OpenAI provider; plan-based limits; goals and progress in context; human review sampling | P1 | Not Started | Needs API key and spending cap (live eval ≈ 32 calls); OpenAI only if the owner wants a second provider |
 | M-001 | Monetization | Entitlements service with plan config; Stripe and RevenueCat webhooks | P0 | Not Started | Needs accounts; live keys needed for real payments |
 
 ## Test results (latest local run, 2026-11-26)
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest` | 69 passed |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 69 passed |
+| Backend, SQLite | `pytest` | 124 passed |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 124 passed |
+| Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
-| Web unit | `vitest run` | 7 passed |
+| Web unit | `vitest run` | 13 passed |
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
-| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 18 passed |
+| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 22 passed |

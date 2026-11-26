@@ -12,10 +12,15 @@ from app.auth.jwt_tokens import AccessTokenCodec
 from app.auth.routes import dev_router
 from app.auth.routes import router as auth_router
 from app.auth.service import AuthService
+from app.coaching.prompts import load_prompt
+from app.coaching.providers import make_provider
+from app.coaching.routes import router as coach_router
+from app.coaching.service import CoachService
 from app.core.config import Settings, get_settings
 from app.database.base import Base
 from app.database.session import Database
 from app.notifications.email import make_email_sender
+from app.security.crypto import FieldCipher
 from app.security.headers import SecurityHeadersMiddleware
 from app.security.rate_limit import RateLimiter
 from app.users.routes import router as users_router
@@ -53,6 +58,14 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.state.access_tokens = AccessTokenCodec(settings)
     app.state.auth = AuthService(settings)
     app.state.email = make_email_sender(settings)
+    app.state.cipher = FieldCipher.from_settings(settings)
+    app.state.coach = CoachService(
+        settings,
+        make_provider(settings),
+        app.state.cipher,
+        load_prompt("coach.v1.md", settings.prompts_dir),
+        db.sessionmaker,
+    )
 
     app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(
@@ -66,6 +79,7 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.include_router(v1)
     app.include_router(auth_router)
     app.include_router(users_router)
+    app.include_router(coach_router)
     if settings.dev_outbox_endpoint and settings.environment in ("development", "test"):
         app.include_router(dev_router)
 

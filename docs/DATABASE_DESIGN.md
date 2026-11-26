@@ -27,13 +27,22 @@ Conventions: UUID primary keys (except content ids), `timestamptz` everywhere, f
 | `assessment_sessions.user_id` | Owner after claim or signed-in start | FK CASCADE (deleting a user deletes their assessments) | |
 | `consent_records.user_id` | Link to account | FK SET NULL (proof kept, unlinked) | |
 
+## Implemented (migration 0003, AI coach)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `coach_conversations` | Owner, topic, consented result, consent record | FK user CASCADE; result SET NULL; consent RESTRICT | Until the user deletes it or the account |
+| `coach_messages` | Encrypted message text (`content_encrypted`, AES-256-GCM bound to row id), role, kind, safety rule names, prompt version, provider, model | unique (conversation, sequence); role and kind checks; cascade on conversation | As conversation |
+| `ai_usage_records` | Per-turn counts: provider, model, prompt version, outcome, tokens, latency, whether it counts toward the limit | FK user SET NULL (no content) | Kept for cost accounting |
+
+Coaching consent is a `consent_records` row with type `ai_coaching`. `ai_context_grants` from the plan is not needed yet: each conversation records the single result the user chose.
+
 ## Planned (by phase)
 
 | Phase | Tables |
 | --- | --- |
 | 5 Auth | `users` (auth subject, status, created/deleted), `user_profiles`, `user_preferences`, `user_sessions` if not delegated; `assessment_sessions.user_id` FK |
 | 7 | `share_cards` (opt-in, revocable public slug, minimal fields) |
-| 8 Coaching | `ai_conversations`, `ai_messages` (encrypted content), `ai_usage_records`, `ai_context_grants` |
 | 9–11 | Additional instruments reuse assessment tables; `career_goals` |
 | 10 | `relationship_invitations`, `relationship_shares` (per-scope, revocable, both-party consent) |
 | 13–14 | `development_programs`, `program_enrollments`, `exercises`, `exercise_completions`, `goals`, `habits`, `habit_records`, `journal_entries` (field-level encryption) |

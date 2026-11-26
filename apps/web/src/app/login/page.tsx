@@ -9,6 +9,7 @@ import { Button } from "@/components/ui";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { errorMessage } from "@/lib/errors";
+import { safeNextPath } from "@/lib/next-path";
 
 export default function LoginPage() {
   const { signIn } = useAuth();
@@ -27,7 +28,7 @@ export default function LoginPage() {
     setUnverified(false);
     try {
       await signIn(email, password);
-      router.push("/history");
+      router.push(safeNextPath(window.location.search));
     } catch (err) {
       setUnverified(err instanceof ApiError && err.code === "email_unverified");
       setError(errorMessage(err));

@@ -1,6 +1,8 @@
 # AI architecture
 
-**Status: design. Nothing in this document is implemented yet (Phase 8).**
+**Status: implemented for the coach (Phase 8, ADR-011)**, with a deterministic stand-in provider by default and the Anthropic provider ready for a key. Not yet built: the router to specialist prompts (one prompt with a per-topic focus line is used instead), retrieval from `ai/knowledge-base/`, user goals in context, and an OpenAI provider.
+
+Code: `services/backend/app/coaching/` (`providers.py`, `context.py`, `safety.py`, `service.py`, `routes.py`, `evaluation.py`). Prompt: `ai/prompts/coach.v1.md` (id and version recorded on every assistant message and usage record).
 
 ## Principles
 
@@ -24,7 +26,7 @@ user message ─► Input guard ─► Context builder ─► Router ─► Spec
                                                                        stream to client
 ```
 
-- `LLMProvider` interface: `generate(messages, schema, limits) -> stream`. Implementations: `AnthropicProvider`, `OpenAIProvider`, `MockProvider` (deterministic, used in tests and when no key is configured).
+- `LLMProvider` interface: `stream(CoachRequest) -> text chunks, then one Completion` (stop reason, model, token counts). Implemented: `AnthropicProvider` (official SDK, streaming, `output_config.effort`, shared instructions cached, personal context uncached, typed errors mapped to retryable or not) and `MockProvider` (deterministic, labelled "demo mode"). `OpenAIProvider` is planned only if a second provider is wanted.
 - Prompts are versioned files in `ai/prompts/` with an id and version recorded on every AI message.
 - Retrieval: a reviewed knowledge base in `ai/knowledge-base/` (Markdown with citations); pgvector only if keyword retrieval proves insufficient.
 - Usage: per-user daily token allowance by plan; usage recorded per request with model, tokens, cost estimate and prompt version.

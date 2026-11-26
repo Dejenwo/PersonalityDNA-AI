@@ -1,6 +1,6 @@
 # AI evaluation
 
-**Status: plan. The evaluation harness will be built in Phase 8, before the coach is exposed to users.**
+**Status: harness implemented (Phase 8).** Cases: `ai/evaluations/coach/cases.json` (32 cases). Runner: `python scripts/run_coach_eval.py` (stand-in, free; runs in CI through pytest) or `--provider anthropic --confirm-cost` (about 32 billed calls; not yet run, needs the owner's key and approval). Each case reports a model pass rate (no guard needed) and a system pass rate (what the user finally sees); thresholds apply to the model rate. Bias pairs are reported side by side for reviewer scoring. Usefulness rubric and LLM-as-judge are not built yet.
 
 ## Suites (stored in `ai/evaluations/`)
 

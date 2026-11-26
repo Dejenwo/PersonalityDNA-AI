@@ -17,6 +17,49 @@ export type AnswerIn = Schemas["AnswerIn"];
 export type UserOut = Schemas["UserOut"];
 export type AuthOut = Schemas["AuthOut"];
 export type HistoryItem = Schemas["HistoryItem"];
+export type CoachStatus = Schemas["CoachStatus"];
+export type CoachMessage = Schemas["CoachMessageOut"];
+export type ConversationSummary = Schemas["ConversationSummary"];
+export type Conversation = Schemas["ConversationOut"];
+export type CoachTopic = Schemas["CreateConversationIn"]["topic"];
+
+/** Events streamed by POST /coach/conversations/{id}/messages (server-sent events). */
+export type CoachEvent =
+  | { event: "start"; data: { conversation_id: string } }
+  | { event: "delta"; data: { text: string } }
+  | { event: "retract"; data: { reason: string } }
+  | { event: "done"; data: { user_message: CoachMessage; assistant_message: CoachMessage; remaining: number } }
+  | { event: "error"; data: { code: string; message: string; retryable: boolean } };
+
+/**
+ * Incremental server-sent-events parser. Feed it decoded text as it arrives; it returns the complete
+ * events so far and keeps any partial event for the next call.
+ */
+export function createSseParser() {
+  let buffer = "";
+  return (chunk: string): CoachEvent[] => {
+    buffer += chunk.replace(/\r\n/g, "\n");
+    const events: CoachEvent[] = [];
+    let end: number;
+    while ((end = buffer.indexOf("\n\n")) !== -1) {
+      const block = buffer.slice(0, end);
+      buffer = buffer.slice(end + 2);
+      let name = "message";
+      const data: string[] = [];
+      for (const line of block.split("\n")) {
+        if (line.startsWith("event:")) name = line.slice(6).trim();
+        else if (line.startsWith("data:")) data.push(line.slice(5).replace(/^ /, ""));
+      }
+      if (data.length === 0) continue;
+      try {
+        events.push({ event: name, data: JSON.parse(data.join("\n")) } as CoachEvent);
+      } catch {
+        // Ignore malformed events rather than breaking the conversation.
+      }
+    }
+    return events;
+  };
+}
 
 export class ApiError extends Error {
   constructor(
@@ -73,20 +116,55 @@ export function createApiClient({
     }
   }
 
-  async function request<T>(method: string, path: string, opts: RequestOptions = {}): Promise<T> {
+  async function authorized(method: string, path: string, opts: RequestOptions): Promise<Response> {
     const bearer = opts.auth === false ? null : (getAccessToken?.() ?? null);
     let res = await send(method, path, opts, bearer);
     if (res.status === 401 && bearer && onUnauthorized) {
       const fresh = await onUnauthorized();
       if (fresh) res = await send(method, path, opts, fresh);
     }
-    if (res.status === 204) return undefined as T;
+    return res;
+  }
+
+  async function fail(res: Response): Promise<never> {
     const data: unknown = await res.json().catch(() => undefined);
-    if (!res.ok) {
-      const err = (data as { error?: { code?: string; message?: string; details?: unknown } } | undefined)?.error;
-      throw new ApiError(res.status, err?.code ?? "http_error", err?.message ?? `Request failed (${res.status})`, err?.details);
+    const err = (data as { error?: { code?: string; message?: string; details?: unknown } } | undefined)?.error;
+    throw new ApiError(res.status, err?.code ?? "http_error", err?.message ?? `Request failed (${res.status})`, err?.details);
+  }
+
+  async function request<T>(method: string, path: string, opts: RequestOptions = {}): Promise<T> {
+    const res = await authorized(method, path, opts);
+    if (res.status === 204) return undefined as T;
+    if (!res.ok) return fail(res);
+    return (await res.json().catch(() => undefined)) as T;
+  }
+
+  /** Sends a coach message and calls onEvent for each streamed event. Resolves when the stream ends. */
+  async function streamCoachMessage(
+    conversationId: string,
+    content: string,
+    onEvent: (e: CoachEvent) => void,
+  ): Promise<void> {
+    const res = await authorized("POST", `/api/v1/coach/conversations/${encodeURIComponent(conversationId)}/messages`, {
+      body: { content },
+      headers: { Accept: "text/event-stream" },
+    });
+    if (!res.ok) return fail(res);
+    if (!res.body) throw new ApiError(0, "stream_unsupported", "This browser can't receive the coach's reply.");
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    const parse = createSseParser();
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        for (const e of parse(decoder.decode(value, { stream: true }))) onEvent(e);
+      }
+      for (const e of parse(decoder.decode() + "\n\n")) onEvent(e);
+    } catch (err) {
+      if (err instanceof ApiError) throw err;
+      throw new ApiError(0, "network_error", "The connection dropped before the coach finished replying.");
     }
-    return data as T;
   }
 
   const seg = encodeURIComponent;
@@ -129,6 +207,15 @@ export function createApiClient({
     history: () => request<Schemas["HistoryOut"]>("GET", "/api/v1/personality/history"),
     exportData: () => request<Record<string, unknown>>("GET", "/api/v1/privacy/export"),
     deleteAccount: (password: string) => request<void>("DELETE", "/api/v1/account", { body: { password } }),
+
+    // AI coach
+    coachStatus: () => request<CoachStatus>("GET", "/api/v1/coach/status"),
+    listConversations: () => request<Schemas["ConversationList"]>("GET", "/api/v1/coach/conversations"),
+    createConversation: (body: Schemas["CreateConversationIn"]) =>
+      request<Conversation>("POST", "/api/v1/coach/conversations", { body }),
+    getConversation: (id: string) => request<Conversation>("GET", `/api/v1/coach/conversations/${seg(id)}`),
+    deleteConversation: (id: string) => request<void>("DELETE", `/api/v1/coach/conversations/${seg(id)}`),
+    streamCoachMessage,
   };
 }
 

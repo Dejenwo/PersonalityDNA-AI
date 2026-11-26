@@ -234,3 +234,87 @@ class AuditEvent(Base):
         DateTime(timezone=True), server_default=func.now(), index=True
     )
     note: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class CoachConversation(Base):
+    """A coaching conversation. Message text lives encrypted in coach_messages."""
+
+    __tablename__ = "coach_conversations"
+    __table_args__ = (Index("ix_coach_conversations_user_updated", "user_id", "updated_at"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_coach_conversations_user_id_users")
+    )
+    topic: Mapped[str] = mapped_column(String(32))
+    # The assessment result the user allowed the coach to use. Cleared if the result is deleted.
+    result_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("assessment_results.id", ondelete="SET NULL", name="fk_coach_conversations_result_id"),
+        nullable=True,
+    )
+    consent_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("consent_records.id", ondelete="RESTRICT", name="fk_coach_conversations_consent_id")
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    messages: Mapped[list["CoachMessage"]] = relationship(
+        back_populates="conversation",
+        cascade="all, delete-orphan",
+        order_by="CoachMessage.sequence",
+        passive_deletes=True,
+    )
+
+
+class CoachMessage(Base):
+    __tablename__ = "coach_messages"
+    __table_args__ = (
+        UniqueConstraint("conversation_id", "sequence", name="uq_coach_message_sequence"),
+        CheckConstraint("role in ('user','assistant')", name="ck_coach_message_role"),
+        CheckConstraint(
+            "kind in ('message','crisis_support','safety_replacement','unavailable')",
+            name="ck_coach_message_kind",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    conversation_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("coach_conversations.id", ondelete="CASCADE", name="fk_coach_messages_conversation_id"),
+        index=True,
+    )
+    sequence: Mapped[int] = mapped_column(Integer)
+    role: Mapped[str] = mapped_column(String(16))
+    kind: Mapped[str] = mapped_column(String(32), default="message")
+    # AES-GCM ciphertext (app.security.crypto). Never log or index this column.
+    content_encrypted: Mapped[str] = mapped_column(Text)
+    # Rule names only, never message text.
+    safety_flags: Mapped[list[str]] = mapped_column(JSON, default=list)
+    prompt_version: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    provider: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    model: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    conversation: Mapped[CoachConversation] = relationship(back_populates="messages")
+
+
+class AiUsageRecord(Base):
+    """One row per coach turn. Holds counts only, so it is kept for cost accounting after deletion."""
+
+    __tablename__ = "ai_usage_records"
+    __table_args__ = (Index("ix_ai_usage_user_created", "user_id", "created_at"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_ai_usage_records_user_id_users"), nullable=True
+    )
+    feature: Mapped[str] = mapped_column(String(32))
+    provider: Mapped[str] = mapped_column(String(32))
+    model: Mapped[str] = mapped_column(String(64))
+    prompt_version: Mapped[str] = mapped_column(String(32))
+    outcome: Mapped[str] = mapped_column(String(32))
+    counts_toward_limit: Mapped[bool] = mapped_column(default=True)
+    input_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    output_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    cache_read_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    latency_ms: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

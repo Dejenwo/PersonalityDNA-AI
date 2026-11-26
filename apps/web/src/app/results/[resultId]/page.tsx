@@ -219,7 +219,10 @@ export default function ResultsPage() {
       </section>
 
       <div className="flex flex-wrap gap-3">
-        <ButtonLink href="/discover">Take another assessment</ButtonLink>
+        <ButtonLink href={`/coach?result=${encodeURIComponent(r.id)}`}>Talk it through with the coach</ButtonLink>
+        <ButtonLink href="/discover" variant="secondary">
+          Take another assessment
+        </ButtonLink>
         <ButtonLink href="/history" variant="secondary">
           My results
         </ButtonLink>

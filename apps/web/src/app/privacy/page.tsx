@@ -28,10 +28,19 @@ export default function PrivacyPage() {
         Your assessment is protected by a private key stored only in this browser. Anyone without that key cannot open
         your answers or results. We do not sell assessment data and do not use it to train AI models.
       </p>
+      <h2 className="pt-4 text-xl font-semibold">The AI coach</h2>
+      <p>
+        The coach is optional and needs an account and your agreement. When you use it, your messages and, if you allow
+        it, your trait scores, bands and archetype are sent to our AI provider to write replies. Your name, email
+        address and individual answers are not sent. Conversations are stored encrypted, and you can delete each one or
+        your whole account. We keep counts of coach usage (not message text) to manage costs and limits. If a message
+        suggests you may be in danger, the app shows crisis support information instead of sending it to the AI, and
+        records only that this happened. While the coach runs in demo mode, nothing is sent to an AI provider.
+      </p>
       <h2 className="pt-4 text-xl font-semibold">Your choices</h2>
       <p>
         You can stop at any time. With an account you can download all your data or permanently delete your account
-        and every assessment linked to it from the Account page.
+        and every assessment and coach conversation linked to it from the Account page.
       </p>
       <h2 className="pt-4 text-xl font-semibold">Not a diagnosis</h2>
       <p>

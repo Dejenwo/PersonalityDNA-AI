@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     environment: str = Field(default="development", pattern="^(development|test|staging|production)$")
     database_url: str = "sqlite:///./pdna-local.db"
     content_dir: Path = REPO_ROOT / "assessment-content"
+    # Versioned AI prompt files (ai/prompts).
+    prompts_dir: Path = REPO_ROOT / "ai" / "prompts"
     cors_origins: list[str] = ["http://localhost:3000"]
     # Requests per minute per client IP for session creation.
     session_create_rate_limit: int = 30
@@ -49,6 +51,26 @@ class Settings(BaseSettings):
     # Exposes GET /api/v1/dev/outbox for local testing. Refused in staging/production.
     dev_outbox_endpoint: bool = False
 
+    # --- Data protection ---
+    # Base64 (url-safe) encoded 32-byte key for encrypting coaching messages at rest.
+    # Required outside development/test. Generate with:
+    #   python -c "import base64,os;print(base64.urlsafe_b64encode(os.urandom(32)).decode())"
+    data_encryption_key: SecretStr | None = None
+
+    # --- AI coach ---
+    coach_enabled: bool = True
+    # "mock" is a deterministic stand-in used in development, tests and demos. It calls no AI service.
+    coach_provider: Literal["mock", "anthropic"] = "mock"
+    anthropic_api_key: SecretStr | None = None
+    coach_model: str = "claude-opus-5-5"
+    coach_effort: Literal["low", "medium", "high"] = "medium"
+    coach_max_output_tokens: int = Field(default=4000, ge=256, le=16000)
+    coach_request_timeout_seconds: float = Field(default=90.0, ge=5, le=600)
+    # Messages per user in any rolling 24 hours. Plans can raise this once entitlements exist.
+    coach_daily_message_limit: int = Field(default=30, ge=0)
+    # Previous messages of the conversation sent with each request.
+    coach_history_messages: int = Field(default=20, ge=0, le=100)
+
     @model_validator(mode="after")
     def _production_guards(self) -> "Settings":
         if self.environment in ("staging", "production"):
@@ -60,6 +82,12 @@ class Settings(BaseSettings):
                 raise ValueError("PDNA_REFRESH_COOKIE_SECURE must be true outside development")
             if self.database_url.startswith("sqlite"):
                 raise ValueError("SQLite is for development and tests only")
+            if self.data_encryption_key is None:
+                raise ValueError("PDNA_DATA_ENCRYPTION_KEY is required outside development")
+            if self.coach_enabled and self.coach_provider == "mock":
+                raise ValueError("The stand-in coach provider cannot be used outside development")
+        if self.coach_provider == "anthropic" and self.anthropic_api_key is None:
+            raise ValueError("PDNA_ANTHROPIC_API_KEY is required when PDNA_COACH_PROVIDER=anthropic")
         return self
 
 
