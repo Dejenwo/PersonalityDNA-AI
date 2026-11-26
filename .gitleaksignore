@@ -1,0 +1,3 @@
+# Confirmed false positives only. Each entry names one finding: commit:file:rule:line.
+# Made-up invitation token in a web unit test (replaced in b3a62da); approved by the owner on 2026-11-26.
+707714fbc52b4848dcdc0a3d64ac05ba64106450:apps/web/src/lib/relationships.test.ts:generic-api-key:13
