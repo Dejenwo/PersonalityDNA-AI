@@ -43,7 +43,10 @@ def list_assessments(content: Content) -> AssessmentList:
     for key in sorted(content.instruments):
         iid = key.split("@")[0]
         latest[iid] = service.latest_version(content, iid).data
-    items = sorted((presenters.summary(i) for i in latest.values()), key=lambda s: (s.item_count, s.id))
+    items = sorted(
+        (presenters.summary(i) for i in latest.values()),
+        key=lambda s: (s.family != "big_five", s.item_count, s.id),
+    )
     return AssessmentList(items=items)
 
 

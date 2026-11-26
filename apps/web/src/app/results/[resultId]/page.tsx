@@ -3,6 +3,7 @@
 import type { ArchetypeOut, ResultOut } from "@pdna/api-client";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { InterestResults, MethodSection } from "@/components/result-sections";
 import { TraitBar } from "@/components/trait-bar";
 import { ButtonLink, Card, ErrorState, LoadingState } from "@/components/ui";
 import { api } from "@/lib/api";
@@ -97,17 +98,19 @@ export default function ResultsPage() {
 
   const r = load.result;
   const m = r.methodology;
+  if (r.interests) return <InterestResults r={r} interests={r.interests} />;
+  const archetypes = r.archetypes!;
   return (
     <div className="space-y-8">
       <header>
         <p className="text-sm font-semibold uppercase tracking-wide text-accent">Your PersonalityDNA</p>
         <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
-          {r.archetypes.weak_fit ? "A balanced profile" : r.archetypes.primary.name}
+          {archetypes.weak_fit ? "A balanced profile" : archetypes.primary.name}
         </h1>
         <p className="mt-2 max-w-2xl text-ink-muted">
-          {r.archetypes.weak_fit
+          {archetypes.weak_fit
             ? "Your answers sit close to the middle on most traits, so no single archetype stands out strongly. The closest matches are shown below."
-            : `with elements of ${r.archetypes.secondary.name}. These describe tendencies in how you see yourself, not fixed categories.`}
+            : `with elements of ${archetypes.secondary.name}. These describe tendencies in how you see yourself, not fixed categories.`}
         </p>
       </header>
 
@@ -146,9 +149,9 @@ export default function ResultsPage() {
         <h2 id="archetypes" className="text-2xl font-bold">
           Your archetypes
         </h2>
-        <p className="text-sm text-ink-muted">{r.archetypes.disclaimer}</p>
-        <ArchetypeCard a={r.archetypes.primary} rank="Primary" />
-        <ArchetypeCard a={r.archetypes.secondary} rank="Secondary" />
+        <p className="text-sm text-ink-muted">{archetypes.disclaimer}</p>
+        <ArchetypeCard a={archetypes.primary} rank="Primary" />
+        <ArchetypeCard a={archetypes.secondary} rank="Secondary" />
       </section>
 
       <section aria-labelledby="detail" className="space-y-4">
@@ -181,42 +184,7 @@ export default function ResultsPage() {
         ))}
       </section>
 
-      <section aria-labelledby="method">
-        <h2 id="method" className="text-2xl font-bold">
-          How this was calculated
-        </h2>
-        <Card className="mt-4 space-y-3 text-ink-muted">
-          <p>{m.scoring_summary}</p>
-          <p>{m.band_note}</p>
-          <h3 className="pt-2 font-semibold text-ink">Limitations</h3>
-          <ul className="list-disc space-y-1 pl-5">
-            {m.limitations.map((l) => (
-              <li key={l}>{l}</li>
-            ))}
-          </ul>
-          <details className="pt-2">
-            <summary className="cursor-pointer font-semibold text-ink">References and audit details</summary>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
-              {m.references.map((ref) => (
-                <li key={ref}>{ref}</li>
-              ))}
-            </ul>
-            <p className="mt-2 text-sm">{m.attribution}</p>
-            <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 text-xs break-all">
-              <dt>Instrument</dt>
-              <dd>
-                {m.instrument_name} ({m.instrument_id} v{m.instrument_version})
-              </dd>
-              <dt>Scoring engine</dt>
-              <dd>v{m.engine_version}</dd>
-              <dt>Content hash</dt>
-              <dd>{m.content_sha256}</dd>
-              <dt>Answers hash</dt>
-              <dd>{m.answers_sha256}</dd>
-            </dl>
-          </details>
-        </Card>
-      </section>
+      <MethodSection m={m} />
 
       <div className="flex flex-wrap gap-3">
         <ButtonLink href={`/coach?result=${encodeURIComponent(r.id)}`}>Talk it through with the coach</ButtonLink>

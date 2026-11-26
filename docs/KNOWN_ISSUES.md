@@ -11,6 +11,7 @@
 | Independent psychometrics reviewer | Any scientific claim, wording review | 1, 24 |
 | Privacy lawyer review, DPIA | Launch | 21–24 |
 | Brand mark and app icon direction | Design system | 4 |
+| Check the O*NET Interest Profiler wording against the official PDF, and a lawyer's confirmation of the CC BY-ND 4.0 reading | Releasing the career interest assessment (it stays a hidden draft in production until then) | 9 |
 
 ## Technical issues
 
@@ -31,4 +32,4 @@
 | K-13 | Crisis and output rules are English, phrase-based | Misses paraphrases and other languages; the model prompt is the main defence | Live evaluation, model-based classifier, localized rules with i18n |
 | K-14 | Coach prompt and safety wording not yet reviewed by a clinician or lawyer | Crisis resources and disclaimers need professional review | Owner to arrange review before launch |
 | K-15 | Data-encryption key rotation not automated | Re-encryption needed if the key is replaced | Versioned ciphertext prefix (`v1:`) is in place; add rotation job |
-
+| K-16 | O*NET Interest Profiler Short Form is a draft: item wording, order and area keys were entered without access to the official PDF (site blocked from the sandbox) | Not shown in production; results labelled Preview | Verify against https://www.onetcenter.org/dl_tools/ipsf/Interest_Profiler.pdf, then set `status` to `released` |

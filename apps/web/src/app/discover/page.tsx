@@ -15,6 +15,13 @@ const tierCopy: Record<AssessmentSummary["tier"], { label: string; blurb: string
   advanced: { label: "Advanced Discovery", blurb: "Multiple modules for a deeper profile." },
 };
 
+const interestCopy = {
+  label: "Career Interests",
+  blurb: "Choose the work activities you would like to do, then explore occupations that match your interest areas.",
+};
+
+const copyFor = (a: AssessmentSummary) => (a.family === "interests" ? interestCopy : tierCopy[a.tier]);
+
 export default function DiscoverPage() {
   const state = useAsync(() => api.listAssessments(), "assessments");
   return (
@@ -39,11 +46,17 @@ export default function DiscoverPage() {
           {state.data.items.map((a) => (
             <li key={a.id}>
               <Card as="article" className="flex h-full flex-col">
-                <p className="text-sm font-semibold text-accent">{tierCopy[a.tier].label}</p>
+                <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-accent">
+                  {copyFor(a).label}
+                  {a.status === "draft" && (
+                    <span className="rounded-full border border-line px-2 py-0.5 text-xs text-ink-muted">Preview</span>
+                  )}
+                </p>
                 <h2 className="mt-1 text-xl font-semibold">{a.name}</h2>
-                <p className="mt-2 flex-1 text-ink-muted">{tierCopy[a.tier].blurb}</p>
+                <p className="mt-2 flex-1 text-ink-muted">{copyFor(a).blurb}</p>
                 <p className="mt-4 text-sm text-ink-muted">
-                  {a.item_count} statements · about {a.estimated_minutes} minutes
+                  {a.item_count} {a.family === "interests" ? "activities" : "statements"} · about {a.estimated_minutes}{" "}
+                  minutes
                 </p>
                 <ButtonLink href={`/discover/${a.id}`} className="mt-4 self-start" aria-label={`Start ${a.name}`}>
                   Start

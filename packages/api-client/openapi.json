@@ -121,6 +121,14 @@
             "title": "Estimated Minutes",
             "type": "integer"
           },
+          "family": {
+            "enum": [
+              "big_five",
+              "interests"
+            ],
+            "title": "Family",
+            "type": "string"
+          },
           "id": {
             "title": "Id",
             "type": "string"
@@ -169,6 +177,15 @@
           "source": {
             "$ref": "#/components/schemas/AssessmentSource"
           },
+          "status": {
+            "description": "Draft content is only served in development.",
+            "enum": [
+              "released",
+              "draft"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
           "tier": {
             "enum": [
               "quick",
@@ -188,6 +205,8 @@
           "version",
           "name",
           "tier",
+          "family",
+          "status",
           "item_count",
           "estimated_minutes",
           "locale",
@@ -273,6 +292,14 @@
             "title": "Estimated Minutes",
             "type": "integer"
           },
+          "family": {
+            "enum": [
+              "big_five",
+              "interests"
+            ],
+            "title": "Family",
+            "type": "string"
+          },
           "id": {
             "title": "Id",
             "type": "string"
@@ -287,6 +314,15 @@
           },
           "name": {
             "title": "Name",
+            "type": "string"
+          },
+          "status": {
+            "description": "Draft content is only served in development.",
+            "enum": [
+              "released",
+              "draft"
+            ],
+            "title": "Status",
             "type": "string"
           },
           "tier": {
@@ -308,6 +344,8 @@
           "version",
           "name",
           "tier",
+          "family",
+          "status",
           "item_count",
           "estimated_minutes",
           "locale"
@@ -840,6 +878,25 @@
         "title": "ErrorResponse",
         "type": "object"
       },
+      "ExploreLinkOut": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "url"
+        ],
+        "title": "ExploreLinkOut",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -959,6 +1016,130 @@
         "title": "HistoryOut",
         "type": "object"
       },
+      "InterestAreaOut": {
+        "additionalProperties": false,
+        "properties": {
+          "area": {
+            "title": "Area",
+            "type": "string"
+          },
+          "count": {
+            "description": "Activities in this area the person said they would like to do.",
+            "title": "Count",
+            "type": "integer"
+          },
+          "enjoys": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Enjoys",
+            "type": "array"
+          },
+          "fields": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Fields",
+            "type": "array"
+          },
+          "letter": {
+            "title": "Letter",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "reflection": {
+            "title": "Reflection",
+            "type": "string"
+          },
+          "score": {
+            "description": "count / total on a 0-100 scale; not a percentile.",
+            "title": "Score",
+            "type": "number"
+          },
+          "short": {
+            "title": "Short",
+            "type": "string"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "area",
+          "letter",
+          "name",
+          "short",
+          "count",
+          "total",
+          "score",
+          "enjoys",
+          "fields",
+          "reflection"
+        ],
+        "title": "InterestAreaOut",
+        "type": "object"
+      },
+      "InterestsOut": {
+        "additionalProperties": false,
+        "properties": {
+          "areas": {
+            "items": {
+              "$ref": "#/components/schemas/InterestAreaOut"
+            },
+            "title": "Areas",
+            "type": "array"
+          },
+          "boundary_ties": {
+            "description": "Areas tied at the third place, so the code could differ.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Boundary Ties",
+            "type": "array"
+          },
+          "code": {
+            "description": "Letters of the three highest areas, highest first.",
+            "title": "Code",
+            "type": "string"
+          },
+          "draft": {
+            "description": "The instrument is still a draft and its results are for testing only.",
+            "title": "Draft",
+            "type": "boolean"
+          },
+          "empty": {
+            "description": "True when no activity was chosen, so there is no meaningful code.",
+            "title": "Empty",
+            "type": "boolean"
+          },
+          "explore_links": {
+            "items": {
+              "$ref": "#/components/schemas/ExploreLinkOut"
+            },
+            "title": "Explore Links",
+            "type": "array"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "empty",
+          "boundary_ties",
+          "areas",
+          "note",
+          "explore_links",
+          "draft"
+        ],
+        "title": "InterestsOut",
+        "type": "object"
+      },
       "LoginIn": {
         "additionalProperties": false,
         "properties": {
@@ -1047,8 +1228,15 @@
             "type": "array"
           },
           "negative_emotionality_note": {
-            "title": "Negative Emotionality Note",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Negative Emotionality Note"
           },
           "references": {
             "items": {
@@ -1219,7 +1407,14 @@
         "additionalProperties": false,
         "properties": {
           "archetypes": {
-            "$ref": "#/components/schemas/ArchetypesOut"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ArchetypesOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "created_at": {
             "format": "date-time",
@@ -1229,6 +1424,24 @@
           "id": {
             "format": "uuid",
             "title": "Id",
+            "type": "string"
+          },
+          "interests": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InterestsOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "kind": {
+            "enum": [
+              "big_five",
+              "interests"
+            ],
+            "title": "Kind",
             "type": "string"
           },
           "methodology": {
@@ -1269,9 +1482,11 @@
           "id",
           "session_id",
           "created_at",
+          "kind",
           "traits",
           "negative_emotionality",
           "archetypes",
+          "interests",
           "quality_flags",
           "methodology"
         ],

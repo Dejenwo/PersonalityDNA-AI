@@ -167,14 +167,32 @@ class CoachService:
 
     # ---------- conversations ----------
 
-    def _latest_result(self, db: Session, user_id: uuid.UUID) -> AssessmentResult | None:
-        return db.scalar(
+    def _latest_result(
+        self, db: Session, user_id: uuid.UUID, kind: str | None = None
+    ) -> AssessmentResult | None:
+        query = (
             select(AssessmentResult)
             .join(AssessmentSession, AssessmentResult.session_id == AssessmentSession.id)
             .where(AssessmentSession.user_id == user_id)
-            .order_by(AssessmentResult.created_at.desc())
-            .limit(1)
         )
+        if kind == "big_five":
+            query = query.where(AssessmentResult.archetype_version.is_not(None))
+        elif kind == "interests":
+            query = query.where(AssessmentResult.interest_profile.is_not(None))
+        return db.scalar(query.order_by(AssessmentResult.created_at.desc()).limit(1))
+
+    def _context_results(
+        self, db: Session, conv: CoachConversation
+    ) -> tuple[AssessmentResult | None, AssessmentResult | None]:
+        """(Big Five result, interest result) the coach may use. None unless the user shared results."""
+        if conv.result_id is None:
+            return None, None
+        chosen = db.get(AssessmentResult, conv.result_id)
+        if chosen is None:
+            return None, None
+        if chosen.interest_profile is not None:
+            return self._latest_result(db, conv.user_id, "big_five"), chosen
+        return chosen, self._latest_result(db, conv.user_id, "interests")
 
     def create_conversation(self, db: Session, user: User, body: CreateConversationIn) -> CoachConversation:
         consent = self._consent(db, user.id, body.consent.policy_version)
@@ -317,11 +335,12 @@ class CoachService:
                     "You've reached today's coaching limit.",
                     {"resets_at": resets_at.isoformat() if resets_at else None},
                 )
-            result = db.get(AssessmentResult, conv.result_id) if conv.result_id else None
+            result, interests = self._context_results(db, conv)
             facts = facts_from_result(
                 bundle,
                 result,
                 conv.topic,
+                interests=interests,
                 crisis_support_shown=any(m.kind == "crisis_support" for m in conv.messages),
             )
             turns = self._merge([*self._history(conv), Turn(role="user", content=text)])

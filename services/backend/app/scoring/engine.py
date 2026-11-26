@@ -14,7 +14,8 @@ from typing import Literal
 
 from app.assessments.content import Instrument
 
-ENGINE_VERSION = "1.0.0"
+# 1.1.0 added count_endorsed scoring for interest checklists. Likert arithmetic is unchanged since 1.0.0.
+ENGINE_VERSION = "1.1.0"
 
 Band = Literal["lower", "middle", "higher"]
 BAND_LOWER_BELOW = Decimal(40)
@@ -33,6 +34,7 @@ class ScaleScore:
     status: Literal["scored", "insufficient"]
     answered: int
     total: int
+    # likert_mean: mean item value after reverse keying. count_endorsed: number of activities endorsed.
     raw_mean: float | None
     score: float | None  # 0..100
     band: Band | None
@@ -115,6 +117,22 @@ def score(
         ]
         if len(values) < scale.min_items_answered:
             scales.append(ScaleScore(scale.id, "insufficient", len(values), len(items), None, None, None))
+            continue
+        if instrument.scoring == "count_endorsed":
+            # Published checklist scoring: one point per activity the person would like to do.
+            # Displayed on 0-100 as count / items; no bands, because interest levels have no norms here.
+            count = sum(1 for v in values if v == rs.max)
+            scales.append(
+                ScaleScore(
+                    scale_id=scale.id,
+                    status="scored",
+                    answered=len(values),
+                    total=len(items),
+                    raw_mean=float(count),
+                    score=float(_round1(Decimal(count) / Decimal(len(items)) * 100)),
+                    band=None,
+                )
+            )
             continue
         mean = Decimal(sum(values)) / Decimal(len(values))
         normalized = _round1((mean - rs.min) / span * 100)

@@ -29,6 +29,8 @@ class AssessmentSummary(Model):
     version: str
     name: str
     tier: Literal["quick", "comprehensive", "advanced"]
+    family: Literal["big_five", "interests"]
+    status: Literal["released", "draft"] = Field(description="Draft content is only served in development.")
     item_count: int
     estimated_minutes: int
     locale: str
@@ -151,18 +153,48 @@ class Methodology(Model):
     answers_sha256: str
     scoring_summary: str
     band_note: str
-    negative_emotionality_note: str
+    negative_emotionality_note: str | None
     limitations: list[str]
     references: list[str]
     attribution: str
+
+
+class InterestAreaOut(Model):
+    area: str
+    letter: str
+    name: str
+    short: str
+    count: int = Field(description="Activities in this area the person said they would like to do.")
+    total: int
+    score: float = Field(description="count / total on a 0-100 scale; not a percentile.")
+    enjoys: list[str]
+    fields: list[str]
+    reflection: str
+
+
+class ExploreLinkOut(Model):
+    label: str
+    url: str
+
+
+class InterestsOut(Model):
+    code: str = Field(description="Letters of the three highest areas, highest first.")
+    empty: bool = Field(description="True when no activity was chosen, so there is no meaningful code.")
+    boundary_ties: list[str] = Field(description="Areas tied at the third place, so the code could differ.")
+    areas: list[InterestAreaOut]
+    note: str
+    explore_links: list[ExploreLinkOut]
+    draft: bool = Field(description="The instrument is still a draft and its results are for testing only.")
 
 
 class ResultOut(Model):
     id: UUID
     session_id: UUID
     created_at: datetime
+    kind: Literal["big_five", "interests"]
     traits: list[TraitResult]
     negative_emotionality: float | None
-    archetypes: ArchetypesOut
+    archetypes: ArchetypesOut | None
+    interests: InterestsOut | None
     quality_flags: list[str]
     methodology: Methodology

@@ -1,0 +1,54 @@
+{
+  "id": "interest-interpretations",
+  "version": "1.0.0",
+  "locale": "en",
+  "note": "Original PersonalityDNA descriptive text based on John Holland's widely used six interest areas. Interest scores count the activities a person said they would like to do. They describe preferences, not abilities, and they do not predict success in any job. No population norms are applied.",
+  "explore_links": [
+    {"label": "My Next Move (U.S. Department of Labor career exploration site)", "url": "https://www.mynextmove.org/"},
+    {"label": "O*NET OnLine occupation information", "url": "https://www.onetonline.org/"}
+  ],
+  "areas": {
+    "realistic": {
+      "name": "Realistic",
+      "short": "Hands-on work with tools, machines, plants, animals or materials, often outdoors or with practical, visible results.",
+      "enjoys": ["Building, fixing or operating things", "Working with your hands or physical materials", "Seeing a concrete result at the end of the day"],
+      "fields": ["Construction and the trades", "Manufacturing and maintenance", "Agriculture, forestry and the outdoors", "Transport and logistics", "Public safety"],
+      "reflection": "Which practical tasks have you lost track of time doing?"
+    },
+    "investigative": {
+      "name": "Investigative",
+      "short": "Working with ideas, observation and analysis: researching, experimenting and solving problems.",
+      "enjoys": ["Figuring out how and why things work", "Gathering evidence and testing ideas", "Solving complex problems"],
+      "fields": ["Science and research", "Health and laboratory work", "Engineering and technology", "Data and analysis"],
+      "reflection": "What kind of question do you enjoy chasing down until you find the answer?"
+    },
+    "artistic": {
+      "name": "Artistic",
+      "short": "Creating and expressing: working with designs, words, music, performance or images, often with room for originality.",
+      "enjoys": ["Making something original", "Working without rigid rules", "Expressing ideas or feelings through a medium"],
+      "fields": ["Design and visual arts", "Writing, media and communication", "Music and performing arts", "Film, games and digital media"],
+      "reflection": "Where do you have, or want, room to create something of your own?"
+    },
+    "social": {
+      "name": "Social",
+      "short": "Helping, teaching, supporting or caring for people.",
+      "enjoys": ["Teaching or explaining", "Supporting people through change", "Working closely with others toward their wellbeing"],
+      "fields": ["Education and training", "Health care and support", "Community and social services", "Coaching and human resources"],
+      "reflection": "When have you felt most useful to someone else?"
+    },
+    "enterprising": {
+      "name": "Enterprising",
+      "short": "Leading, persuading, selling and starting things: working toward goals with people and resources.",
+      "enjoys": ["Persuading or negotiating", "Taking charge of a project or team", "Spotting and pursuing opportunities"],
+      "fields": ["Business and management", "Sales and marketing", "Entrepreneurship", "Law, policy and public affairs"],
+      "reflection": "What goal would you be excited to persuade other people to work toward?"
+    },
+    "conventional": {
+      "name": "Conventional",
+      "short": "Organising information, records and procedures: working with data and detail in a clear structure.",
+      "enjoys": ["Keeping things accurate and orderly", "Following and improving clear procedures", "Working with numbers, records or systems"],
+      "fields": ["Finance and accounting", "Administration and operations", "Information systems and records", "Logistics and supply"],
+      "reflection": "Which systems or routines do you enjoy making run smoothly?"
+    }
+  }
+}

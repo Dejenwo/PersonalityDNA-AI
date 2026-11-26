@@ -27,6 +27,10 @@ def sync_instruments(db: Session, bundle: ContentBundle) -> None:
                     content=inst.model_dump(mode="json"),
                 )
             )
+        elif existing.content_sha256 != loaded.sha256 and existing.content.get("status") == "draft":
+            # Drafts never reach production and may still be corrected, including when first released.
+            existing.content_sha256 = loaded.sha256
+            existing.content = inst.model_dump(mode="json")
         elif existing.content_sha256 != loaded.sha256:
             raise ContentError(
                 f"{inst.id}@{inst.version} changed after release (sha {existing.content_sha256[:12]} -> "

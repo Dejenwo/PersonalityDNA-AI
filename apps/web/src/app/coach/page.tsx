@@ -111,7 +111,10 @@ function ConversationRow({ c }: { c: ConversationSummary }) {
 
 function StartConversation({ status }: { status: CoachStatus }) {
   const router = useRouter();
-  const [topic, setTopic] = useState(COACH_TOPICS[0]!.id);
+  const [topic, setTopic] = useState(() => {
+    const asked = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("topic");
+    return COACH_TOPICS.find((t) => t.id === asked)?.id ?? COACH_TOPICS[0]!.id;
+  });
   const [useResults, setUseResults] = useState(true);
   const [agreed, setAgreed] = useState(false);
   const [busy, setBusy] = useState(false);

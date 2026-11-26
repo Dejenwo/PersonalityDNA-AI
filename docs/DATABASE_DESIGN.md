@@ -13,7 +13,7 @@ Conventions: UUID primary keys (except content ids), `timestamptz` everywhere, f
 | `consent_records` | Consent type, policy version, 18+ confirmation | `user_id` nullable until accounts | Life of related data + legal minimum |
 | `assessment_sessions` | One attempt; hashed resume token; status; timestamps | status check; FKs to version and consent (RESTRICT) | Anonymous incomplete sessions: purge after 30 days (job pending) |
 | `assessment_responses` | One row per answered item | unique (session_id, item_id); value 1–7 check; cascade on session delete | With session |
-| `assessment_results` | Engine/instrument versions, hashes, archetype ranking, quality flags | unique session_id; cascade | With session |
+| `assessment_results` | Engine/instrument versions, hashes, archetype ranking (Big Five only, nullable since migration 0004), interest profile (interests only), quality flags | unique session_id; cascade | With session |
 | `personality_trait_scores` | Per-trait status, raw mean, 0–100 score, band, answered/total | unique (result_id, trait); score 0–100 check | With result |
 | `audit_events` | Security and lifecycle events (no answers, no PII) | indexed by type and time | 1 year (job pending) |
 

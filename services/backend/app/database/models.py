@@ -188,8 +188,11 @@ class AssessmentResult(Base):
     instrument_version: Mapped[str] = mapped_column(String(32))
     content_sha256: Mapped[str] = mapped_column(String(64))
     answers_sha256: Mapped[str] = mapped_column(String(64))
-    archetype_version: Mapped[str] = mapped_column(String(32))
-    archetypes: Mapped[dict[str, Any]] = mapped_column(JSON)
+    # Big Five results only.
+    archetype_version: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    archetypes: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    # Interest results only: {"code", "ranking": [[area, count], ...], "boundary_ties", "empty"}.
+    interest_profile: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
     quality_flags: Mapped[list[str]] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

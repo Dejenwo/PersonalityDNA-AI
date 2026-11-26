@@ -4,7 +4,7 @@ import { AuthNav } from "./auth-nav";
 export function SiteHeader() {
   return (
     <header className="border-b border-line bg-surface">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3">
         <Link href="/" className="flex items-center gap-2 font-bold text-ink" aria-label="PersonalityDNA AI home">
           <span aria-hidden className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-on-primary">
             ◆
@@ -12,14 +12,19 @@ export function SiteHeader() {
           PersonalityDNA
         </Link>
         <nav aria-label="Main">
-          <ul className="flex items-center gap-1 text-sm font-medium">
+          <ul className="flex flex-wrap items-center gap-1 text-sm font-medium">
             <li>
-              <Link href="/discover" className="rounded-full px-3 py-2 hover:bg-muted">
+              <Link href="/discover" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
                 Discover
               </Link>
             </li>
             <li>
-              <Link href="/history" className="rounded-full px-3 py-2 hover:bg-muted">
+              <Link href="/careers" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
+                Careers
+              </Link>
+            </li>
+            <li>
+              <Link href="/history" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
                 My results
               </Link>
             </li>

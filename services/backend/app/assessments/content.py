@@ -65,6 +65,10 @@ class Instrument(_Frozen):
     schema_version: Literal[1]
     id: str = Field(pattern=r"^[a-z0-9-]+$")
     version: str = Field(pattern=r"^\d+\.\d+\.\d+$")
+    # Draft instruments load only where drafts are enabled (development and tests) and may still change.
+    status: Literal["released", "draft"] = "released"
+    family: Literal["big_five", "interests"] = "big_five"
+    scoring: Literal["likert_mean", "count_endorsed"] = "likert_mean"
     name: str
     tier: Literal["quick", "comprehensive", "advanced"]
     locale: str
@@ -154,6 +158,28 @@ class Interpretations(_Frozen):
     traits: dict[str, TraitText]
 
 
+class InterestArea(_Frozen):
+    name: str
+    short: str
+    enjoys: tuple[str, ...]
+    fields: tuple[str, ...]
+    reflection: str
+
+
+class ExploreLink(_Frozen):
+    label: str
+    url: str
+
+
+class InterestInterpretations(_Frozen):
+    id: str
+    version: str
+    locale: str
+    note: str
+    explore_links: tuple[ExploreLink, ...]
+    areas: dict[str, InterestArea]
+
+
 class LoadedFile[T: BaseModel](BaseModel):
     model_config = ConfigDict(frozen=True)
     data: T
@@ -166,6 +192,7 @@ class ContentBundle(BaseModel):
     instruments: dict[str, LoadedFile[Instrument]]  # key: "id@version"
     archetypes: LoadedFile[ArchetypeSet]
     interpretations: LoadedFile[Interpretations]
+    interests: LoadedFile[InterestInterpretations]
 
     def instrument(self, instrument_id: str, version: str) -> LoadedFile[Instrument]:
         try:
@@ -179,13 +206,15 @@ def _read(path: Path) -> tuple[dict[str, object], str]:
     return json.loads(raw), hashlib.sha256(raw).hexdigest()
 
 
-def load_content(content_dir: Path) -> ContentBundle:
+def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBundle:
     if not content_dir.is_dir():
         raise ContentError(f"content directory not found: {content_dir}")
     instruments: dict[str, LoadedFile[Instrument]] = {}
     for path in sorted((content_dir / "instruments").glob("*.json")):
         data, sha = _read(path)
         inst = Instrument.model_validate(data)
+        if inst.status == "draft" and not include_drafts:
+            continue
         expected = f"{inst.id}.v{inst.version}.json"
         if path.name != expected:
             raise ContentError(f"{path.name} must be named {expected}")
@@ -201,12 +230,23 @@ def load_content(content_dir: Path) -> ContentBundle:
     interp_data, interp_sha = _read(content_dir / "scoring-rules" / "trait-interpretations.v1.json")
     archetypes = ArchetypeSet.model_validate(arch_data)
     interpretations = Interpretations.model_validate(interp_data)
+    interest_data, interest_sha = _read(content_dir / "scoring-rules" / "interest-interpretations.v1.json")
+    interests = InterestInterpretations.model_validate(interest_data)
 
     trait_ids = set(archetypes.traits)
     for inst_file in instruments.values():
-        scales = {s.id for s in inst_file.data.scales}
-        if scales != trait_ids:
-            raise ContentError(f"{inst_file.data.id}: scales {scales} do not match archetype traits")
+        inst = inst_file.data
+        scales = {s.id for s in inst.scales}
+        expected_ids, what = (
+            (trait_ids, "archetype traits")
+            if inst.family == "big_five"
+            else (set(interests.areas), "interest areas")
+        )
+        if scales != expected_ids:
+            raise ContentError(f"{inst.id}: scales {scales} do not match {what}")
+        expected_scoring = "likert_mean" if inst.family == "big_five" else "count_endorsed"
+        if inst.scoring != expected_scoring:
+            raise ContentError(f"{inst.id}: {inst.family} instruments use {expected_scoring} scoring")
     if set(interpretations.traits) != trait_ids:
         raise ContentError("trait interpretations do not cover exactly the archetype traits")
 
@@ -215,5 +255,8 @@ def load_content(content_dir: Path) -> ContentBundle:
         archetypes=LoadedFile[ArchetypeSet](data=archetypes, sha256=arch_sha, path="archetypes.v1.json"),
         interpretations=LoadedFile[Interpretations](
             data=interpretations, sha256=interp_sha, path="trait-interpretations.v1.json"
+        ),
+        interests=LoadedFile[InterestInterpretations](
+            data=interests, sha256=interest_sha, path="interest-interpretations.v1.json"
         ),
     )

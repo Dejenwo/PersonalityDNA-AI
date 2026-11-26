@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     environment: str = Field(default="development", pattern="^(development|test|staging|production)$")
     database_url: str = "sqlite:///./pdna-local.db"
     content_dir: Path = REPO_ROOT / "assessment-content"
+    # Load draft assessment content. Defaults to on in development and test only.
+    content_include_drafts: bool | None = None
     # Versioned AI prompt files (ai/prompts).
     prompts_dir: Path = REPO_ROOT / "ai" / "prompts"
     cors_origins: list[str] = ["http://localhost:3000"]
@@ -71,6 +73,12 @@ class Settings(BaseSettings):
     # Previous messages of the conversation sent with each request.
     coach_history_messages: int = Field(default=20, ge=0, le=100)
 
+    @property
+    def include_drafts(self) -> bool:
+        if self.content_include_drafts is not None:
+            return self.content_include_drafts
+        return self.environment in ("development", "test")
+
     @model_validator(mode="after")
     def _production_guards(self) -> "Settings":
         if self.environment in ("staging", "production"):
@@ -84,6 +92,8 @@ class Settings(BaseSettings):
                 raise ValueError("SQLite is for development and tests only")
             if self.data_encryption_key is None:
                 raise ValueError("PDNA_DATA_ENCRYPTION_KEY is required outside development")
+            if self.content_include_drafts:
+                raise ValueError("Draft assessment content cannot be enabled outside development")
             if self.coach_enabled and self.coach_provider == "mock":
                 raise ValueError("The stand-in coach provider cannot be used outside development")
         if self.coach_provider == "anthropic" and self.anthropic_api_key is None:

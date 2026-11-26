@@ -66,8 +66,11 @@ def history(user: CurrentUser, db: Db, content: Content) -> HistoryOut:
     for s in _user_sessions(db, user.id):
         inst = assessments.instrument_for(content, s).data
         primary = None
-        if s.result is not None and not s.result.archetypes.get("weak_fit"):
-            primary = arch_names.get(s.result.archetypes["ranking"][0]["id"])
+        arch = s.result.archetypes if s.result is not None else None
+        if arch is not None and not arch.get("weak_fit"):
+            primary = arch_names.get(arch["ranking"][0]["id"])
+        elif s.result is not None and s.result.interest_profile and not s.result.interest_profile["empty"]:
+            primary = f"Interest code {s.result.interest_profile['code']}"
         items.append(
             HistoryItem(
                 session_id=s.id,

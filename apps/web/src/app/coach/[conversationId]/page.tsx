@@ -116,7 +116,7 @@ function Chat({ conversation }: { conversation: Conversation }) {
           </ButtonLink>
           <h1 className="text-2xl font-bold">{conversation.title}</h1>
           <p className="text-sm text-ink-muted">
-            {conversation.uses_results ? "The coach can see your trait scores and archetype." : "No results shared in this conversation."}
+            {conversation.uses_results ? "The coach can see your shared assessment results." : "No results shared in this conversation."}
           </p>
         </div>
         {!confirmDelete ? (

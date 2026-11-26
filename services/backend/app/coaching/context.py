@@ -70,6 +70,10 @@ class CoachFacts:
     quality_flags: tuple[str, ...] = ()
     crisis_support_shown: bool = False
     notes: tuple[str, ...] = field(default=())
+    # Career interests (RIASEC): code and (area name, count, total) highest first.
+    interest_code: str | None = None
+    interest_areas: tuple[tuple[str, int, int], ...] = ()
+    interest_ties: tuple[str, ...] = ()
 
     @property
     def has_results(self) -> bool:
@@ -89,11 +93,30 @@ _QUALITY_TEXT = {
 }
 
 
+def _interest_facts(bundle: ContentBundle, result: AssessmentResult | None) -> dict[str, object]:
+    profile = result.interest_profile if result is not None else None
+    if not profile or profile.get("empty"):
+        return {}
+    areas = bundle.interests.data.areas
+    totals = {ts.trait: ts.total for ts in result.trait_scores} if result is not None else {}
+    return {
+        "interest_code": profile["code"],
+        "interest_areas": tuple((areas[a].name, int(c), totals.get(a, 10)) for a, c in profile["ranking"]),
+        "interest_ties": tuple(areas[a].name for a in profile.get("boundary_ties", [])),
+    }
+
+
 def facts_from_result(
-    bundle: ContentBundle, result: AssessmentResult | None, topic: str, *, crisis_support_shown: bool
+    bundle: ContentBundle,
+    result: AssessmentResult | None,
+    topic: str,
+    *,
+    crisis_support_shown: bool,
+    interests: AssessmentResult | None = None,
 ) -> CoachFacts:
-    if result is None:
-        return CoachFacts(topic=topic, crisis_support_shown=crisis_support_shown)
+    extra = _interest_facts(bundle, interests)
+    if result is None or result.archetypes is None:
+        return CoachFacts(topic=topic, crisis_support_shown=crisis_support_shown, **extra)  # type: ignore[arg-type]
     inst = bundle.instrument(result.instrument_id, result.instrument_version).data
     interp = bundle.interpretations.data
     traits = []
@@ -125,6 +148,7 @@ def facts_from_result(
         archetype_fit=archetype_fit,
         quality_flags=tuple(result.quality_flags),
         crisis_support_shown=crisis_support_shown,
+        **extra,  # type: ignore[arg-type]
     )
 
 
@@ -158,6 +182,14 @@ def render_context(facts: CoachFacts) -> str:
             lines.append("Archetype: none shown, because no archetype fits these scores clearly.")
         notes = [_QUALITY_TEXT[f] for f in facts.quality_flags if f in _QUALITY_TEXT]
         lines.append("Quality notes: " + (" ".join(notes) if notes else "none."))
+    if facts.interest_code:
+        areas = "; ".join(f"{n} {c} of {t}" for n, c, t in facts.interest_areas)
+        lines.append(
+            f"Career interests (O*NET Interest Profiler Short Form, activities the user would like to do): "
+            f"code {facts.interest_code}; {areas}."
+            + (f" Tied at third place: {', '.join(facts.interest_ties)}." if facts.interest_ties else "")
+            + " Interests are preferences, not abilities, and never mean a job is or isn't suitable."
+        )
     lines.append("User-stated goals: none recorded yet.")
     if facts.crisis_support_shown:
         lines.append(

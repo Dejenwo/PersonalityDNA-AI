@@ -14,6 +14,7 @@ def test_list_and_detail(client):
     assert [(i["id"], i["item_count"], i["tier"]) for i in items] == [
         ("mini-ipip-20", 20, "quick"),
         ("ipip-bfm-50", 50, "comprehensive"),
+        ("onet-ipsf-60", 60, "quick"),
     ]
     d = client.get("/api/v1/assessments/ipip-bfm-50").json()
     assert len(d["items"]) == 50 and len(d["response_options"]) == 5
@@ -50,7 +51,7 @@ def test_full_flow_save_resume_complete(client):
     stab = next(t["score"] for t in result["traits"] if t["trait"] == "emotional_stability")
     assert result["negative_emotionality"] == round(100 - stab, 1)
     assert result["archetypes"]["primary"]["id"] != result["archetypes"]["secondary"]["id"]
-    assert result["methodology"]["engine_version"] == "1.0.0"
+    assert result["methodology"]["engine_version"] == "1.1.0"
     assert "rapid_completion" in result["quality_flags"]  # test runs in well under 30s
 
     # Idempotent completion returns the same result.

@@ -7,6 +7,9 @@ from app.api.schemas import (
     AssessmentItem,
     AssessmentSource,
     AssessmentSummary,
+    ExploreLinkOut,
+    InterestAreaOut,
+    InterestsOut,
     Methodology,
     Progress,
     ResponseOption,
@@ -16,6 +19,7 @@ from app.api.schemas import (
 )
 from app.assessments.content import ContentBundle, Instrument
 from app.assessments.service import answers_of, instrument_for
+from app.careers.interests import LETTER
 from app.database.models import AssessmentResult, AssessmentSession
 
 TRAIT_LABEL = {
@@ -44,6 +48,8 @@ def summary(inst: Instrument) -> AssessmentSummary:
         version=inst.version,
         name=inst.name,
         tier=inst.tier,
+        family=inst.family,
+        status=inst.status,
         item_count=len(inst.items),
         estimated_minutes=inst.estimated_minutes,
         locale=inst.locale,
@@ -86,8 +92,90 @@ def session_out(bundle: ContentBundle, s: AssessmentSession) -> SessionOut:
     )
 
 
+INTEREST_LIMITATIONS = [
+    "Results show which work activities you said you would like to do today. Interests can change over time.",
+    "Interests are not abilities. They say nothing about how well you would do any job, and they are not "
+    "a recommendation to take or avoid any career.",
+    "Area scores count your choices. They are not percentiles and do not compare you with other people.",
+    "Do not use these results for hiring or other decisions about people.",
+]
+
+ONET_ATTRIBUTION = (
+    "This assessment uses the O*NET\u00ae Interest Profiler Short Form from the O*NET Career "
+    "Exploration Tools by the U.S. Department of Labor, Employment and Training Administration "
+    "(USDOL/ETA), used under the "
+    "CC BY-ND 4.0 licence. O*NET\u00ae is a trademark of USDOL/ETA. PersonalityDNA is not affiliated with or "
+    "endorsed by USDOL/ETA."
+)
+
+
+def interests_result_out(bundle: ContentBundle, r: AssessmentResult) -> ResultOut:
+    inst = bundle.instrument(r.instrument_id, r.instrument_version).data
+    interp = bundle.interests.data
+    profile = r.interest_profile or {}
+    totals = {ts.trait: ts for ts in r.trait_scores}
+    areas = []
+    for area, count in profile.get("ranking", []):
+        text = interp.areas[area]
+        ts = totals[area]
+        areas.append(
+            InterestAreaOut(
+                area=area,
+                letter=LETTER[area],
+                name=text.name,
+                short=text.short,
+                count=count,
+                total=ts.total,
+                score=ts.score or 0.0,
+                enjoys=list(text.enjoys),
+                fields=list(text.fields),
+                reflection=text.reflection,
+            )
+        )
+    return ResultOut(
+        id=r.id,
+        session_id=r.session_id,
+        created_at=r.created_at,
+        kind="interests",
+        traits=[],
+        negative_emotionality=None,
+        archetypes=None,
+        interests=InterestsOut(
+            code=profile.get("code", ""),
+            empty=bool(profile.get("empty")),
+            boundary_ties=[interp.areas[a].name for a in profile.get("boundary_ties", [])],
+            areas=areas,
+            note=interp.note,
+            explore_links=[ExploreLinkOut(label=lk.label, url=lk.url) for lk in interp.explore_links],
+            draft=inst.status == "draft",
+        ),
+        quality_flags=r.quality_flags,
+        methodology=Methodology(
+            engine_version=r.engine_version,
+            instrument_id=r.instrument_id,
+            instrument_version=r.instrument_version,
+            instrument_name=inst.source.name,
+            content_sha256=r.content_sha256,
+            answers_sha256=r.answers_sha256,
+            scoring_summary=(
+                "Each interest area has 10 work activities. Its score is the number of activities you said "
+                "you would like to do (0 to 10), as on the published self-scoring form. "
+                "Your interest code is the first letters of your three highest areas."
+            ),
+            band_note="Interest areas are ranked against each other, not placed in bands.",
+            negative_emotionality_note=None,
+            limitations=INTEREST_LIMITATIONS,
+            references=list(inst.references),
+            attribution=ONET_ATTRIBUTION,
+        ),
+    )
+
+
 def result_out(bundle: ContentBundle, r: AssessmentResult) -> ResultOut:
     inst = bundle.instrument(r.instrument_id, r.instrument_version).data
+    if inst.family == "interests":
+        return interests_result_out(bundle, r)
+    assert r.archetypes is not None and r.archetype_version is not None
     interp = bundle.interpretations.data
     arch_defs = {a.id: a for a in bundle.archetypes.data.archetypes}
 
@@ -134,6 +222,7 @@ def result_out(bundle: ContentBundle, r: AssessmentResult) -> ResultOut:
         id=r.id,
         session_id=r.session_id,
         created_at=r.created_at,
+        kind="big_five",
         traits=traits,
         negative_emotionality=round(100 - stability, 1) if stability is not None else None,
         archetypes=ArchetypesOut(
@@ -143,6 +232,7 @@ def result_out(bundle: ContentBundle, r: AssessmentResult) -> ResultOut:
             primary=arch(ranking[0]),
             secondary=arch(ranking[1]),
         ),
+        interests=None,
         quality_flags=r.quality_flags,
         methodology=Methodology(
             engine_version=r.engine_version,

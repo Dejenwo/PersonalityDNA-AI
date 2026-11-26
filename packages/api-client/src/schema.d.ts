@@ -500,6 +500,11 @@ export interface components {
         AssessmentDetail: {
             /** Estimated Minutes */
             estimated_minutes: number;
+            /**
+             * Family
+             * @enum {string}
+             */
+            family: "big_five" | "interests";
             /** Id */
             id: string;
             /** Instructions */
@@ -519,6 +524,12 @@ export interface components {
             /** Response Options */
             response_options: components["schemas"]["ResponseOption"][];
             source: components["schemas"]["AssessmentSource"];
+            /**
+             * Status
+             * @description Draft content is only served in development.
+             * @enum {string}
+             */
+            status: "released" | "draft";
             /**
              * Tier
              * @enum {string}
@@ -554,6 +565,11 @@ export interface components {
         AssessmentSummary: {
             /** Estimated Minutes */
             estimated_minutes: number;
+            /**
+             * Family
+             * @enum {string}
+             */
+            family: "big_five" | "interests";
             /** Id */
             id: string;
             /** Item Count */
@@ -562,6 +578,12 @@ export interface components {
             locale: string;
             /** Name */
             name: string;
+            /**
+             * Status
+             * @description Draft content is only served in development.
+             * @enum {string}
+             */
+            status: "released" | "draft";
             /**
              * Tier
              * @enum {string}
@@ -811,6 +833,13 @@ export interface components {
         ErrorResponse: {
             error: components["schemas"]["ErrorBody"];
         };
+        /** ExploreLinkOut */
+        ExploreLinkOut: {
+            /** Label */
+            label: string;
+            /** Url */
+            url: string;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -852,6 +881,64 @@ export interface components {
         HistoryOut: {
             /** Items */
             items: components["schemas"]["HistoryItem"][];
+        };
+        /** InterestAreaOut */
+        InterestAreaOut: {
+            /** Area */
+            area: string;
+            /**
+             * Count
+             * @description Activities in this area the person said they would like to do.
+             */
+            count: number;
+            /** Enjoys */
+            enjoys: string[];
+            /** Fields */
+            fields: string[];
+            /** Letter */
+            letter: string;
+            /** Name */
+            name: string;
+            /** Reflection */
+            reflection: string;
+            /**
+             * Score
+             * @description count / total on a 0-100 scale; not a percentile.
+             */
+            score: number;
+            /** Short */
+            short: string;
+            /** Total */
+            total: number;
+        };
+        /** InterestsOut */
+        InterestsOut: {
+            /** Areas */
+            areas: components["schemas"]["InterestAreaOut"][];
+            /**
+             * Boundary Ties
+             * @description Areas tied at the third place, so the code could differ.
+             */
+            boundary_ties: string[];
+            /**
+             * Code
+             * @description Letters of the three highest areas, highest first.
+             */
+            code: string;
+            /**
+             * Draft
+             * @description The instrument is still a draft and its results are for testing only.
+             */
+            draft: boolean;
+            /**
+             * Empty
+             * @description True when no activity was chosen, so there is no meaningful code.
+             */
+            empty: boolean;
+            /** Explore Links */
+            explore_links: components["schemas"]["ExploreLinkOut"][];
+            /** Note */
+            note: string;
         };
         /** LoginIn */
         LoginIn: {
@@ -895,7 +982,7 @@ export interface components {
             /** Limitations */
             limitations: string[];
             /** Negative Emotionality Note */
-            negative_emotionality_note: string;
+            negative_emotionality_note: string | null;
             /** References */
             references: string[];
             /** Scoring Summary */
@@ -952,7 +1039,7 @@ export interface components {
         };
         /** ResultOut */
         ResultOut: {
-            archetypes: components["schemas"]["ArchetypesOut"];
+            archetypes: components["schemas"]["ArchetypesOut"] | null;
             /**
              * Created At
              * Format: date-time
@@ -963,6 +1050,12 @@ export interface components {
              * Format: uuid
              */
             id: string;
+            interests: components["schemas"]["InterestsOut"] | null;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "big_five" | "interests";
             methodology: components["schemas"]["Methodology"];
             /** Negative Emotionality */
             negative_emotionality: number | null;

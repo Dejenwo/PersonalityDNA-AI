@@ -27,7 +27,7 @@ test("coach: sign in from results, consent, chat, crisis support and delete", as
   await page.getByLabel("I understand and want to use the coach").check();
   await page.getByRole("button", { name: "Start conversation" }).click();
   await expect(page.getByRole("heading", { name: "Career exploration" })).toBeVisible();
-  await expect(page.getByText("The coach can see your trait scores and archetype.")).toBeVisible();
+  await expect(page.getByText("The coach can see your shared assessment results.")).toBeVisible();
 
   // A streamed, grounded reply.
   const box = page.getByLabel("Message the coach");

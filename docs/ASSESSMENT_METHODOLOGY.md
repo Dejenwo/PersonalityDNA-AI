@@ -1,6 +1,6 @@
 # Assessment methodology
 
-Applies to engine version 1.0.0, instruments `ipip-bfm-50` v1.0.0 and `mini-ipip-20` v1.0.0.
+Applies to engine version 1.1.0, instruments `ipip-bfm-50` v1.0.0, `mini-ipip-20` v1.0.0 and the draft `onet-ipsf-60` v1.0.0.
 
 ## Instruments
 
@@ -61,3 +61,8 @@ Each result stores: engine version, instrument id and version, SHA-256 of the in
 | Date | Change |
 | --- | --- |
 | 2026-11-26 | Engine 1.0.0; ipip-bfm-50 1.0.0; mini-ipip-20 1.0.0; archetypes 1.0.0 |
+| 2026-11-26 | Engine 1.1.0: adds `count_endorsed` scoring for interest instruments; Likert scoring unchanged. Draft onet-ipsf-60 1.0.0 |
+
+## Career interests (draft)
+
+The O*NET® Interest Profiler Short Form asks whether the person would like to do each of 60 work activities, 10 for each Holland (RIASEC) area: Realistic, Investigative, Artistic, Social, Enterprising and Conventional. Scoring follows the published self-scoring form: one point per liked activity, 0 to 10 per area, and every activity must be answered. The app shows the count, a 0 to 100 bar (count × 10) and the interest code (top three areas). Ties are broken in Holland order for a stable code, and any tie across third place is reported to the user. There are no bands, percentiles or norms. Interests are preferences, not abilities, and no result says which job someone should do.

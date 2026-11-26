@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.api.errors import ApiError
 from app.assessments.content import ContentBundle, Instrument, LoadedFile
+from app.careers.interests import interest_profile
 from app.database.models import (
     AssessmentResponse,
     AssessmentResult,
@@ -218,8 +219,6 @@ def complete_session(db: Session, bundle: ContentBundle, session: AssessmentSess
             {"missing_items": missing, "insufficient_scales": insufficient},
         )
 
-    scores = {s.scale_id: s.score for s in output.scales if s.score is not None}
-    match = match_archetypes(bundle.archetypes.data, scores)
     result = AssessmentResult(
         session_id=session.id,
         engine_version=output.engine_version,
@@ -227,15 +226,26 @@ def complete_session(db: Session, bundle: ContentBundle, session: AssessmentSess
         instrument_version=output.instrument_version,
         content_sha256=loaded.sha256,
         answers_sha256=output.answers_sha256,
-        archetype_version=match.version,
-        archetypes={
+        quality_flags=list(output.quality_flags),
+    )
+    if instrument.family == "big_five":
+        scores = {s.scale_id: s.score for s in output.scales if s.score is not None}
+        match = match_archetypes(bundle.archetypes.data, scores)
+        result.archetype_version = match.version
+        result.archetypes = {
             "weak_fit": match.weak_fit,
             "ranking": [
                 {"id": f.id, "fit": f.fit, "drivers": [list(d) for d in f.drivers]} for f in match.ranking
             ],
-        },
-        quality_flags=list(output.quality_flags),
-    )
+        }
+    else:
+        profile = interest_profile({s.scale_id: int(s.raw_mean or 0) for s in output.scales})
+        result.interest_profile = {
+            "code": profile.code,
+            "ranking": [[a, c] for a, c in profile.ranking],
+            "boundary_ties": list(profile.boundary_ties),
+            "empty": profile.empty,
+        }
     for pos, s in enumerate(output.scales):
         result.trait_scores.append(
             TraitScore(

@@ -15,13 +15,13 @@ Machine-readable contract: `packages/api-client/openapi.json` (generated; served
 | Method | Path | Purpose | Notes |
 | --- | --- | --- | --- |
 | GET | `/health` | Liveness | |
-| GET | `/api/v1/assessments` | List latest version of each instrument | Sorted by length |
+| GET | `/api/v1/assessments` | List latest version of each instrument | Big Five first, then by length; each has `family` and `status` (drafts only outside production) |
 | GET | `/api/v1/assessments/{id}` | Instrument detail with items and response options | Scoring keys are never exposed |
 | POST | `/api/v1/assessment-sessions` | Start a session | Body: `instrument_id`, optional `version`, `locale`, `consent{accepted, age_confirmed_18_plus, policy_version}`. 201 with `resume_token` (shown once). Errors: 422 `consent_required`, `age_requirement`, `locale_unavailable`; 409 `consent_outdated`; 429 `rate_limited` |
 | GET | `/api/v1/assessment-sessions/{id}` | Resume: status, answers, progress, result id | |
 | PUT | `/api/v1/assessment-sessions/{id}/answers` | Upsert up to 500 answers; `value: null` clears | Idempotent. 409 `session_closed` after completion; 422 `unknown_item`, `invalid_answer` |
 | POST | `/api/v1/assessment-sessions/{id}/complete` | Score and store result | Idempotent (returns the same result). 422 `incomplete` with `missing_items` and `insufficient_scales` |
-| GET | `/api/v1/results/{id}` | Result with traits, archetypes, flags, methodology | |
+| GET | `/api/v1/results/{id}` | Result with traits, archetypes, flags, methodology | `kind` is `big_five` (with `archetypes`) or `interests` (with `interests`: code, areas, ties, explore links, `draft`) |
 
 ## Accounts (implemented)
 

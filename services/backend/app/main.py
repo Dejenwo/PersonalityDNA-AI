@@ -28,7 +28,9 @@ from app.users.routes import router as users_router
 
 def create_app(settings: Settings | None = None, *, create_schema: bool = False) -> FastAPI:
     settings = settings or get_settings()
-    content = load_content(settings.content_dir)  # fail fast on invalid content
+    content = load_content(
+        settings.content_dir, include_drafts=settings.include_drafts
+    )  # fail fast on invalid content
     db = Database(settings.database_url)
 
     @asynccontextmanager

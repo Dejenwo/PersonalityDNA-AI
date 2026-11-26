@@ -68,15 +68,34 @@ export default function AssessmentIntroPage() {
       </Link>
       <h1 className="mt-4 text-3xl font-bold">{a.name}</h1>
       <p className="mt-2 text-ink-muted">
-        {a.item_count} statements · about {a.estimated_minutes} minutes · your progress saves automatically
+        {a.item_count} {a.family === "interests" ? "activities" : "statements"} · about {a.estimated_minutes} minutes · your progress saves automatically
       </p>
       <Card className="mt-6">
         <h2 className="text-lg font-semibold">Before you begin</h2>
         <p className="mt-2">{a.instructions}</p>
-        <p className="mt-3 text-sm text-ink-muted">
-          Source: {a.source.name} ({a.source.authors}). Results describe tendencies in how you see yourself. They are
-          not a diagnosis and are not compared with other people.
-        </p>
+        {a.family === "interests" ? (
+          <>
+            <p className="mt-3 text-sm text-ink-muted">
+              Results show which kinds of work activities appeal to you. They describe interests, not abilities, and are
+              not compared with other people.
+            </p>
+            <p className="mt-2 text-xs text-ink-muted">
+              This assessment uses the {a.source.name} from the O*NET Career Exploration Tools by the U.S. Department of
+              Labor, Employment and Training Administration (USDOL/ETA), used under the CC BY-ND 4.0 licence. O*NET® is a
+              trademark of USDOL/ETA. PersonalityDNA is not affiliated with or endorsed by USDOL/ETA.
+            </p>
+          </>
+        ) : (
+          <p className="mt-3 text-sm text-ink-muted">
+            Source: {a.source.name} ({a.source.authors}). Results describe tendencies in how you see yourself. They are
+            not a diagnosis and are not compared with other people.
+          </p>
+        )}
+        {a.status === "draft" && (
+          <p className="mt-3 rounded-card border border-line p-3 text-sm">
+            Preview: this assessment&apos;s wording is still being checked against the official source.
+          </p>
+        )}
       </Card>
       <form onSubmit={start} className="mt-6 space-y-4" aria-describedby={error ? "start-error" : undefined}>
         <fieldset className="space-y-3">

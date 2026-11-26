@@ -16,7 +16,8 @@ Last updated: 2026-11-26.
 | 6 | Assessment engine | Tested | Instruments, sessions, autosave, resume, deterministic scoring, versioning, audit. History is device-local until accounts exist. |
 | 7 | Personality intelligence | In Progress | Big Five results, archetypes, trait explanations, strengths and growth. No shareable card or comparison yet. |
 | 8 | AI coaching | Tested | Provider interface (stand-in + Anthropic), consented context from scores only, versioned prompt, crisis routing, input flags, streaming output guard, grounding check, encrypted messages, daily limits, usage records, evaluation suite, web chat (ADR-011). Live model not yet run: needs the owner's API key and spending cap. |
-| 9–25 | Career intelligence onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
+| 9 | Career intelligence | Tested | O*NET Interest Profiler Short Form (60 activities) as a **draft** instrument, count-based RIASEC scoring (engine 1.1.0), interest code with tie reporting, interest results page, career exploration page joining interests and Big Five working style, interests in coach context (ADR-012). Draft is hidden in production until the wording is checked against the official PDF and a lawyer confirms the CC BY-ND reading. |
+| 10–25 | Relationships onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
 
 ## Task log
 
@@ -55,17 +56,24 @@ Last updated: 2026-11-26.
 | C-005 | Evaluation | Case suite (crisis, diagnosis, grounding, hallucination, claims, injection, privacy, bias) and runner; stand-in passes all thresholds in CI | P0 | Tested | ai/evaluations/coach/cases.json; scripts/run_coach_eval.py; `test_evaluation_*` |
 | C-006 | Web | Coach home (status, demo notice, topics, consent), streaming chat, crisis support card, delete, sign-in redirect back, results-page entry | P0 | Tested | e2e coach.spec.ts (desktop + mobile) + axe; vitest SSE parser and safe text renderer |
 | C-007 | Coaching | Live evaluation against Claude; OpenAI provider; plan-based limits; goals and progress in context; human review sampling | P1 | Not Started | Needs API key and spending cap (live eval ≈ 32 calls); OpenAI only if the owner wants a second provider |
+| R-001 | Science | O*NET Interest Profiler Short Form licence record (CC BY-ND 4.0, attribution, trademark rules) and draft instrument | P0 | Implemented | assessment-content/licenses/ONET.md; wording not yet verified (onetcenter.org blocked from the sandbox) |
+| R-002 | Assessment | Draft status: drafts load only outside production, may change until released, then become immutable | P0 | Tested | `test_drafts_*`, `test_draft_may_change_but_released_may_not` |
+| R-003 | Scoring | `count_endorsed` scoring (engine 1.1.0; Likert arithmetic unchanged) and interest profile (code, Holland-order tie break, reported ties) | P0 | Tested | tests/test_careers.py hand-computed tests |
+| R-004 | API | Interest results (`kind`, `interests`), family and status in listings, history label, migration 0004 | P0 | Tested | `test_interest_assessment_end_to_end`; migration test on SQLite and PostgreSQL |
+| R-005 | Coaching | Coach context includes the latest interest result alongside the Big Five result, only when results are shared | P0 | Tested | `test_interest_results_in_history_and_coach_context`, `test_coach_context_with_only_interests` |
+| R-006 | Web | Interest results page, career exploration page (interests, working-style questions, explore links, coach entry), preview badges, O*NET attribution, wrapping nav | P0 | Tested | e2e careers.spec.ts (desktop + mobile) + axe; vitest careers helpers |
+| R-007 | Careers | Occupation search (O*NET Web Services), saved careers, skills gaps, learning paths | P1 | Not Started | Needs O*NET Web Services registration and terms review |
 | M-001 | Monetization | Entitlements service with plan config; Stripe and RevenueCat webhooks | P0 | Not Started | Needs accounts; live keys needed for real payments |
 
 ## Test results (latest local run, 2026-11-26)
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest` | 124 passed |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 124 passed |
+| Backend, SQLite | `pytest` | 137 passed |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 137 passed |
 | Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
-| Web unit | `vitest run` | 13 passed |
+| Web unit | `vitest run` | 16 passed |
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
-| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 22 passed |
+| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 24 passed |
