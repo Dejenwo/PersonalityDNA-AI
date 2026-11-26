@@ -1,0 +1,83 @@
+{
+  "id": "big-five-interpretations",
+  "version": "1.0.0",
+  "locale": "en",
+  "note": "Original PersonalityDNA descriptive text. Bands refer to position on the response scale, not comparison with other people. No trait level is better or worse overall; each has typical advantages and trade-offs.",
+  "traits": {
+    "openness": {
+      "name": "Openness",
+      "short": "Curiosity, imagination and interest in ideas and new experiences.",
+      "bands": {
+        "lower": {"summary": "You describe yourself as preferring the practical, concrete and familiar.",
+                  "strengths": ["Grounded, practical focus", "Valuing what has proven to work"],
+                  "growth": ["Try one unfamiliar idea or activity each week and note what you learn"]},
+        "middle": {"summary": "You describe a mix of practicality and curiosity, depending on the situation.",
+                   "strengths": ["Balancing new ideas with practicality"],
+                   "growth": ["Notice which situations draw out your curiosity, and seek more of them where useful"]},
+        "higher": {"summary": "You describe yourself as curious, imaginative and drawn to ideas and new experiences.",
+                   "strengths": ["Generating ideas", "Comfort with abstract thinking"],
+                   "growth": ["Choose which ideas to pursue to completion", "Translate abstract ideas into concrete examples for others"]}
+      }
+    },
+    "conscientiousness": {
+      "name": "Conscientiousness",
+      "short": "Organisation, reliability, planning and follow-through.",
+      "bands": {
+        "lower": {"summary": "You describe yourself as flexible and spontaneous, with less emphasis on order and schedules.",
+                  "strengths": ["Adaptability", "Comfort improvising"],
+                  "growth": ["Use one simple tool, such as a short daily list, for the commitments that matter most"]},
+        "middle": {"summary": "You describe a balance between structure and flexibility.",
+                   "strengths": ["Organised when it matters, relaxed when it does not"],
+                   "growth": ["Identify the areas where more structure would help you most"]},
+        "higher": {"summary": "You describe yourself as organised, prepared and attentive to detail.",
+                   "strengths": ["Reliability", "Planning and follow-through"],
+                   "growth": ["Allow room for change in plans", "Notice when high standards cost more than they return"]}
+      }
+    },
+    "extraversion": {
+      "name": "Extraversion",
+      "short": "Sociability, assertiveness and energy from social interaction.",
+      "bands": {
+        "lower": {"summary": "You describe yourself as quieter and more reserved, often preferring smaller settings.",
+                  "strengths": ["Thoughtful listening", "Comfort with independent work"],
+                  "growth": ["Plan how you will share your views in group settings", "Protect time to recharge"]},
+        "middle": {"summary": "You describe yourself as comfortable both with people and on your own.",
+                   "strengths": ["Adapting to social and solitary settings"],
+                   "growth": ["Notice which settings energise you and which tire you"]},
+        "higher": {"summary": "You describe yourself as outgoing, talkative and comfortable being noticed.",
+                   "strengths": ["Starting conversations", "Bringing energy to groups"],
+                   "growth": ["Leave pauses for others to contribute", "Practise reflective listening"]}
+      }
+    },
+    "agreeableness": {
+      "name": "Agreeableness",
+      "short": "Warmth, empathy, cooperation and consideration for others.",
+      "bands": {
+        "lower": {"summary": "You describe yourself as more direct and independent-minded, with less focus on others' feelings.",
+                  "strengths": ["Candour", "Comfort with disagreement"],
+                  "growth": ["Ask about others' perspectives before giving your view"]},
+        "middle": {"summary": "You describe a balance between consideration for others and standing your ground.",
+                   "strengths": ["Cooperative while still direct"],
+                   "growth": ["Notice when you tend to accommodate and when you tend to push back"]},
+        "higher": {"summary": "You describe yourself as warm, caring and attentive to other people's feelings.",
+                   "strengths": ["Empathy", "Making others feel at ease"],
+                   "growth": ["Practise stating your own needs clearly", "Set boundaries when helping others"]}
+      }
+    },
+    "emotional_stability": {
+      "name": "Emotional Stability",
+      "short": "How calm and even-tempered you describe yourself in everyday situations. The reverse direction is called Negative Emotionality (Neuroticism).",
+      "bands": {
+        "lower": {"summary": "You describe yourself as experiencing everyday stress and emotional ups and downs fairly often.",
+                  "strengths": ["Sensitivity to risks and problems", "Emotional depth"],
+                  "growth": ["Try a short routine for stressful moments, such as pausing to name what you feel", "If stress feels overwhelming, consider speaking with a qualified professional"]},
+        "middle": {"summary": "You describe a typical mix of calm and stress in everyday life.",
+                   "strengths": ["Responsive to situations without being overwhelmed by them"],
+                   "growth": ["Notice which situations tend to unsettle you, and plan for them"]},
+        "higher": {"summary": "You describe yourself as calm and relaxed in most everyday situations.",
+                   "strengths": ["Composure under everyday pressure", "Steadiness others can rely on"],
+                   "growth": ["Check in on how others are feeling, which may differ from your own calm"]}
+      }
+    }
+  }
+}

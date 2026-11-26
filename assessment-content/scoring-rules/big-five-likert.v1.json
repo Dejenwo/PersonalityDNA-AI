@@ -1,0 +1,25 @@
+{
+  "id": "big-five-likert",
+  "version": "1.0.0",
+  "applies_to": ["ipip-bfm-50", "mini-ipip-20"],
+  "description": "Mean-of-items scoring for IPIP Likert instruments, as documented by IPIP: items scored 1-5, minus-keyed items reversed (6 - response), scale score is the mean of answered items, then linearly rescaled to 0-100 for display.",
+  "steps": [
+    "Validate every answer is an integer within the instrument's response scale.",
+    "Reverse minus-keyed items: scored = (min + max) - response.",
+    "For each scale, if answered items < min_items_answered the scale is not scored (status 'insufficient').",
+    "raw_mean = mean of scored items for the scale (prorated over answered items).",
+    "score_0_100 = (raw_mean - min) / (max - min) * 100, rounded half-up to 1 decimal place.",
+    "negative_emotionality_0_100 = 100 - emotional_stability score_0_100 (presentation only, same information)."
+  ],
+  "bands": {
+    "note": "Bands describe position on the response scale, NOT position relative to other people. No population norms are applied.",
+    "lower": {"max_exclusive": 40},
+    "middle": {"min": 40, "max": 60},
+    "higher": {"min_exclusive": 60}
+  },
+  "quality_checks": {
+    "uniform_responses": "Flag when 10 or more answers were given and every answer has the same value.",
+    "rapid_completion": "Flag when server-measured completion time is under 1.5 seconds per answered item.",
+    "effect": "Flags are shown to the user and stored for audit. They never change scores."
+  }
+}

@@ -1,0 +1,46 @@
+@import "tailwindcss";
+@import "@pdna/design-tokens/tokens.css";
+
+@theme inline {
+  --color-bg: var(--pdna-background);
+  --color-surface: var(--pdna-surface);
+  --color-muted: var(--pdna-surface-muted);
+  --color-ink: var(--pdna-text);
+  --color-ink-muted: var(--pdna-text-muted);
+  --color-line: var(--pdna-border);
+  --color-primary: var(--pdna-primary);
+  --color-on-primary: var(--pdna-primary-text);
+  --color-accent: var(--pdna-accent);
+  --color-on-accent: var(--pdna-accent-text);
+  --color-focus: var(--pdna-focus);
+  --color-danger: var(--pdna-danger);
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius-card: var(--pdna-radius-lg);
+}
+
+html {
+  background: var(--pdna-background);
+  color: var(--pdna-text);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
+
+:focus-visible {
+  outline: 3px solid var(--pdna-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

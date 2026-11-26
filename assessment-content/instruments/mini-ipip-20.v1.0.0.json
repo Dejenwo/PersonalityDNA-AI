@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "id": "mini-ipip-20",
+  "version": "1.0.0",
+  "name": "Quick Discovery: Big Five (Mini-IPIP 20-item)",
+  "tier": "quick",
+  "locale": "en",
+  "estimated_minutes": 4,
+  "instructions": "Describe yourself as you generally are now, not as you wish to be in the future. Describe yourself as you honestly see yourself, compared with other people you know of roughly your age. Read each statement carefully and choose how accurately it describes you. There are no right or wrong answers.",
+  "response_scale": {
+    "min": 1,
+    "max": 5,
+    "labels": [
+      {
+        "value": 1,
+        "label": "Very inaccurate"
+      },
+      {
+        "value": 2,
+        "label": "Moderately inaccurate"
+      },
+      {
+        "value": 3,
+        "label": "Neither accurate nor inaccurate"
+      },
+      {
+        "value": 4,
+        "label": "Moderately accurate"
+      },
+      {
+        "value": 5,
+        "label": "Very accurate"
+      }
+    ]
+  },
+  "source": {
+    "name": "Mini-IPIP (20 IPIP items)",
+    "url": "https://ipip.ori.org/",
+    "authors": "M. Brent Donnellan, Frederick L. Oswald, Brendan M. Baird, Richard E. Lucas; items from the International Personality Item Pool"
+  },
+  "license": {
+    "id": "public-domain",
+    "file": "licenses/IPIP.md"
+  },
+  "references": [
+    "Donnellan, M. B., Oswald, F. L., Baird, B. M., & Lucas, R. E. (2006). The Mini-IPIP scales: Tiny-yet-effective measures of the Big Five factors of personality. Psychological Assessment, 18(2), 192-203.",
+    "Goldberg, L. R., Johnson, J. A., Eber, H. W., Hogan, R., Ashton, M. C., Cloninger, C. R., & Gough, H. G. (2006). The International Personality Item Pool and the future of public-domain personality measures. Journal of Research in Personality, 40, 84-96."
+  ],
+  "scales": [
+    {
+      "id": "extraversion",
+      "name": "Extraversion",
+      "min_items_answered": 4
+    },
+    {
+      "id": "agreeableness",
+      "name": "Agreeableness",
+      "min_items_answered": 4
+    },
+    {
+      "id": "conscientiousness",
+      "name": "Conscientiousness",
+      "min_items_answered": 4
+    },
+    {
+      "id": "emotional_stability",
+      "name": "Emotional Stability",
+      "min_items_answered": 4
+    },
+    {
+      "id": "openness",
+      "name": "Openness (Intellect/Imagination)",
+      "min_items_answered": 4
+    }
+  ],
+  "items": [
+    {
+      "id": "mini20-01",
+      "number": 1,
+      "text": "Am the life of the party.",
+      "scale": "extraversion",
+      "keyed": "+"
+    },
+    {
+      "id": "mini20-02",
+      "number": 2,
+      "text": "Sympathize with others' feelings.",
+      "scale": "agreeableness",
+      "keyed": "+"
+    },
+    {
+      "id": "mini20-03",
+      "number": 3,
+      "text": "Get chores done right away.",
+      "scale": "conscientiousness",
+      "keyed": "+"
+    },
+    {
+      "id": "mini20-04",
+      "number": 4,
+      "text": "Have frequent mood swings.",
+      "scale": "emotional_stability",
+      "keyed": "-"
+    },
+    {
+      "id": "mini20-05",
+      "number": 5,
+      "text": "Have a vivid imagination.",
+      "scale": "openness",
+      "keyed": "+"
+    },
+    {
+      "id": "mini20-06",
+      "number": 6,
+      "text": "Don't talk a lot.",
+      "scale": "extraversion",
+      "keyed": "-"
+    },
+    {
+      "id": "mini20-07",
+      "number": 7,
+      "text": "Am not interested in other people's problems.",
+      "scale": "agreeableness",
+      "keyed": "-"
+    },
+    {
+      "id": "mini20-08",
+      "number": 8,
+      "text": "Often forget to put things back in their proper place.",
+      "scale": "conscientiousness",
+      "keyed": "-"
+    },
+    {
+      "id": "mini20-09",
+      "number": 9,
+      "text": "Am relaxed most of the time.",
+      "scale": "emotional_stability",
+      "keyed": "+"
+    },
+    {
+      "id": "mini20-10",
+      "number": 10,
+      "text": "Am not interested in abstract ideas.",
+      "scale": "openness",
+      "keyed": "-"
+    },
+    {
+      "id": "mini20-11",
+      "number": 11,
+      "text": "Talk to a lot of different people at parties.",
+      "scale": "extraversion",
+      "keyed": "+"
+    },
+    {
+      "id": "mini20-12",
+      "number": 12,
+      "text": "Feel others' emotions.",
+      "scale": "agreeableness",
+      "keyed": "+"
+    },
+    {
+      "id": "mini20-13",
+      "number": 13,
+      "text": "Like order.",
+      "scale": "conscientiousness",
+      "keyed": "+"
+    },
+    {
+      "id": "mini20-14",
+      "number": 14,
+      "text": "Get upset easily.",
+      "scale": "emotional_stability",
+      "keyed": "-"
+    },
+    {
+      "id": "mini20-15",
+      "number": 15,
+      "text": "Have difficulty understanding abstract ideas.",
+      "scale": "openness",
+      "keyed": "-"
+    },
+    {
+      "id": "mini20-16",
+      "number": 16,
+      "text": "Keep in the background.",
+      "scale": "extraversion",
+      "keyed": "-"
+    },
+    {
+      "id": "mini20-17",
+      "number": 17,
+      "text": "Am not really interested in others.",
+      "scale": "agreeableness",
+      "keyed": "-"
+    },
+    {
+      "id": "mini20-18",
+      "number": 18,
+      "text": "Make a mess of things.",
+      "scale": "conscientiousness",
+      "keyed": "-"
+    },
+    {
+      "id": "mini20-19",
+      "number": 19,
+      "text": "Seldom feel blue.",
+      "scale": "emotional_stability",
+      "keyed": "+"
+    },
+    {
+      "id": "mini20-20",
+      "number": 20,
+      "text": "Do not have a good imagination.",
+      "scale": "openness",
+      "keyed": "-"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+/* Mirrors src/index.ts. tokens-sync.test.ts fails if the two drift apart. */
+:root {
+  --pdna-background: #fbfaf7;
+  --pdna-surface: #ffffff;
+  --pdna-surface-muted: #efedfb;
+  --pdna-text: #0f1b3d;
+  --pdna-text-muted: #4a5168;
+  --pdna-border: #e3e5ee;
+  --pdna-primary: #4338ca;
+  --pdna-primary-text: #ffffff;
+  --pdna-accent: #0d7a72;
+  --pdna-accent-text: #ffffff;
+  --pdna-focus: #5b50e0;
+  --pdna-danger: #b42318;
+  --pdna-navy: #0f1b3d;
+  --pdna-radius-md: 10px;
+  --pdna-radius-lg: 16px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --pdna-background: #0e1117;
+    --pdna-surface: #151924;
+    --pdna-surface-muted: #1e2433;
+    --pdna-text: #eef0f7;
+    --pdna-text-muted: #9aa1b9;
+    --pdna-border: #2b3347;
+    --pdna-primary: #a5a0f5;
+    --pdna-primary-text: #0f1b3d;
+    --pdna-accent: #2bbfb1;
+    --pdna-accent-text: #0f1b3d;
+    --pdna-focus: #a5a0f5;
+    --pdna-danger: #fda29b;
+    color-scheme: dark;
+  }
+}
