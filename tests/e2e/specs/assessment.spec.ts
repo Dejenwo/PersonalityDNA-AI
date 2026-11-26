@@ -1,10 +1,5 @@
-import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
-
-async function expectAccessible(page: Page) {
-  const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]).analyze();
-  expect(results.violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length})`)).toEqual([]);
-}
+import { answer, expectAccessible } from "./helpers";
 
 async function startQuick(page: Page) {
   await page.goto("/discover");
@@ -20,12 +15,6 @@ async function answerCurrent(page: Page, label: string) {
   await page.getByRole("radio", { name: label }).check();
 }
 
-/** Answer statement `n` (1-based) of `total` and wait for the auto-advance. */
-async function answer(page: Page, n: number, total: number, label: string) {
-  await expect(page.getByText(`Statement ${n} of ${total}`)).toBeVisible();
-  await answerCurrent(page, label);
-  if (n < total) await expect(page.getByText(`Statement ${n + 1} of ${total}`)).toBeVisible();
-}
 
 test("home and discover pages are accessible", async ({ page }) => {
   await page.goto("/");

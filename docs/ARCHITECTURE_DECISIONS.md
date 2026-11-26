@@ -31,7 +31,7 @@ Each ADR: context, decision, consequences. New decisions are appended; supersede
 **Decision.** `scripts/export_openapi.py` writes `packages/api-client/openapi.json`; `openapi-typescript` generates types. CI checks both are current.
 **Consequences.** Web and mobile share one typed client; API changes surface as type errors.
 
-## ADR-007: Authentication via Supabase Auth behind an interface (2026-11-26, planned)
+## ADR-007: Authentication via Supabase Auth behind an interface (2026-11-26) — superseded by ADR-010
 **Context.** Spec names Supabase; no Supabase project or credentials exist yet.
 **Decision.** Backend verifies JWTs through an `AuthProvider` interface. Production uses Supabase JWKS; development/tests use a local provider. Users table keyed by the auth provider's subject.
 **Consequences.** Swapping providers is configuration. To be implemented in Phase 5.
@@ -42,3 +42,8 @@ Each ADR: context, decision, consequences. New decisions are appended; supersede
 
 ## ADR-009: Web stack versions (2026-11-26)
 **Decision.** Next.js 16.4, React 19.3, Tailwind 4.3, TypeScript 5.9 (TypeScript 7 not adopted yet for tooling compatibility). pnpm 10 workspaces.
+
+## ADR-010: Built-in email/password accounts; Supabase Auth optional later (2026-11-26)
+**Context.** No Supabase project or credentials exist, and the owner asked for continuous progress. Waiting would block accounts, history, export and deletion.
+**Decision.** The backend owns accounts: Argon2id password hashes, emailed single-use tokens (verification, reset) stored hashed, 15-minute HS256 access tokens, 30-day rotating refresh tokens with reuse detection (family revocation). Web keeps the access token in memory and the refresh token in an httpOnly, SameSite=Lax cookie scoped to `/api/v1/auth`; cookie refresh requires the `X-PDNA-CSRF` header. Mobile receives the refresh token in the body for secure storage. Email goes through an `EmailSender` interface (in-memory outbox in development, SMTP in production).
+**Consequences.** Works today on any PostgreSQL, including Supabase's database. Social login, MFA and magic links are not built; if the owner later prefers Supabase Auth, the access-token check is the only seam to swap (JWKS verification) and users can be migrated by email. Startup refuses unsafe production settings (missing JWT secret, dev outbox, insecure cookie, SQLite).

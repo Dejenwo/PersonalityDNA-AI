@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
+import { AuthProvider } from "@/lib/auth";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -24,11 +25,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
-        <SiteHeader />
-        <main id="main" className="mx-auto max-w-5xl px-4 py-8">
-          {children}
-        </main>
-        <SiteFooter />
+        <AuthProvider>
+          <SiteHeader />
+          <main id="main" className="mx-auto max-w-5xl px-4 py-8">
+            {children}
+          </main>
+          <SiteFooter />
+        </AuthProvider>
       </body>
     </html>
   );

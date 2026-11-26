@@ -7,7 +7,8 @@ import { TraitBar } from "@/components/trait-bar";
 import { ButtonLink, Card, ErrorState, LoadingState } from "@/components/ui";
 import { api } from "@/lib/api";
 import { errorMessage, isNotFound } from "@/lib/errors";
-import { tokenForResult } from "@/lib/token";
+import { useAuth } from "@/lib/auth";
+import { createTokenReader } from "@/lib/token";
 
 type Load = { status: "loading" } | { status: "error"; error: unknown; noToken?: boolean } | { status: "ready"; result: ResultOut };
 
@@ -52,12 +53,17 @@ function ArchetypeCard({ a, rank }: { a: ArchetypeOut; rank: "Primary" | "Second
 export default function ResultsPage() {
   const { resultId } = useParams<{ resultId: string }>();
   const [load, setLoad] = useState<Load>({ status: "loading" });
+  const [tokens] = useState(createTokenReader);
+  const { state: auth } = useAuth();
+  const signedIn = auth.status === "signed-in";
+  const authReady = auth.status !== "loading";
 
   useEffect(() => {
     let alive = true;
     (async () => {
-      const token = tokenForResult(resultId);
-      if (!token) {
+      const token = tokens.forResult(resultId) ?? undefined;
+      if (!token && !authReady) return;
+      if (!token && !signedIn) {
         setLoad({ status: "error", error: null, noToken: true });
         return;
       }
@@ -71,7 +77,7 @@ export default function ResultsPage() {
     return () => {
       alive = false;
     };
-  }, [resultId]);
+  }, [resultId, tokens, authReady, signedIn]);
 
   if (load.status === "loading") return <LoadingState label="Loading your results" />;
   if (load.status === "error") {

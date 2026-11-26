@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AuthNav } from "./auth-nav";
 
 export function SiteHeader() {
   return (
@@ -22,6 +23,7 @@ export function SiteHeader() {
                 My results
               </Link>
             </li>
+            <AuthNav />
           </ul>
         </nav>
       </div>

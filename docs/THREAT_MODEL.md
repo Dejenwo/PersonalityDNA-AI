@@ -29,6 +29,19 @@ Browser ⇄ Web app (static/JS) ; Browser ⇄ API (JSON, `X-Session-Token`) ; AP
 | T13 | Info disclosure | Scoring keys reveal "right answers" | Keys never sent to clients | Mitigated |
 | T14 | Info disclosure | Clickjacking | frame-ancestors none / X-Frame-Options DENY | Mitigated |
 
+## Accounts (added with ADR-010)
+
+| ID | STRIDE | Threat | Mitigation | Status |
+| --- | --- | --- | --- | --- |
+| T15 | Spoofing | Credential stuffing / brute force | Argon2id, per-IP and per-email limits, generic errors | Partly (single-instance limiter) |
+| T16 | Info disclosure | Account enumeration | Register, resend and reset always 202; login errors identical; dummy hash timing | Mitigated, tested |
+| T17 | Spoofing | Stolen refresh token | Rotation with reuse detection revokes the family; httpOnly cookie; path-scoped | Mitigated, tested |
+| T18 | Tampering | CSRF on cookie refresh/logout | SameSite=Lax + required custom header (forces CORS preflight); logout only revokes | Mitigated |
+| T19 | Spoofing | Old access token after password reset | Tokens with `iat` before `password_changed_at` rejected | Mitigated, tested |
+| T20 | Info disclosure | Emailed token leakage | Tokens in URL fragment, single use, short expiry, stored hashed | Mitigated |
+| T21 | Elevation | Claiming someone else's assessment | Requires that session's resume token; owned sessions can't be re-claimed | Mitigated, tested |
+| T22 | Misconfiguration | Weak production secrets or dev email outbox in production | Settings validation refuses to start | Mitigated, tested |
+
 ## Future flows to model
 
 LLM providers (prompt injection, data leakage, cost abuse), payment webhooks (forgery, replay), relationship sharing (consent bypass), enterprise (re-identification from aggregates), mobile (insecure storage, certificate pinning decision).

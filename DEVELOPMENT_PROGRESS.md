@@ -12,7 +12,7 @@ Last updated: 2026-11-26.
 | 2 | Architecture | Implemented | Architecture, database, API, AI, security docs and ADRs written. AI and payments are design only. |
 | 3 | Repository foundation | Tested | Monorepo, tooling, CI, Docker files. Docker images not built in the dev sandbox (registry rate limit). CI not yet observed on GitHub. |
 | 4 | Design system | In Progress | Tokens with contrast tests and web components. No icon, mobile components or `packages/ui` yet. |
-| 5 | Authentication | Not Started | Next. Anonymous sessions with resume tokens exist and will link to accounts. |
+| 5 | Authentication | Tested | Email/password accounts, verification, reset, rotating sessions, claim, history, export, deletion (ADR-010). No social login or MFA yet. |
 | 6 | Assessment engine | Tested | Instruments, sessions, autosave, resume, deterministic scoring, versioning, audit. History is device-local until accounts exist. |
 | 7 | Personality intelligence | In Progress | Big Five results, archetypes, trait explanations, strengths and growth. No shareable card or comparison yet. |
 | 8–25 | Coaching onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
@@ -41,8 +41,12 @@ Last updated: 2026-11-26.
 | F-018 | DevOps | GitHub Actions: backend (SQLite + Postgres), web, e2e, secret scan; Dependabot; PR template | P0 | Implemented | .github/; not yet run on GitHub |
 | F-019 | DevOps | Dockerfiles (non-root) and docker-compose with one-off migration job | P1 | Blocked | Written; build blocked in sandbox by Docker Hub 429. Needs a build in CI or locally. |
 | F-020 | Docs | README, CLAUDE.md, AGENTS.md and docs/ set | P0 | Implemented | docs/ |
-| A-001 | Auth | Accounts, email verification, password reset, sessions | P0 | Not Started | Phase 5 |
-| A-002 | Auth | Link anonymous assessment sessions to an account | P0 | Not Started | Depends on A-001 |
+| A-001 | Auth | Accounts: register (consent, 18+, policy version), email verification, login, rotating refresh with reuse detection, logout, password reset | P0 | Tested | tests/test_auth.py; e2e account.spec.ts |
+| A-002 | Auth | Claim anonymous sessions into an account; owner access without device token | P0 | Tested | `test_claim_history_and_owner_access`; e2e claim journey |
+| A-003 | Privacy | Data export (JSON) and account deletion with cascade; consent proof retained unlinked | P0 | Tested | `test_export_and_delete_account`; e2e |
+| A-004 | Security | Production settings guards; auth rate limiting; generic errors; no account enumeration on register/reset | P0 | Tested | `test_production_settings_guards`, `test_login_rate_limited`, `test_registration_does_not_reveal_existing_accounts` |
+| A-005 | Web | Register, login, verify, forgot/reset password, account page (profile, export, sign out, delete), account history | P0 | Tested | e2e (8 account runs) + axe |
+| A-006 | Auth | Social login (Apple/Google), MFA, purge job for unverified accounts | P1 | Not Started | Apple/Google need developer accounts |
 | C-001 | Coaching | LLM provider interface + mock provider + safety layer | P0 | Not Started | Phase 8; real providers need API keys |
 | M-001 | Monetization | Entitlements service with plan config; Stripe and RevenueCat webhooks | P0 | Not Started | Needs accounts; live keys needed for real payments |
 
@@ -50,10 +54,10 @@ Last updated: 2026-11-26.
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest` | 44 passed |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 44 passed |
+| Backend, SQLite | `pytest` | 69 passed |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 69 passed |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
 | Web unit | `vitest run` | 7 passed |
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
-| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 10 passed |
+| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 18 passed |

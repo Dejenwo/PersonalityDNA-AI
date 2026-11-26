@@ -52,12 +52,67 @@ class AssessmentVersion(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
+class User(Base):
+    __tablename__ = "users"
+    __table_args__ = (CheckConstraint("status in ('active','disabled')", name="ck_user_status"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    # Stored lower-cased; uniqueness is case-insensitive by construction.
+    email: Mapped[str] = mapped_column(String(320), unique=True)
+    password_hash: Mapped[str] = mapped_column(String(255))
+    email_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    display_name: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    locale: Mapped[str] = mapped_column(String(16), default="en")
+    status: Mapped[str] = mapped_column(String(16), default="active")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+    password_changed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class AuthToken(Base):
+    """Single-use emailed tokens (email verification, password reset). Only hashes are stored."""
+
+    __tablename__ = "auth_tokens"
+    __table_args__ = (
+        CheckConstraint("purpose in ('verify_email','reset_password')", name="ck_auth_token_purpose"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    purpose: Mapped[str] = mapped_column(String(32))
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class RefreshToken(Base):
+    """Rotating refresh tokens. Reusing a rotated token revokes the whole family (theft detection)."""
+
+    __tablename__ = "refresh_tokens"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    family_id: Mapped[uuid.UUID] = mapped_column(index=True)
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    rotated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
 class ConsentRecord(Base):
     __tablename__ = "consent_records"
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
-    # Null until accounts exist (Phase 2); anonymous consent is bound to the assessment session.
-    user_id: Mapped[uuid.UUID | None] = mapped_column(nullable=True, index=True)
+    # Kept (unlinked) after account deletion as proof that consent was given.
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_consent_records_user_id_users"),
+        nullable=True,
+        index=True,
+    )
     consent_type: Mapped[str] = mapped_column(String(64))
     policy_version: Mapped[str] = mapped_column(String(32))
     granted: Mapped[bool]
@@ -75,7 +130,12 @@ class AssessmentSession(Base):
     version_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("assessment_versions.id", ondelete="RESTRICT"), index=True
     )
-    user_id: Mapped[uuid.UUID | None] = mapped_column(nullable=True, index=True)
+    # Set when an account claims the session; deleting the account deletes its sessions.
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_assessment_sessions_user_id_users"),
+        nullable=True,
+        index=True,
+    )
     consent_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("consent_records.id", ondelete="RESTRICT"), index=True
     )

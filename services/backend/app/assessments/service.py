@@ -51,6 +51,7 @@ def create_session(
     accepted: bool,
     age_confirmed: bool,
     policy_version: str,
+    user_id: uuid.UUID | None = None,
 ) -> tuple[AssessmentSession, str]:
     if not accepted:
         raise ApiError(422, "consent_required", "Consent is required to take an assessment.")
@@ -94,7 +95,11 @@ def create_session(
     db.flush()
     token = new_token()
     session = AssessmentSession(
-        version_id=version_row.id, consent_id=consent.id, token_hash=hash_token(token), locale=locale
+        version_id=version_row.id,
+        consent_id=consent.id,
+        token_hash=hash_token(token),
+        locale=locale,
+        user_id=user_id,
     )
     db.add(session)
     db.flush()
@@ -118,14 +123,24 @@ def _get_instrument(bundle: ContentBundle, instrument_id: str, version: str) -> 
     return bundle.instruments[key]
 
 
-def get_authorized_session(db: Session, session_id: uuid.UUID, token: str | None) -> AssessmentSession:
+def _owner_or_token(
+    owner_id: uuid.UUID | None, token_hash: str, token: str | None, user_id: uuid.UUID | None
+) -> bool:
+    if user_id is not None and owner_id == user_id:
+        return True
+    return token_matches(token, token_hash)
+
+
+def get_authorized_session(
+    db: Session, session_id: uuid.UUID, token: str | None, user_id: uuid.UUID | None = None
+) -> AssessmentSession:
     session = db.scalar(
         select(AssessmentSession)
         .where(AssessmentSession.id == session_id)
         .options(selectinload(AssessmentSession.responses), selectinload(AssessmentSession.version))
     )
     # Same response for "missing" and "wrong token" so ids cannot be probed.
-    if session is None or not token_matches(token, session.token_hash):
+    if session is None or not _owner_or_token(session.user_id, session.token_hash, token, user_id):
         raise NOT_FOUND
     return session
 
@@ -252,12 +267,33 @@ def complete_session(db: Session, bundle: ContentBundle, session: AssessmentSess
     return result
 
 
-def get_authorized_result(db: Session, result_id: uuid.UUID, token: str | None) -> AssessmentResult:
+def get_authorized_result(
+    db: Session, result_id: uuid.UUID, token: str | None, user_id: uuid.UUID | None = None
+) -> AssessmentResult:
     result = db.scalar(
         select(AssessmentResult)
         .where(AssessmentResult.id == result_id)
         .options(selectinload(AssessmentResult.trait_scores), selectinload(AssessmentResult.session))
     )
-    if result is None or not token_matches(token, result.session.token_hash):
+    if result is None or not _owner_or_token(
+        result.session.user_id, result.session.token_hash, token, user_id
+    ):
         raise ApiError(404, "not_found", "Result not found.")
     return result
+
+
+def claim_session(db: Session, session_id: uuid.UUID, token: str, user_id: uuid.UUID) -> AssessmentSession:
+    """Attach an anonymous session to an account. Requires the session's resume token."""
+    session = db.get(AssessmentSession, session_id)
+    if session is None or not token_matches(token, session.token_hash):
+        raise NOT_FOUND
+    if session.user_id is not None and session.user_id != user_id:
+        raise NOT_FOUND  # already owned by someone else; don't reveal that
+    if session.user_id is None:
+        session.user_id = user_id
+        consent = db.get(ConsentRecord, session.consent_id)
+        if consent is not None and consent.user_id is None:
+            consent.user_id = user_id
+        _audit(db, "assessment_session.claimed", "assessment_session", session.id)
+        db.commit()
+    return session

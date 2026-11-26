@@ -17,6 +17,16 @@ Conventions: UUID primary keys (except content ids), `timestamptz` everywhere, f
 | `personality_trait_scores` | Per-trait status, raw mean, 0–100 score, band, answered/total | unique (result_id, trait); score 0–100 check | With result |
 | `audit_events` | Security and lifecycle events (no answers, no PII) | indexed by type and time | 1 year (job pending) |
 
+## Implemented (migration 0002, accounts)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `users` | Account: lower-cased unique email, Argon2id hash, verification time, profile | unique email; status check | Until deletion (hard delete) |
+| `auth_tokens` | Single-use verification/reset tokens, SHA-256 only | unique hash; purpose check; cascade on user | Expire 24 h / 60 min; purge job pending |
+| `refresh_tokens` | Rotating refresh tokens grouped by family | unique hash; cascade on user | 30 days; purge job pending |
+| `assessment_sessions.user_id` | Owner after claim or signed-in start | FK CASCADE (deleting a user deletes their assessments) | |
+| `consent_records.user_id` | Link to account | FK SET NULL (proof kept, unlinked) | |
+
 ## Planned (by phase)
 
 | Phase | Tables |

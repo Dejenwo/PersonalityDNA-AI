@@ -18,7 +18,8 @@ export default function PrivacyPage() {
       <h2 className="pt-4 text-xl font-semibold">What we collect</h2>
       <p>
         Your answers to assessment statements, the time you started and finished, and your confirmation that you are 18
-        or older and agree to this notice. We do not ask for your name or email to take an assessment.
+        or older and agree to this notice. You don&apos;t need an account to take an assessment. If you create one, we
+        also store your email, an optional name and a securely hashed password.
       </p>
       <h2 className="pt-4 text-xl font-semibold">Why</h2>
       <p>To calculate and show you your results. Scores are calculated by a fixed formula, not by AI.</p>
@@ -29,8 +30,8 @@ export default function PrivacyPage() {
       </p>
       <h2 className="pt-4 text-xl font-semibold">Your choices</h2>
       <p>
-        You can stop at any time. Account features for exporting and deleting your data are planned and will be listed
-        here when available.
+        You can stop at any time. With an account you can download all your data or permanently delete your account
+        and every assessment linked to it from the Account page.
       </p>
       <h2 className="pt-4 text-xl font-semibold">Not a diagnosis</h2>
       <p>

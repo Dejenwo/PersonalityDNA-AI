@@ -1,11 +1,11 @@
 """The Alembic migrations must build exactly the schema the ORM models describe."""
 
+from alembic import command
 from alembic.autogenerate import compare_metadata
 from alembic.config import Config
 from alembic.migration import MigrationContext
 from fastapi.testclient import TestClient
 
-from alembic import command
 from app.core.config import Settings
 from app.database.base import Base
 from app.database.session import make_engine

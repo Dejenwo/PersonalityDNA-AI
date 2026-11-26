@@ -4,7 +4,7 @@
 
 An AI-assisted personality intelligence and personal development platform for iOS, Android and the web. The governing specification is [MASTER_PROMPT.md](MASTER_PROMPT.md); live status is in [DEVELOPMENT_PROGRESS.md](DEVELOPMENT_PROGRESS.md).
 
-> **Status: early development, not production ready.** The first vertical slice works end to end: pick an assessment, give consent, answer with autosave and resume, get deterministic Big Five scores, archetypes and a results report. Accounts, AI coaching, payments, mobile and the admin and enterprise portals are not built yet. See [docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md).
+> **Status: early development, not production ready.** Working end to end: assessments with autosave and resume, deterministic Big Five scores, archetypes, results reports, and accounts (sign-up, verification, password reset, history, export, deletion). AI coaching, payments, mobile and the admin and enterprise portals are not built yet. See [docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md).
 
 ## What works today
 
@@ -16,7 +16,8 @@ An AI-assisted personality intelligence and personal development platform for iO
 | Backend API | FastAPI, versioned REST, consent + 18+ gate, per-session resume tokens, rate limiting |
 | Database | SQLAlchemy models + Alembic migration, tested on SQLite and PostgreSQL 16 |
 | Web app | Next.js 16: marketplace, consent, one-statement-at-a-time questionnaire with autosave/offline retry/resume, results report, history |
-| Quality | 44 backend tests, 11 web/package unit tests, 10 Playwright end-to-end runs (desktop + mobile) including axe WCAG 2.2 AA scans |
+| Accounts | Email/password sign-up with verification, sign-in, password reset, rotating sessions, claim device assessments, history, data export, account deletion |
+| Quality | 69 backend tests (SQLite and PostgreSQL), 11 web/package unit tests, 18 Playwright end-to-end runs (desktop + mobile) including axe WCAG 2.2 AA scans |
 
 ## Repository layout
 

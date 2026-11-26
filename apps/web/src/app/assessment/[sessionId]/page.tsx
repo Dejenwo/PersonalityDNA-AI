@@ -8,12 +8,13 @@ import { Button, ButtonLink, Card, ErrorState, LoadingState, ProgressBar } from 
 import { api } from "@/lib/api";
 import { AnswerQueue, type QueueStatus } from "@/lib/answer-queue";
 import { errorMessage, isNotFound } from "@/lib/errors";
-import { rememberResult, tokenForSession } from "@/lib/token";
+import { useAuth } from "@/lib/auth";
+import { createTokenReader, rememberResult } from "@/lib/token";
 
 type Load =
   | { status: "loading" }
   | { status: "error"; error: unknown; noToken?: boolean }
-  | { status: "ready"; session: SessionOut; assessment: AssessmentDetail; token: string };
+  | { status: "ready"; session: SessionOut; assessment: AssessmentDetail; token: string | undefined };
 
 const statusText: Record<QueueStatus, string> = {
   idle: "",
@@ -36,15 +37,21 @@ export default function AssessmentPage() {
   const queueRef = useRef<AnswerQueue | null>(null);
   const advanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const headingRef = useRef<HTMLDivElement>(null);
+  const [tokens] = useState(createTokenReader);
+  const { state: auth } = useAuth();
+  const signedIn = auth.status === "signed-in";
+  const authReady = auth.status !== "loading";
 
   useEffect(() => {
     let alive = true;
     (async () => {
-      const token = tokenForSession(sessionId);
-      if (!token) {
+      const token = tokens.forSession(sessionId) ?? undefined;
+      if (!token && !authReady) return; // wait: a signed-in owner can open it without a device token
+      if (!token && !signedIn) {
         setLoad({ status: "error", error: null, noToken: true });
         return;
       }
+      if (queueRef.current) return; // already loaded
       try {
         const session = await api.getSession(sessionId, token);
         if (session.status === "completed" && session.result_id) {
@@ -75,7 +82,7 @@ export default function AssessmentPage() {
     return () => {
       alive = false;
     };
-  }, [sessionId, router]);
+  }, [sessionId, router, tokens, authReady, signedIn]);
 
   // Warn before leaving with unsaved answers.
   useEffect(() => {
@@ -126,7 +133,7 @@ export default function AssessmentPage() {
       await queueRef.current?.flush();
       const result = await api.completeSession(sessionId, load.token);
       rememberResult(sessionId, result.id);
-      router.push(`/results/${result.id}#t=${encodeURIComponent(load.token)}`);
+      router.push(load.token ? `/results/${result.id}#t=${encodeURIComponent(load.token)}` : `/results/${result.id}`);
     } catch (err) {
       setFinishError(errorMessage(err));
       setFinishing(false);

@@ -20,6 +20,13 @@ from app.api.schemas import (
 from app.api.v1 import presenters
 from app.assessments import service
 from app.assessments.content import ContentBundle
+from app.auth.deps import OptionalUser
+from app.database.models import User
+
+
+def _uid(user: User | None) -> uuid.UUID | None:
+    return user.id if user else None
+
 
 router = APIRouter(prefix="/api/v1", responses={422: {"model": ErrorResponse}, 404: {"model": ErrorResponse}})
 
@@ -52,7 +59,9 @@ def get_assessment(instrument_id: str, content: Content) -> AssessmentDetail:
     tags=["assessment-sessions"],
     responses={409: {"model": ErrorResponse}, 429: {"model": ErrorResponse}},
 )
-def create_session(body: CreateSessionIn, request: Request, db: Db, content: Content) -> CreateSessionOut:
+def create_session(
+    body: CreateSessionIn, request: Request, db: Db, content: Content, user: OptionalUser
+) -> CreateSessionOut:
     if not request.app.state.session_limiter.allow(client_ip(request)):
         raise ApiError(429, "rate_limited", "Too many new assessments. Please wait a minute and try again.")
     session, token = service.create_session(
@@ -64,13 +73,16 @@ def create_session(body: CreateSessionIn, request: Request, db: Db, content: Con
         accepted=body.consent.accepted,
         age_confirmed=body.consent.age_confirmed_18_plus,
         policy_version=body.consent.policy_version,
+        user_id=user.id if user else None,
     )
     return CreateSessionOut(session=presenters.session_out(content, session), resume_token=token)
 
 
 @router.get("/assessment-sessions/{session_id}", response_model=SessionOut, tags=["assessment-sessions"])
-def get_session(session_id: uuid.UUID, db: Db, content: Content, token: SessionToken = None) -> SessionOut:
-    return presenters.session_out(content, service.get_authorized_session(db, session_id, token))
+def get_session(
+    session_id: uuid.UUID, db: Db, content: Content, user: OptionalUser, token: SessionToken = None
+) -> SessionOut:
+    return presenters.session_out(content, service.get_authorized_session(db, session_id, token, _uid(user)))
 
 
 @router.put(
@@ -80,9 +92,14 @@ def get_session(session_id: uuid.UUID, db: Db, content: Content, token: SessionT
     responses={409: {"model": ErrorResponse}},
 )
 def save_answers(
-    session_id: uuid.UUID, body: SaveAnswersIn, db: Db, content: Content, token: SessionToken = None
+    session_id: uuid.UUID,
+    body: SaveAnswersIn,
+    db: Db,
+    content: Content,
+    user: OptionalUser,
+    token: SessionToken = None,
 ) -> SaveAnswersOut:
-    session = service.get_authorized_session(db, session_id, token)
+    session = service.get_authorized_session(db, session_id, token, _uid(user))
     saved = service.save_answers(db, content, session, ((a.item_id, a.value) for a in body.answers))
     total = len(service.instrument_for(content, session).data.items)
     return SaveAnswersOut(saved=saved, progress=presenters.progress(len(session.responses), total))
@@ -94,12 +111,16 @@ def save_answers(
     tags=["assessment-sessions"],
     responses={409: {"model": ErrorResponse}},
 )
-def complete(session_id: uuid.UUID, db: Db, content: Content, token: SessionToken = None) -> ResultOut:
-    session = service.get_authorized_session(db, session_id, token)
+def complete(
+    session_id: uuid.UUID, db: Db, content: Content, user: OptionalUser, token: SessionToken = None
+) -> ResultOut:
+    session = service.get_authorized_session(db, session_id, token, _uid(user))
     result = service.complete_session(db, content, session)
-    return presenters.result_out(content, service.get_authorized_result(db, result.id, token))
+    return presenters.result_out(content, service.get_authorized_result(db, result.id, token, _uid(user)))
 
 
 @router.get("/results/{result_id}", response_model=ResultOut, tags=["results"])
-def get_result(result_id: uuid.UUID, db: Db, content: Content, token: SessionToken = None) -> ResultOut:
-    return presenters.result_out(content, service.get_authorized_result(db, result_id, token))
+def get_result(
+    result_id: uuid.UUID, db: Db, content: Content, user: OptionalUser, token: SessionToken = None
+) -> ResultOut:
+    return presenters.result_out(content, service.get_authorized_result(db, result_id, token, _uid(user)))

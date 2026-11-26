@@ -11,6 +11,8 @@ export interface StoredSession {
   instrumentName: string;
   startedAt: string;
   resultId?: string;
+  /** True once attached to the signed-in account. */
+  claimed?: boolean;
 }
 
 const KEY = "pdna.sessions.v1";
