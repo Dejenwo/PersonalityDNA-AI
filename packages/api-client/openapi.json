@@ -1,6 +1,25 @@
 {
   "components": {
     "schemas": {
+      "AcceptInvitationIn": {
+        "properties": {
+          "consent": {
+            "$ref": "#/components/schemas/RelationshipConsentIn"
+          },
+          "token": {
+            "maxLength": 256,
+            "minLength": 10,
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "consent"
+        ],
+        "title": "AcceptInvitationIn",
+        "type": "object"
+      },
       "AnswerIn": {
         "additionalProperties": false,
         "properties": {
@@ -750,6 +769,29 @@
         "title": "CreateConversationIn",
         "type": "object"
       },
+      "CreateInvitationIn": {
+        "properties": {
+          "consent": {
+            "$ref": "#/components/schemas/RelationshipConsentIn"
+          },
+          "relation_type": {
+            "enum": [
+              "partner",
+              "friend",
+              "family",
+              "colleague"
+            ],
+            "title": "Relation Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "relation_type",
+          "consent"
+        ],
+        "title": "CreateInvitationIn",
+        "type": "object"
+      },
       "CreateSessionIn": {
         "additionalProperties": false,
         "properties": {
@@ -804,6 +846,24 @@
           "resume_token"
         ],
         "title": "CreateSessionOut",
+        "type": "object"
+      },
+      "CreatedInvitation": {
+        "properties": {
+          "invitation": {
+            "$ref": "#/components/schemas/InvitationOut"
+          },
+          "token": {
+            "description": "Shown once. Share it as a link; only its hash is stored.",
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "invitation",
+          "token"
+        ],
+        "title": "CreatedInvitation",
         "type": "object"
       },
       "DeleteAccountIn": {
@@ -876,6 +936,27 @@
           "error"
         ],
         "title": "ErrorResponse",
+        "type": "object"
+      },
+      "ExerciseOut": {
+        "properties": {
+          "steps": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Steps",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "steps"
+        ],
+        "title": "ExerciseOut",
         "type": "object"
       },
       "ExploreLinkOut": {
@@ -1140,6 +1221,241 @@
         "title": "InterestsOut",
         "type": "object"
       },
+      "InvitationOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "relation_type": {
+            "enum": [
+              "partner",
+              "friend",
+              "family",
+              "colleague"
+            ],
+            "title": "Relation Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "relation_type",
+          "created_at",
+          "expires_at"
+        ],
+        "title": "InvitationOut",
+        "type": "object"
+      },
+      "InvitationPreview": {
+        "properties": {
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "inviter_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The inviter's display name, if they set one.",
+            "title": "Inviter Name"
+          },
+          "policy_version": {
+            "title": "Policy Version",
+            "type": "string"
+          },
+          "relation_type": {
+            "enum": [
+              "partner",
+              "friend",
+              "family",
+              "colleague"
+            ],
+            "title": "Relation Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "inviter_name",
+          "relation_type",
+          "expires_at",
+          "policy_version"
+        ],
+        "title": "InvitationPreview",
+        "type": "object"
+      },
+      "InvitationTokenIn": {
+        "properties": {
+          "token": {
+            "maxLength": 256,
+            "minLength": 10,
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token"
+        ],
+        "title": "InvitationTokenIn",
+        "type": "object"
+      },
+      "LinkDetail": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "exercises": {
+            "items": {
+              "$ref": "#/components/schemas/ExerciseOut"
+            },
+            "title": "Exercises",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "missing_results": {
+            "description": "Who still needs a Big Five result before a comparison can be shown.",
+            "items": {
+              "enum": [
+                "you",
+                "them"
+              ],
+              "type": "string"
+            },
+            "title": "Missing Results",
+            "type": "array"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "other_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The other person's display name, if they set one.",
+            "title": "Other Name"
+          },
+          "relation_type": {
+            "enum": [
+              "partner",
+              "friend",
+              "family",
+              "colleague"
+            ],
+            "title": "Relation Type",
+            "type": "string"
+          },
+          "shared_goals": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Shared Goals",
+            "type": "array"
+          },
+          "traits": {
+            "items": {
+              "$ref": "#/components/schemas/TraitComparisonOut"
+            },
+            "title": "Traits",
+            "type": "array"
+          },
+          "you_invited": {
+            "title": "You Invited",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "relation_type",
+          "other_name",
+          "you_invited",
+          "created_at",
+          "missing_results",
+          "traits",
+          "note",
+          "exercises",
+          "shared_goals"
+        ],
+        "title": "LinkDetail",
+        "type": "object"
+      },
+      "LinkSummary": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "other_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The other person's display name, if they set one.",
+            "title": "Other Name"
+          },
+          "relation_type": {
+            "enum": [
+              "partner",
+              "friend",
+              "family",
+              "colleague"
+            ],
+            "title": "Relation Type",
+            "type": "string"
+          },
+          "you_invited": {
+            "title": "You Invited",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "relation_type",
+          "other_name",
+          "you_invited",
+          "created_at"
+        ],
+        "title": "LinkSummary",
+        "type": "object"
+      },
       "LoginIn": {
         "additionalProperties": false,
         "properties": {
@@ -1359,6 +1675,55 @@
           "policy_version"
         ],
         "title": "RegisterIn",
+        "type": "object"
+      },
+      "RelationshipConsentIn": {
+        "properties": {
+          "accepted": {
+            "const": true,
+            "description": "The user agrees to show the trait bands from their latest Big Five result to the other person for as long as the link exists.",
+            "title": "Accepted",
+            "type": "boolean"
+          },
+          "policy_version": {
+            "title": "Policy Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "accepted",
+          "policy_version"
+        ],
+        "title": "RelationshipConsentIn",
+        "type": "object"
+      },
+      "RelationshipsOut": {
+        "properties": {
+          "invitations": {
+            "items": {
+              "$ref": "#/components/schemas/InvitationOut"
+            },
+            "title": "Invitations",
+            "type": "array"
+          },
+          "links": {
+            "items": {
+              "$ref": "#/components/schemas/LinkSummary"
+            },
+            "title": "Links",
+            "type": "array"
+          },
+          "policy_version": {
+            "title": "Policy Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "policy_version",
+          "invitations",
+          "links"
+        ],
+        "title": "RelationshipsOut",
         "type": "object"
       },
       "ResetConfirmIn": {
@@ -1638,6 +2003,81 @@
           "token"
         ],
         "title": "TokenIn",
+        "type": "object"
+      },
+      "TraitComparisonOut": {
+        "properties": {
+          "misunderstanding": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Misunderstanding"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "pattern": {
+            "enum": [
+              "similar",
+              "some_difference",
+              "different"
+            ],
+            "title": "Pattern",
+            "type": "string"
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "them": {
+            "enum": [
+              "lower",
+              "middle",
+              "higher"
+            ],
+            "title": "Them",
+            "type": "string"
+          },
+          "trait": {
+            "title": "Trait",
+            "type": "string"
+          },
+          "you": {
+            "enum": [
+              "lower",
+              "middle",
+              "higher"
+            ],
+            "title": "You",
+            "type": "string"
+          }
+        },
+        "required": [
+          "trait",
+          "name",
+          "you",
+          "them",
+          "pattern",
+          "summary",
+          "note",
+          "misunderstanding",
+          "prompt"
+        ],
+        "title": "TraitComparisonOut",
         "type": "object"
       },
       "TraitResult": {
@@ -3727,6 +4167,615 @@
         "tags": [
           "account",
           "privacy"
+        ]
+      }
+    },
+    "/api/v1/relationships": {
+      "get": {
+        "operationId": "overview_api_v1_relationships_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelationshipsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Overview",
+        "tags": [
+          "relationships"
+        ]
+      }
+    },
+    "/api/v1/relationships/invitations": {
+      "post": {
+        "operationId": "create_invitation_api_v1_relationships_invitations_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInvitationIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedInvitation"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          }
+        },
+        "summary": "Create Invitation",
+        "tags": [
+          "relationships"
+        ]
+      }
+    },
+    "/api/v1/relationships/invitations/accept": {
+      "post": {
+        "operationId": "accept_invitation_api_v1_relationships_invitations_accept_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptInvitationIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Accept Invitation",
+        "tags": [
+          "relationships"
+        ]
+      }
+    },
+    "/api/v1/relationships/invitations/preview": {
+      "post": {
+        "description": "Who is inviting and as what, so the person can decide. The token travels in the body, never the URL.",
+        "operationId": "preview_invitation_api_v1_relationships_invitations_preview_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvitationTokenIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationPreview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Preview Invitation",
+        "tags": [
+          "relationships"
+        ]
+      }
+    },
+    "/api/v1/relationships/invitations/{invitation_id}": {
+      "delete": {
+        "operationId": "cancel_invitation_api_v1_relationships_invitations__invitation_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "invitation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Invitation Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancel Invitation",
+        "tags": [
+          "relationships"
+        ]
+      }
+    },
+    "/api/v1/relationships/{link_id}": {
+      "delete": {
+        "description": "Either person can end the comparison at any time. The link is deleted for both.",
+        "operationId": "revoke_link_api_v1_relationships__link_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "link_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Link Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Revoke Link",
+        "tags": [
+          "relationships"
+        ]
+      },
+      "get": {
+        "operationId": "get_link_api_v1_relationships__link_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "link_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Link Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Link",
+        "tags": [
+          "relationships"
         ]
       }
     },

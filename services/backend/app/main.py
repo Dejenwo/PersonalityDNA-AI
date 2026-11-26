@@ -20,6 +20,7 @@ from app.core.config import Settings, get_settings
 from app.database.base import Base
 from app.database.session import Database
 from app.notifications.email import make_email_sender
+from app.relationships.routes import router as relationships_router
 from app.security.crypto import FieldCipher
 from app.security.headers import SecurityHeadersMiddleware
 from app.security.rate_limit import RateLimiter
@@ -82,6 +83,7 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.include_router(auth_router)
     app.include_router(users_router)
     app.include_router(coach_router)
+    app.include_router(relationships_router)
     if settings.dev_outbox_endpoint and settings.environment in ("development", "test"):
         app.include_router(dev_router)
 

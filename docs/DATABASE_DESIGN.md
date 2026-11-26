@@ -37,6 +37,19 @@ Conventions: UUID primary keys (except content ids), `timestamptz` everywhere, f
 
 Coaching consent is a `consent_records` row with type `ai_coaching`. `ai_context_grants` from the plan is not needed yet: each conversation records the single result the user chose.
 
+## Implemented (migration 0004, career interests)
+
+`assessment_results.interest_profile` (JSON: code, ranking, boundary ties, empty) for interest results; `archetype_version` and `archetypes` became nullable because interest results have no archetypes.
+
+## Implemented (migration 0005, relationships)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `relationship_invitations` | Inviter, relation type, SHA-256 of the one-time token, inviter's consent, expiry | FK user CASCADE; consent SET NULL; unique token hash; type check | Deleted when accepted or cancelled; expired rows removed when the inviter next invites |
+| `relationship_links` | Inviter, invitee, relation type, both consent records | FK users CASCADE; unique `pair_key` (sorted ids) so a pair has one link; type check | Deleted when either person ends it or deletes their account |
+
+Comparisons are computed on request from each person's latest Big Five result and are never stored. Sharing consent is a `consent_records` row with type `relationship_sharing`.
+
 ## Planned (by phase)
 
 | Phase | Tables |
@@ -44,7 +57,7 @@ Coaching consent is a `consent_records` row with type `ai_coaching`. `ai_context
 | 5 Auth | `users` (auth subject, status, created/deleted), `user_profiles`, `user_preferences`, `user_sessions` if not delegated; `assessment_sessions.user_id` FK |
 | 7 | `share_cards` (opt-in, revocable public slug, minimal fields) |
 | 9–11 | Additional instruments reuse assessment tables; `career_goals` |
-| 10 | `relationship_invitations`, `relationship_shares` (per-scope, revocable, both-party consent) |
+| 10 | Implemented as `relationship_invitations` and `relationship_links` (above). Per-scope sharing beyond Big Five bands is not built |
 | 13–14 | `development_programs`, `program_enrollments`, `exercises`, `exercise_completions`, `goals`, `habits`, `habit_records`, `journal_entries` (field-level encryption) |
 | 15 | `reports` (generated artifact metadata; files in object storage) |
 | 16 | `plans`, `prices` (remote config), `subscriptions`, `entitlements`, `payment_events` (idempotency key unique) |

@@ -17,6 +17,7 @@ from app.auth.schemas import ClaimIn, DeleteAccountIn, HistoryItem, HistoryOut, 
 from app.auth.service import AuthService
 from app.coaching.service import CoachService
 from app.database.models import AssessmentSession, CoachConversation, ConsentRecord
+from app.relationships import service as relationships
 
 router = APIRouter(prefix="/api/v1", tags=["account"], responses={401: {"model": ErrorResponse}})
 Db = Annotated[Session, Depends(get_db)]
@@ -137,6 +138,7 @@ def export(request: Request, user: CurrentUser, db: Db, content: Content) -> dic
             coach.conversation_out(c).model_dump(mode="json", exclude={"message_count"})
             for c in conversations
         ],
+        "relationships": relationships.export_for(db, user),
     }
 
 

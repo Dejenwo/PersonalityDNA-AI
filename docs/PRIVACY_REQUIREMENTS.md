@@ -12,6 +12,7 @@ Not legal advice. A qualified privacy lawyer must review before launch; no compl
 | Client IP (in memory only, rate limiting) | Abuse prevention | Legitimate interest | Not persisted |
 | Email, password hash, display name | Account | Contract | Until account deletion |
 | Session tokens (hashed) | Keep users signed in | Contract | 30 days |
+| Relationship invitations (token hash, type) and links (two user ids, type, consent ids) | Let two people compare trait bands | Consent from both people | Invitations: until accepted, cancelled or 7 days; links: until either person ends it or deletes their account |
 
 No names, emails, device identifiers, analytics or third-party trackers are collected today.
 

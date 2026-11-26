@@ -321,3 +321,65 @@ class AiUsageRecord(Base):
     cache_read_tokens: Mapped[int] = mapped_column(Integer, default=0)
     latency_ms: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+_RELATION_TYPE_CHECK = "relation_type in ('partner','friend','family','colleague')"
+
+
+class RelationshipInvitation(Base):
+    """A pending invitation to compare results. Only the token hash is stored; accepted or cancelled
+    invitations are deleted, so nothing lingers once the link exists or the inviter changes their mind."""
+
+    __tablename__ = "relationship_invitations"
+    __table_args__ = (
+        CheckConstraint(
+            "relation_type in ('partner','friend','family','colleague')",
+            name="ck_relationship_invitation_type",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    inviter_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_relationship_invitations_inviter_id_users"),
+        index=True,
+    )
+    relation_type: Mapped[str] = mapped_column(String(16))
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    consent_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("consent_records.id", ondelete="SET NULL", name="fk_relationship_invitations_consent_id"),
+        nullable=True,
+    )
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class RelationshipLink(Base):
+    """Two people who both agreed to see a comparison of their Big Five results. Either person can
+    revoke it, which deletes the row: the comparison is computed on request and never stored."""
+
+    __tablename__ = "relationship_links"
+    __table_args__ = (CheckConstraint(_RELATION_TYPE_CHECK, name="ck_relationship_link_type"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    inviter_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_relationship_links_inviter_id_users"), index=True
+    )
+    invitee_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_relationship_links_invitee_id_users"), index=True
+    )
+    # Both ids in sorted order, so one pair of people can have only one link.
+    pair_key: Mapped[str] = mapped_column(String(80), unique=True)
+    relation_type: Mapped[str] = mapped_column(String(16))
+    inviter_consent_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey(
+            "consent_records.id", ondelete="SET NULL", name="fk_relationship_links_inviter_consent_id"
+        ),
+        nullable=True,
+    )
+    invitee_consent_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey(
+            "consent_records.id", ondelete="SET NULL", name="fk_relationship_links_invitee_consent_id"
+        ),
+        nullable=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

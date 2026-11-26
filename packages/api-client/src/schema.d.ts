@@ -420,6 +420,115 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/relationships": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Overview */
+        get: operations["overview_api_v1_relationships_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/relationships/invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Invitation */
+        post: operations["create_invitation_api_v1_relationships_invitations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/relationships/invitations/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Accept Invitation */
+        post: operations["accept_invitation_api_v1_relationships_invitations_accept_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/relationships/invitations/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Preview Invitation
+         * @description Who is inviting and as what, so the person can decide. The token travels in the body, never the URL.
+         */
+        post: operations["preview_invitation_api_v1_relationships_invitations_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/relationships/invitations/{invitation_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Cancel Invitation */
+        delete: operations["cancel_invitation_api_v1_relationships_invitations__invitation_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/relationships/{link_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Link */
+        get: operations["get_link_api_v1_relationships__link_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Revoke Link
+         * @description Either person can end the comparison at any time. The link is deleted for both.
+         */
+        delete: operations["revoke_link_api_v1_relationships__link_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/results/{result_id}": {
         parameters: {
             query?: never;
@@ -458,6 +567,12 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AcceptInvitationIn */
+        AcceptInvitationIn: {
+            consent: components["schemas"]["RelationshipConsentIn"];
+            /** Token */
+            token: string;
+        };
         /** AnswerIn */
         AnswerIn: {
             /** Item Id */
@@ -785,6 +900,15 @@ export interface components {
              */
             use_results: boolean;
         };
+        /** CreateInvitationIn */
+        CreateInvitationIn: {
+            consent: components["schemas"]["RelationshipConsentIn"];
+            /**
+             * Relation Type
+             * @enum {string}
+             */
+            relation_type: "partner" | "friend" | "family" | "colleague";
+        };
         /** CreateSessionIn */
         CreateSessionIn: {
             consent: components["schemas"]["ConsentIn"];
@@ -806,6 +930,15 @@ export interface components {
              */
             resume_token: string;
             session: components["schemas"]["SessionOut"];
+        };
+        /** CreatedInvitation */
+        CreatedInvitation: {
+            invitation: components["schemas"]["InvitationOut"];
+            /**
+             * Token
+             * @description Shown once. Share it as a link; only its hash is stored.
+             */
+            token: string;
         };
         /** DeleteAccountIn */
         DeleteAccountIn: {
@@ -832,6 +965,13 @@ export interface components {
         /** ErrorResponse */
         ErrorResponse: {
             error: components["schemas"]["ErrorBody"];
+        };
+        /** ExerciseOut */
+        ExerciseOut: {
+            /** Steps */
+            steps: string[];
+            /** Title */
+            title: string;
         };
         /** ExploreLinkOut */
         ExploreLinkOut: {
@@ -940,6 +1080,117 @@ export interface components {
             /** Note */
             note: string;
         };
+        /** InvitationOut */
+        InvitationOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Relation Type
+             * @enum {string}
+             */
+            relation_type: "partner" | "friend" | "family" | "colleague";
+        };
+        /** InvitationPreview */
+        InvitationPreview: {
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /**
+             * Inviter Name
+             * @description The inviter's display name, if they set one.
+             */
+            inviter_name: string | null;
+            /** Policy Version */
+            policy_version: string;
+            /**
+             * Relation Type
+             * @enum {string}
+             */
+            relation_type: "partner" | "friend" | "family" | "colleague";
+        };
+        /** InvitationTokenIn */
+        InvitationTokenIn: {
+            /** Token */
+            token: string;
+        };
+        /** LinkDetail */
+        LinkDetail: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Exercises */
+            exercises: components["schemas"]["ExerciseOut"][];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Missing Results
+             * @description Who still needs a Big Five result before a comparison can be shown.
+             */
+            missing_results: ("you" | "them")[];
+            /** Note */
+            note: string;
+            /**
+             * Other Name
+             * @description The other person's display name, if they set one.
+             */
+            other_name: string | null;
+            /**
+             * Relation Type
+             * @enum {string}
+             */
+            relation_type: "partner" | "friend" | "family" | "colleague";
+            /** Shared Goals */
+            shared_goals: string[];
+            /** Traits */
+            traits: components["schemas"]["TraitComparisonOut"][];
+            /** You Invited */
+            you_invited: boolean;
+        };
+        /** LinkSummary */
+        LinkSummary: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Other Name
+             * @description The other person's display name, if they set one.
+             */
+            other_name: string | null;
+            /**
+             * Relation Type
+             * @enum {string}
+             */
+            relation_type: "partner" | "friend" | "family" | "colleague";
+            /** You Invited */
+            you_invited: boolean;
+        };
         /** LoginIn */
         LoginIn: {
             /**
@@ -1020,6 +1271,26 @@ export interface components {
             email: string;
             /** Password */
             password: string;
+            /** Policy Version */
+            policy_version: string;
+        };
+        /** RelationshipConsentIn */
+        RelationshipConsentIn: {
+            /**
+             * Accepted
+             * @description The user agrees to show the trait bands from their latest Big Five result to the other person for as long as the link exists.
+             * @constant
+             */
+            accepted: true;
+            /** Policy Version */
+            policy_version: string;
+        };
+        /** RelationshipsOut */
+        RelationshipsOut: {
+            /** Invitations */
+            invitations: components["schemas"]["InvitationOut"][];
+            /** Links */
+            links: components["schemas"]["LinkSummary"][];
             /** Policy Version */
             policy_version: string;
         };
@@ -1120,6 +1391,36 @@ export interface components {
         TokenIn: {
             /** Token */
             token: string;
+        };
+        /** TraitComparisonOut */
+        TraitComparisonOut: {
+            /** Misunderstanding */
+            misunderstanding: string | null;
+            /** Name */
+            name: string;
+            /** Note */
+            note: string;
+            /**
+             * Pattern
+             * @enum {string}
+             */
+            pattern: "similar" | "some_difference" | "different";
+            /** Prompt */
+            prompt: string;
+            /** Summary */
+            summary: string;
+            /**
+             * Them
+             * @enum {string}
+             */
+            them: "lower" | "middle" | "higher";
+            /** Trait */
+            trait: string;
+            /**
+             * You
+             * @enum {string}
+             */
+            you: "lower" | "middle" | "higher";
         };
         /** TraitResult */
         TraitResult: {
@@ -2448,6 +2749,435 @@ export interface operations {
             };
             /** @description Unauthorized */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    overview_api_v1_relationships_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RelationshipsOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_invitation_api_v1_relationships_invitations_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateInvitationIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatedInvitation"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Too Many Requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    accept_invitation_api_v1_relationships_invitations_accept_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AcceptInvitationIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkSummary"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_invitation_api_v1_relationships_invitations_preview_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvitationTokenIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvitationPreview"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_invitation_api_v1_relationships_invitations__invitation_id__delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                invitation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_link_api_v1_relationships__link_id__get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                link_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkDetail"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    revoke_link_api_v1_relationships__link_id__delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                link_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

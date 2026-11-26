@@ -24,6 +24,12 @@ export type CoachMessage = Schemas["CoachMessageOut"];
 export type ConversationSummary = Schemas["ConversationSummary"];
 export type Conversation = Schemas["ConversationOut"];
 export type CoachTopic = Schemas["CreateConversationIn"]["topic"];
+export type RelationshipsOut = Schemas["RelationshipsOut"];
+export type RelationType = Schemas["CreateInvitationIn"]["relation_type"];
+export type LinkSummary = Schemas["LinkSummary"];
+export type LinkDetail = Schemas["LinkDetail"];
+export type TraitComparison = Schemas["TraitComparisonOut"];
+export type InvitationPreview = Schemas["InvitationPreview"];
 
 /** Events streamed by POST /coach/conversations/{id}/messages (server-sent events). */
 export type CoachEvent =
@@ -218,6 +224,22 @@ export function createApiClient({
     getConversation: (id: string) => request<Conversation>("GET", `/api/v1/coach/conversations/${seg(id)}`),
     deleteConversation: (id: string) => request<void>("DELETE", `/api/v1/coach/conversations/${seg(id)}`),
     streamCoachMessage,
+
+    // Relationships
+    relationships: () => request<RelationshipsOut>("GET", "/api/v1/relationships"),
+    createInvitation: (relation_type: RelationType, policy_version: string) =>
+      request<Schemas["CreatedInvitation"]>("POST", "/api/v1/relationships/invitations", {
+        body: { relation_type, consent: { accepted: true, policy_version } },
+      }),
+    cancelInvitation: (id: string) => request<void>("DELETE", `/api/v1/relationships/invitations/${seg(id)}`),
+    previewInvitation: (token: string) =>
+      request<InvitationPreview>("POST", "/api/v1/relationships/invitations/preview", { body: { token } }),
+    acceptInvitation: (token: string, policy_version: string) =>
+      request<LinkSummary>("POST", "/api/v1/relationships/invitations/accept", {
+        body: { token, consent: { accepted: true, policy_version } },
+      }),
+    getRelationship: (id: string) => request<LinkDetail>("GET", `/api/v1/relationships/${seg(id)}`),
+    revokeRelationship: (id: string) => request<void>("DELETE", `/api/v1/relationships/${seg(id)}`),
   };
 }
 

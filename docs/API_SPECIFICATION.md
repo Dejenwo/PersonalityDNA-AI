@@ -58,6 +58,20 @@ Signed-in, verified users only. Conversations belong to one user; others get 404
 | DELETE | `/api/v1/coach/conversations/{id}` | Permanent delete (usage counts are kept) |
 | POST | `/api/v1/coach/conversations/{id}/messages` | `{content}` (1–4000 chars). 429 `coach_limit_reached` (details.resets_at), 409 `coach_busy`. Otherwise `text/event-stream` with events `start`, `delta {text}`, `retract` (discard text so far), `done {user_message, assistant_message, remaining}` or `error {code, message, retryable}`. On `error` nothing is saved |
 
+## Relationships (implemented)
+
+Signed-in, verified users only. A link is visible only to its two people; others get 404. Tokens travel in request bodies, never URLs.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/relationships` | Policy version, the user's open invitations and links |
+| POST | `/api/v1/relationships/invitations` | `{relation_type, consent: {accepted, policy_version}}` → 201 with the one-time `token`. 409 `consent_outdated`; 429 `too_many_invitations` (10 open) |
+| DELETE | `/api/v1/relationships/invitations/{id}` | Cancel (inviter only) |
+| POST | `/api/v1/relationships/invitations/preview` | `{token}` → inviter display name, relation type, expiry, policy version. 404 `invitation_not_found` |
+| POST | `/api/v1/relationships/invitations/accept` | `{token, consent}` → 201 link. 409 `own_invitation`, `already_linked`, `consent_outdated`; 404 if used, cancelled or expired |
+| GET | `/api/v1/relationships/{id}` | Comparison: per trait `you`/`them` band, pattern (`similar`, `some_difference`, `different`), summary, note, possible misunderstanding, prompt; plus exercises and shared goals. `missing_results` lists who has no Big Five result. No scores |
+| DELETE | `/api/v1/relationships/{id}` | Either person ends the link for both |
+
 ## Planned (from MASTER_PROMPT.md §14)
 
-Careers, growth plans and exercises, relationship invitations and shares, reports, subscriptions status, payment webhooks (signature-verified, idempotent), privacy export, account deletion, admin and enterprise APIs. Pagination will use opaque cursors (`?cursor=&limit=`). Idempotency keys (`Idempotency-Key` header) on payment and report-creation POSTs.
+Careers, growth plans and exercises, reports, subscriptions status, payment webhooks (signature-verified, idempotent), privacy export, account deletion, admin and enterprise APIs. Pagination will use opaque cursors (`?cursor=&limit=`). Idempotency keys (`Idempotency-Key` header) on payment and report-creation POSTs.

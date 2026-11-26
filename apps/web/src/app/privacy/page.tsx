@@ -37,6 +37,13 @@ export default function PrivacyPage() {
         suggests you may be in danger, the app shows crisis support information instead of sending it to the AI, and
         records only that this happened. While the coach runs in demo mode, nothing is sent to an AI provider.
       </p>
+      <h2 className="pt-4 text-xl font-semibold">Comparing with someone you know</h2>
+      <p>
+        Comparisons are optional and need both people to agree. If you invite someone or accept an invitation, the other
+        person sees only whether each of your Big Five traits from your latest result is lower, middle or higher. They
+        never see your scores, answers, journal or coach conversations. Either of you can end a comparison at any time,
+        and then neither of you can see it. Invitation links work once and expire after 7 days.
+      </p>
       <h2 className="pt-4 text-xl font-semibold">Your choices</h2>
       <p>
         You can stop at any time. With an account you can download all your data or permanently delete your account

@@ -180,6 +180,30 @@ class InterestInterpretations(_Frozen):
     areas: dict[str, InterestArea]
 
 
+class RelationshipTrait(_Frozen):
+    poles: dict[Literal["higher", "lower"], str]
+    shared: dict[Literal["higher", "middle", "lower"], str]
+    complement: str
+    misunderstanding: str
+    prompt: str
+
+
+class Exercise(_Frozen):
+    title: str
+    steps: tuple[str, ...]
+
+
+class RelationshipInsights(_Frozen):
+    id: str
+    version: str
+    locale: str
+    note: str
+    relation_types: dict[str, str]
+    traits: dict[str, RelationshipTrait]
+    exercises: tuple[Exercise, ...]
+    shared_goals: tuple[str, ...]
+
+
 class LoadedFile[T: BaseModel](BaseModel):
     model_config = ConfigDict(frozen=True)
     data: T
@@ -193,6 +217,7 @@ class ContentBundle(BaseModel):
     archetypes: LoadedFile[ArchetypeSet]
     interpretations: LoadedFile[Interpretations]
     interests: LoadedFile[InterestInterpretations]
+    relationships: LoadedFile[RelationshipInsights]
 
     def instrument(self, instrument_id: str, version: str) -> LoadedFile[Instrument]:
         try:
@@ -232,6 +257,8 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
     interpretations = Interpretations.model_validate(interp_data)
     interest_data, interest_sha = _read(content_dir / "scoring-rules" / "interest-interpretations.v1.json")
     interests = InterestInterpretations.model_validate(interest_data)
+    rel_data, rel_sha = _read(content_dir / "scoring-rules" / "relationship-insights.v1.json")
+    relationships = RelationshipInsights.model_validate(rel_data)
 
     trait_ids = set(archetypes.traits)
     for inst_file in instruments.values():
@@ -249,6 +276,11 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
             raise ContentError(f"{inst.id}: {inst.family} instruments use {expected_scoring} scoring")
     if set(interpretations.traits) != trait_ids:
         raise ContentError("trait interpretations do not cover exactly the archetype traits")
+    if set(relationships.traits) != trait_ids:
+        raise ContentError("relationship insights do not cover exactly the archetype traits")
+    for t in relationships.traits.values():
+        if set(t.poles) != {"higher", "lower"} or set(t.shared) != {"higher", "middle", "lower"}:
+            raise ContentError("relationship insights need higher/lower poles and higher/middle/lower notes")
 
     return ContentBundle(
         instruments=instruments,
@@ -258,5 +290,8 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
         ),
         interests=LoadedFile[InterestInterpretations](
             data=interests, sha256=interest_sha, path="interest-interpretations.v1.json"
+        ),
+        relationships=LoadedFile[RelationshipInsights](
+            data=relationships, sha256=rel_sha, path="relationship-insights.v1.json"
         ),
     )

@@ -1,0 +1,115 @@
+{
+  "id": "relationship-insights",
+  "version": "1.0.0",
+  "locale": "en",
+  "note": "These notes compare how two people described themselves. They are conversation starters, not predictions: no pattern of scores makes a relationship more or less likely to work.",
+  "relation_types": {
+    "partner": "Partner",
+    "friend": "Friend",
+    "family": "Family member",
+    "colleague": "Colleague"
+  },
+  "traits": {
+    "openness": {
+      "poles": {
+        "higher": "enjoy new ideas, variety and trying things a different way",
+        "lower": "prefer familiar, practical and proven ways of doing things"
+      },
+      "shared": {
+        "higher": "You may both chase new ideas and plans. Check that someone also keeps track of what is already working.",
+        "middle": "You can probably meet each other halfway between new ideas and familiar routines.",
+        "lower": "You may both prefer the familiar. Now and then, choose something new to try together on purpose."
+      },
+      "complement": "One of you can bring fresh options while the other keeps plans grounded and realistic.",
+      "misunderstanding": "Suggestions for change can feel unsettling to one of you, while sticking with the usual can feel dull to the other.",
+      "prompt": "When did one of you suggest something new recently? How did each of you feel about it?"
+    },
+    "conscientiousness": {
+      "poles": {
+        "higher": "like plans, order and finishing things early",
+        "lower": "like flexibility, spontaneity and deciding closer to the time"
+      },
+      "shared": {
+        "higher": "You may both like plans and standards. Agree where \"good enough\" is fine, so neither of you carries all the pressure.",
+        "middle": "You can probably agree on a level of planning that suits you both.",
+        "lower": "You may both prefer to keep things open. Agree on the few deadlines and tasks that really need a plan."
+      },
+      "complement": "One of you can keep shared tasks on track while the other keeps room for flexibility and fun.",
+      "misunderstanding": "Reminders and plans can feel like pressure to one of you, while a relaxed approach can feel careless to the other.",
+      "prompt": "Which shared task or plan causes the most friction? What would each of you need to feel comfortable with it?"
+    },
+    "extraversion": {
+      "poles": {
+        "higher": "recharge through company and like to talk things through",
+        "lower": "recharge through quiet time and like to think before speaking"
+      },
+      "shared": {
+        "higher": "You may both enjoy busy, social plans. Check in now and then about whether either of you needs a quieter stretch.",
+        "middle": "You can probably balance social time and quiet time without much negotiation.",
+        "lower": "You may both enjoy quiet time. Make sure important topics still get talked about out loud."
+      },
+      "complement": "One of you can open up conversations and social plans while the other brings calm and careful listening.",
+      "misunderstanding": "Needing time alone can look like withdrawal to one of you, while wanting to talk straight away can feel like pressure to the other.",
+      "prompt": "After a long day, what does each of you need first: conversation, or some quiet? How could you make room for both?"
+    },
+    "agreeableness": {
+      "poles": {
+        "higher": "put harmony first and adapt to keep things smooth",
+        "lower": "say what they think directly, even if it causes some friction"
+      },
+      "shared": {
+        "higher": "You may both avoid disagreement. Make it safe to raise small concerns before they grow.",
+        "middle": "You can probably mix warmth and honesty in a way that feels fair to you both.",
+        "lower": "You may both be direct. Remember to say what you appreciate as well as what you disagree with."
+      },
+      "complement": "One of you can keep conversations warm while the other makes sure hard topics are named.",
+      "misunderstanding": "Directness can feel harsh to one of you, while going along with things can feel unclear or unspoken to the other.",
+      "prompt": "Think of a recent disagreement. What did each of you want the other to understand?"
+    },
+    "emotional_stability": {
+      "poles": {
+        "higher": "stay calm under pressure and recover quickly from setbacks",
+        "lower": "feel worry and stress strongly and notice what might go wrong"
+      },
+      "shared": {
+        "higher": "You may both stay calm under pressure. Check that worries still get a chance to be heard.",
+        "middle": "You can probably support each other through ordinary ups and downs.",
+        "lower": "You may both feel stress strongly. Agree on small ways to slow down and support each other on hard days."
+      },
+      "complement": "One of you can bring steadiness while the other notices risks early and cares about getting things right.",
+      "misunderstanding": "Calm can look like not caring to one of you, while worry can look like overreacting to the other.",
+      "prompt": "When one of you is stressed, what helps, and what doesn't? Be specific."
+    }
+  },
+  "exercises": [
+    {
+      "title": "Two-minute turns",
+      "steps": [
+        "Pick one topic that matters to you both.",
+        "One person talks for two minutes while the other only listens.",
+        "The listener sums up what they heard, then you swap."
+      ]
+    },
+    {
+      "title": "Needs, not labels",
+      "steps": [
+        "Each of you finishes the sentence \"When I'm stressed, it helps me when you…\".",
+        "Swap answers and ask one question each.",
+        "Agree on one small thing to try this week."
+      ]
+    },
+    {
+      "title": "Strengths swap",
+      "steps": [
+        "Each of you names one way the other's style has helped you.",
+        "Name one situation where your styles clash.",
+        "Decide who takes the lead in that situation next time."
+      ]
+    }
+  ],
+  "shared_goals": [
+    "Have one unhurried conversation each week about how things are going.",
+    "Agree on one shared plan and how much detail it needs.",
+    "Ask before giving advice: \"Do you want ideas, or just someone to listen?\""
+  ]
+}
