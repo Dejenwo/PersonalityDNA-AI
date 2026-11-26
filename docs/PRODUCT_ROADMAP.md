@@ -1,0 +1,33 @@
+# Product roadmap
+
+Follows MASTER_PROMPT.md §24 (25 phases). Status is kept in DEVELOPMENT_PROGRESS.md; this file explains sequencing and what each phase depends on outside the codebase.
+
+| Phase | Name | Depends on (external) | Order rationale |
+| --- | --- | --- | --- |
+| 1 | Product discovery | Owner for interviews, trademark search | Runs in parallel with engineering |
+| 2 | Architecture | — | Done first, revised by ADRs |
+| 3 | Repository foundation | GitHub Actions minutes | Done |
+| 4 | Design system | Brand/icon decisions by owner | Tokens done; icon and mobile components next |
+| 5 | Authentication | Supabase project (or self-hosted auth) for production | Local auth implementation first, behind an interface |
+| 6 | Assessment engine | — | Done for Big Five |
+| 7 | Personality intelligence | — | Share card, comparison after accounts |
+| 8 | AI coaching | OpenAI/Anthropic API keys and spending limit | Mock provider and safety layer first |
+| 9 | Career intelligence | O*NET Interest Profiler Short Form under CC BY-ND 4.0 (recorded); wording check and legal review before release | |
+| 10 | Relationship intelligence | Done (PR #1) | Invitations, two-sided consent, band comparison, prompts and exercises, revoke |
+| 11 | Leadership intelligence | Instrument choice (original, unvalidated, labelled as such) | |
+| 12 | Emotional awareness | Clinical safety review of wording; crisis resources per country | |
+| 13 | Growth academy | Content writing | |
+| 14 | Journaling and habits | — | Field-level encryption |
+| 15 | Reports | — | PDF generation server-side |
+| 16 | Monetization | Stripe account, RevenueCat, Apple/Google developer accounts | Entitlement service first, providers after |
+| 17 | Administration | — | |
+| 18 | Enterprise portal | Legal review of employer use | |
+| 19 | Internationalization | Professional translators + psychometric review | |
+| 20 | Growth infrastructure | Analytics vendor decision | |
+| 21 | Security hardening | External penetration test (cost) | |
+| 22 | Quality assurance | — | |
+| 23 | Performance engineering | Staging environment | |
+| 24 | Beta release | Owner authorization, hosting accounts | |
+| 25 | Commercial launch | Owner authorization, app store review | |
+
+Phases that need nothing external are done first. Phases that need credentials are built against interfaces with local or mock implementations, so only configuration is missing when credentials arrive.

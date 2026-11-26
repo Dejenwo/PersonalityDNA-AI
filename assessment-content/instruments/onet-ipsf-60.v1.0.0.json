@@ -1,0 +1,494 @@
+{
+  "schema_version": 1,
+  "id": "onet-ipsf-60",
+  "version": "1.0.0",
+  "status": "draft",
+  "family": "interests",
+  "scoring": "count_endorsed",
+  "name": "Career Interests (O*NET® Interest Profiler Short Form)",
+  "tier": "quick",
+  "locale": "en",
+  "estimated_minutes": 10,
+  "instructions": "For each work activity, decide whether you would like to do it. Don't think about whether you have the education or training to do it, or how much money you would make. Just think about whether you would like the activity itself. There are no right or wrong answers.",
+  "response_scale": {
+    "min": 1,
+    "max": 2,
+    "labels": [
+      {
+        "value": 1,
+        "label": "Not for me"
+      },
+      {
+        "value": 2,
+        "label": "I'd like to do this"
+      }
+    ]
+  },
+  "source": {
+    "name": "O*NET® Interest Profiler Short Form (v1)",
+    "url": "https://www.onetcenter.org/IPSF.html",
+    "authors": "National Center for O*NET Development, sponsored by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA)"
+  },
+  "license": {
+    "id": "CC-BY-ND-4.0",
+    "file": "licenses/ONET.md"
+  },
+  "references": [
+    "National Center for O*NET Development. O*NET® Interest Profiler Short Form. U.S. Department of Labor, Employment and Training Administration. https://www.onetcenter.org/IPSF.html",
+    "Holland, J. L. (1997). Making vocational choices: A theory of vocational personalities and work environments (3rd ed.). Psychological Assessment Resources."
+  ],
+  "scales": [
+    {
+      "id": "realistic",
+      "name": "Realistic",
+      "min_items_answered": 10
+    },
+    {
+      "id": "investigative",
+      "name": "Investigative",
+      "min_items_answered": 10
+    },
+    {
+      "id": "artistic",
+      "name": "Artistic",
+      "min_items_answered": 10
+    },
+    {
+      "id": "social",
+      "name": "Social",
+      "min_items_answered": 10
+    },
+    {
+      "id": "enterprising",
+      "name": "Enterprising",
+      "min_items_answered": 10
+    },
+    {
+      "id": "conventional",
+      "name": "Conventional",
+      "min_items_answered": 10
+    }
+  ],
+  "items": [
+    {
+      "id": "ipsf-01",
+      "number": 1,
+      "text": "Build kitchen cabinets",
+      "scale": "realistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-02",
+      "number": 2,
+      "text": "Drive a truck to deliver packages to offices and homes",
+      "scale": "realistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-03",
+      "number": 3,
+      "text": "Lay brick or tile",
+      "scale": "realistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-04",
+      "number": 4,
+      "text": "Test the quality of parts before shipment",
+      "scale": "realistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-05",
+      "number": 5,
+      "text": "Repair household appliances",
+      "scale": "realistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-06",
+      "number": 6,
+      "text": "Repair and install locks",
+      "scale": "realistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-07",
+      "number": 7,
+      "text": "Raise fish in a fish hatchery",
+      "scale": "realistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-08",
+      "number": 8,
+      "text": "Set up and operate machines to make products",
+      "scale": "realistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-09",
+      "number": 9,
+      "text": "Assemble electronic parts",
+      "scale": "realistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-10",
+      "number": 10,
+      "text": "Put out forest fires",
+      "scale": "realistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-11",
+      "number": 11,
+      "text": "Develop a new medicine",
+      "scale": "investigative",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-12",
+      "number": 12,
+      "text": "Investigate the cause of a fire",
+      "scale": "investigative",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-13",
+      "number": 13,
+      "text": "Study ways to reduce water pollution",
+      "scale": "investigative",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-14",
+      "number": 14,
+      "text": "Develop a way to better predict the weather",
+      "scale": "investigative",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-15",
+      "number": 15,
+      "text": "Conduct chemical experiments",
+      "scale": "investigative",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-16",
+      "number": 16,
+      "text": "Work in a biology lab",
+      "scale": "investigative",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-17",
+      "number": 17,
+      "text": "Study the movement of planets",
+      "scale": "investigative",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-18",
+      "number": 18,
+      "text": "Invent a replacement for sugar",
+      "scale": "investigative",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-19",
+      "number": 19,
+      "text": "Examine blood samples using a microscope",
+      "scale": "investigative",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-20",
+      "number": 20,
+      "text": "Do laboratory tests to identify diseases",
+      "scale": "investigative",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-21",
+      "number": 21,
+      "text": "Write books or plays",
+      "scale": "artistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-22",
+      "number": 22,
+      "text": "Paint sets for plays",
+      "scale": "artistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-23",
+      "number": 23,
+      "text": "Play a musical instrument",
+      "scale": "artistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-24",
+      "number": 24,
+      "text": "Write scripts for movies or television shows",
+      "scale": "artistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-25",
+      "number": 25,
+      "text": "Compose or arrange music",
+      "scale": "artistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-26",
+      "number": 26,
+      "text": "Perform jazz or tap dance",
+      "scale": "artistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-27",
+      "number": 27,
+      "text": "Draw pictures",
+      "scale": "artistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-28",
+      "number": 28,
+      "text": "Sing in a band",
+      "scale": "artistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-29",
+      "number": 29,
+      "text": "Create special effects for movies",
+      "scale": "artistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-30",
+      "number": 30,
+      "text": "Edit movies",
+      "scale": "artistic",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-31",
+      "number": 31,
+      "text": "Teach an individual an exercise routine",
+      "scale": "social",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-32",
+      "number": 32,
+      "text": "Teach children how to play sports",
+      "scale": "social",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-33",
+      "number": 33,
+      "text": "Help people with personal or emotional problems",
+      "scale": "social",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-34",
+      "number": 34,
+      "text": "Teach sign language to people who are deaf or hard of hearing",
+      "scale": "social",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-35",
+      "number": 35,
+      "text": "Give career guidance to people",
+      "scale": "social",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-36",
+      "number": 36,
+      "text": "Help conduct a group therapy session",
+      "scale": "social",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-37",
+      "number": 37,
+      "text": "Perform rehabilitation therapy",
+      "scale": "social",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-38",
+      "number": 38,
+      "text": "Take care of children at a day-care center",
+      "scale": "social",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-39",
+      "number": 39,
+      "text": "Do volunteer work at a non-profit organization",
+      "scale": "social",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-40",
+      "number": 40,
+      "text": "Teach a high-school class",
+      "scale": "social",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-41",
+      "number": 41,
+      "text": "Buy and sell stocks and bonds",
+      "scale": "enterprising",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-42",
+      "number": 42,
+      "text": "Negotiate business contracts",
+      "scale": "enterprising",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-43",
+      "number": 43,
+      "text": "Manage a retail store",
+      "scale": "enterprising",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-44",
+      "number": 44,
+      "text": "Represent a client in a lawsuit",
+      "scale": "enterprising",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-45",
+      "number": 45,
+      "text": "Operate a beauty salon or barber shop",
+      "scale": "enterprising",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-46",
+      "number": 46,
+      "text": "Market a new line of clothing",
+      "scale": "enterprising",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-47",
+      "number": 47,
+      "text": "Manage a department within a large company",
+      "scale": "enterprising",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-48",
+      "number": 48,
+      "text": "Sell merchandise at a department store",
+      "scale": "enterprising",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-49",
+      "number": 49,
+      "text": "Start your own business",
+      "scale": "enterprising",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-50",
+      "number": 50,
+      "text": "Manage a clothing store",
+      "scale": "enterprising",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-51",
+      "number": 51,
+      "text": "Develop a spreadsheet using computer software",
+      "scale": "conventional",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-52",
+      "number": 52,
+      "text": "Calculate the wages of employees",
+      "scale": "conventional",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-53",
+      "number": 53,
+      "text": "Proofread records or forms",
+      "scale": "conventional",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-54",
+      "number": 54,
+      "text": "Inventory supplies using a hand-held computer",
+      "scale": "conventional",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-55",
+      "number": 55,
+      "text": "Install software across computers on a large network",
+      "scale": "conventional",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-56",
+      "number": 56,
+      "text": "Record rent payments",
+      "scale": "conventional",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-57",
+      "number": 57,
+      "text": "Operate a calculator",
+      "scale": "conventional",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-58",
+      "number": 58,
+      "text": "Keep inventory records",
+      "scale": "conventional",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-59",
+      "number": 59,
+      "text": "Keep shipping and receiving records",
+      "scale": "conventional",
+      "keyed": "+"
+    },
+    {
+      "id": "ipsf-60",
+      "number": 60,
+      "text": "Stamp, sort, and distribute mail for an organization",
+      "scale": "conventional",
+      "keyed": "+"
+    }
+  ]
+}
