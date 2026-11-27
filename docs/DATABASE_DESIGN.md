@@ -77,6 +77,10 @@ Comparisons are computed on request from each person's latest Big Five result an
 | --- | --- | --- | --- |
 | `share_cards` | Public cards the user chose to share: card content (profile name and description and/or bands, date) in the clear; link token hash for lookup and the token encrypted for the owner | FK user CASCADE; FK report CASCADE; unique token hash | Until the user stops sharing, deletes the report or deletes the account |
 
+## Implemented (migration 0017, indexes)
+
+Every foreign-key column has an index, checked by `tests/test_performance.py`. Migration 0017 added the twelve that were missing (admin roles, billing events, coach conversations, habits, organisations, invitations, memberships and relationship links). On a large live PostgreSQL table, create such an index with `CREATE INDEX CONCURRENTLY` rather than in a locking migration.
+
 ## Implemented (migration 0016, growth infrastructure)
 
 | Table | Purpose | Key constraints | Retention |

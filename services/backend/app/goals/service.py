@@ -2,6 +2,8 @@
 rest; every query is scoped to the owner. Nothing here logs user text."""
 
 import uuid
+from collections import defaultdict
+from collections.abc import Sequence
 from datetime import UTC, date, datetime, timedelta
 
 from sqlalchemy import delete, func, select
@@ -24,6 +26,9 @@ from app.goals.schemas import (
     WindowOut,
 )
 from app.security.crypto import FieldCipher
+
+# Check history loaded per habit: enough for the 30-day window and the four-week grid.
+HISTORY_DAYS = 40
 
 MAX_GOALS = 100
 MAX_MILESTONES = 20
@@ -66,11 +71,25 @@ class GoalService:
             raise ApiError(404, "not_found", "Goal not found.")
         return g
 
-    def goal_out(self, db: Session, g: Goal) -> GoalOut:
-        ms = db.scalars(
-            select(GoalMilestone).where(GoalMilestone.goal_id == g.id).order_by(GoalMilestone.position)
-        ).all()
-        habit_ids = db.scalars(select(Habit.id).where(Habit.goal_id == g.id).order_by(Habit.created_at)).all()
+    def goal_out(
+        self,
+        db: Session,
+        g: Goal,
+        milestones: Sequence[GoalMilestone] | None = None,
+        habit_ids: Sequence[uuid.UUID] | None = None,
+    ) -> GoalOut:
+        """Milestones and habit ids can be passed in when listing many goals, to avoid a query per goal."""
+        ms = (
+            milestones
+            if milestones is not None
+            else db.scalars(
+                select(GoalMilestone).where(GoalMilestone.goal_id == g.id).order_by(GoalMilestone.position)
+            ).all()
+        )
+        if habit_ids is None:
+            habit_ids = db.scalars(
+                select(Habit.id).where(Habit.goal_id == g.id).order_by(Habit.created_at)
+            ).all()
         return GoalOut(
             id=str(g.id),
             title=self._dec(g.title_encrypted, g.id, "goal-title"),
@@ -93,9 +112,23 @@ class GoalService:
         )
 
     def goals(self, db: Session, user: User) -> list[GoalOut]:
-        rows = db.scalars(select(Goal).where(Goal.user_id == user.id).order_by(Goal.created_at.desc()))
+        rows = db.scalars(select(Goal).where(Goal.user_id == user.id).order_by(Goal.created_at.desc())).all()
+        ids = [g.id for g in rows]
+        milestones: dict[uuid.UUID, list[GoalMilestone]] = defaultdict(list)
+        habits: dict[uuid.UUID, list[uuid.UUID]] = defaultdict(list)
+        if ids:
+            for m in db.scalars(
+                select(GoalMilestone).where(GoalMilestone.goal_id.in_(ids)).order_by(GoalMilestone.position)
+            ):
+                milestones[m.goal_id].append(m)
+            for hid, gid in db.execute(
+                select(Habit.id, Habit.goal_id).where(Habit.goal_id.in_(ids)).order_by(Habit.created_at)
+            ):
+                if gid is not None:  # always set by the filter; narrows the type
+                    habits[gid].append(hid)
         order = {"active": 0, "completed": 1, "archived": 2}
-        return sorted((self.goal_out(db, g) for g in rows), key=lambda g: order[g.status])
+        out = (self.goal_out(db, g, milestones[g.id], habits[g.id]) for g in rows)
+        return sorted(out, key=lambda g: order[g.status])
 
     def create_goal(self, db: Session, user: User, body: GoalIn) -> GoalOut:
         count = db.scalar(select(func.count()).select_from(Goal).where(Goal.user_id == user.id)) or 0
@@ -212,11 +245,13 @@ class GoalService:
             raise ApiError(404, "not_found", "Habit not found.")
         return h
 
-    def habit_out(self, db: Session, h: Habit, today: date) -> HabitOut:
-        since = today - timedelta(days=40)
-        done = set(
-            db.scalars(select(HabitCheck.day).where(HabitCheck.habit_id == h.id, HabitCheck.day >= since))
-        )
+    def habit_out(self, db: Session, h: Habit, today: date, done: set[date] | None = None) -> HabitOut:
+        """`done` (check days in the last 40) can be passed in when listing many habits."""
+        if done is None:
+            since = today - timedelta(days=HISTORY_DAYS)
+            done = set(
+                db.scalars(select(HabitCheck.day).where(HabitCheck.habit_id == h.id, HabitCheck.day >= since))
+            )
 
         def win(n: int) -> WindowOut:
             w = stats.window(h.days, done, h.start_date, today, n)
@@ -241,8 +276,17 @@ class GoalService:
         )
 
     def habits(self, db: Session, user: User, today: date) -> list[HabitOut]:
-        rows = db.scalars(select(Habit).where(Habit.user_id == user.id).order_by(Habit.created_at))
-        out = [self.habit_out(db, h, today) for h in rows]
+        rows = db.scalars(select(Habit).where(Habit.user_id == user.id).order_by(Habit.created_at)).all()
+        done: dict[uuid.UUID, set[date]] = defaultdict(set)
+        if rows:
+            since = today - timedelta(days=HISTORY_DAYS)
+            for hid, day in db.execute(
+                select(HabitCheck.habit_id, HabitCheck.day).where(
+                    HabitCheck.habit_id.in_([h.id for h in rows]), HabitCheck.day >= since
+                )
+            ):
+                done[hid].add(day)
+        out = [self.habit_out(db, h, today, done[h.id]) for h in rows]
         return sorted(out, key=lambda h: h.archived)
 
     def _linked_goal(self, db: Session, user: User, goal_id: str | None) -> uuid.UUID | None:

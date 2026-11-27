@@ -15,6 +15,11 @@ class Settings(BaseSettings):
 
     environment: str = Field(default="development", pattern="^(development|test|staging|production)$")
     database_url: str = "sqlite:///./pdna-local.db"
+    # Connection pool per API process (PostgreSQL). Keep workers x (size + overflow) below the
+    # server's connection limit, or put a pooler (PgBouncer) in front. See docs/PERFORMANCE_TESTING.md.
+    db_pool_size: int = Field(default=5, ge=1, le=100)
+    db_max_overflow: int = Field(default=10, ge=0, le=100)
+    db_pool_timeout_seconds: int = Field(default=10, ge=1, le=60)
     content_dir: Path = REPO_ROOT / "assessment-content"
     # Load draft assessment content. Defaults to on in development and test only.
     content_include_drafts: bool | None = None

@@ -5,10 +5,15 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
 
-def make_engine(url: str) -> Engine:
+def make_engine(url: str, *, pool_size: int = 5, max_overflow: int = 10, pool_timeout: int = 10) -> Engine:
     kwargs: dict[str, object] = {"pool_pre_ping": True}
     if url.startswith("sqlite"):
         kwargs["connect_args"] = {"check_same_thread": False}
+    else:
+        # Recycle before typical server and load-balancer idle timeouts close connections.
+        kwargs.update(
+            pool_size=pool_size, max_overflow=max_overflow, pool_timeout=pool_timeout, pool_recycle=1800
+        )
     engine = create_engine(url, **kwargs)
     if url.startswith("sqlite"):
 
@@ -20,8 +25,12 @@ def make_engine(url: str) -> Engine:
 
 
 class Database:
-    def __init__(self, url: str) -> None:
-        self.engine = make_engine(url)
+    def __init__(
+        self, url: str, *, pool_size: int = 5, max_overflow: int = 10, pool_timeout: int = 10
+    ) -> None:
+        self.engine = make_engine(
+            url, pool_size=pool_size, max_overflow=max_overflow, pool_timeout=pool_timeout
+        )
         self.sessionmaker = sessionmaker(self.engine, expire_on_commit=False)
 
     def session(self) -> Iterator[Session]:

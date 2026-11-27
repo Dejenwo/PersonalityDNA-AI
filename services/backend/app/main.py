@@ -49,7 +49,12 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     content = load_content(
         settings.content_dir, include_drafts=settings.include_drafts
     )  # fail fast on invalid content
-    db = Database(settings.database_url)
+    db = Database(
+        settings.database_url,
+        pool_size=settings.db_pool_size,
+        max_overflow=settings.db_max_overflow,
+        pool_timeout=settings.db_pool_timeout_seconds,
+    )
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:

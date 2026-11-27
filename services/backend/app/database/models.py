@@ -255,9 +255,11 @@ class CoachConversation(Base):
     result_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("assessment_results.id", ondelete="SET NULL", name="fk_coach_conversations_result_id"),
         nullable=True,
+        index=True,
     )
     consent_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("consent_records.id", ondelete="RESTRICT", name="fk_coach_conversations_consent_id")
+        ForeignKey("consent_records.id", ondelete="RESTRICT", name="fk_coach_conversations_consent_id"),
+        index=True,
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
@@ -349,6 +351,7 @@ class RelationshipInvitation(Base):
     consent_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("consent_records.id", ondelete="SET NULL", name="fk_relationship_invitations_consent_id"),
         nullable=True,
+        index=True,
     )
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
@@ -376,12 +379,14 @@ class RelationshipLink(Base):
             "consent_records.id", ondelete="SET NULL", name="fk_relationship_links_inviter_consent_id"
         ),
         nullable=True,
+        index=True,
     )
     invitee_consent_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey(
             "consent_records.id", ondelete="SET NULL", name="fk_relationship_links_invitee_consent_id"
         ),
         nullable=True,
+        index=True,
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -543,7 +548,7 @@ class Habit(Base):
         ForeignKey("users.id", ondelete="CASCADE", name="fk_habits_user_id_users"), index=True
     )
     goal_id: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey("goals.id", ondelete="SET NULL", name="fk_habits_goal_id_goals"), nullable=True
+        ForeignKey("goals.id", ondelete="SET NULL", name="fk_habits_goal_id_goals"), nullable=True, index=True
     )
     title_encrypted: Mapped[str] = mapped_column(Text)
     days: Mapped[int] = mapped_column(Integer)
@@ -646,7 +651,9 @@ class BillingEvent(Base):
     event_id: Mapped[str] = mapped_column(String(255))
     event_type: Mapped[str] = mapped_column(String(64))
     user_id: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey("users.id", ondelete="SET NULL", name="fk_billing_events_user_id_users"), nullable=True
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_billing_events_user_id_users"),
+        nullable=True,
+        index=True,
     )
     received_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -669,7 +676,9 @@ class AdminRole(Base):
     )
     role: Mapped[str] = mapped_column(String(16))
     granted_by: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey("users.id", ondelete="SET NULL", name="fk_admin_roles_granted_by_users"), nullable=True
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_admin_roles_granted_by_users"),
+        nullable=True,
+        index=True,
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -687,7 +696,9 @@ class Organization(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
     name: Mapped[str] = mapped_column(String(120))
     created_by: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey("users.id", ondelete="SET NULL", name="fk_organizations_created_by_users"), nullable=True
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_organizations_created_by_users"),
+        nullable=True,
+        index=True,
     )
     licence: Mapped[str] = mapped_column(String(16), default="pilot")
     seat_limit: Mapped[int] = mapped_column(Integer)
@@ -716,7 +727,9 @@ class OrgMember(Base):
     role: Mapped[str] = mapped_column(String(16))
     share_aggregates: Mapped[bool] = mapped_column(default=False)
     consent_id: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey("consent_records.id", ondelete="SET NULL", name="fk_org_members_consent_id"), nullable=True
+        ForeignKey("consent_records.id", ondelete="SET NULL", name="fk_org_members_consent_id"),
+        nullable=True,
+        index=True,
     )
     joined_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -733,7 +746,9 @@ class OrgInvitation(Base):
         index=True,
     )
     created_by: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey("users.id", ondelete="SET NULL", name="fk_org_invitations_created_by_users"), nullable=True
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_org_invitations_created_by_users"),
+        nullable=True,
+        index=True,
     )
     role: Mapped[str] = mapped_column(String(16))
     token_hash: Mapped[str] = mapped_column(String(64), unique=True)
@@ -758,7 +773,9 @@ class OrgProgram(Base):
     growth_program_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
     learning: Mapped[list[dict[str, str]]] = mapped_column(JSON, default=list)
     created_by: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey("users.id", ondelete="SET NULL", name="fk_org_programs_created_by_users"), nullable=True
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_org_programs_created_by_users"),
+        nullable=True,
+        index=True,
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
