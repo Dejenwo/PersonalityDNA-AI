@@ -4,11 +4,11 @@ Method: STRIDE over the current data flows. Revisit at each phase that adds a da
 
 ## Assets
 
-Assessment answers and results (sensitive personal data), resume tokens, consent records, future: accounts, journals, coaching conversations, payment state.
+Assessment answers and results (sensitive personal data), resume tokens, consent records, accounts and sessions, journals, coaching conversations, goals and habits, reports and share links, relationship and organisation memberships, payment state, admin roles.
 
 ## Data flows today
 
-Browser ⇄ Web app (static/JS) ; Browser ⇄ API (JSON, `X-Session-Token`) ; API ⇄ PostgreSQL.
+Browser ⇄ Web app (static/JS) ; Browser ⇄ API (JSON, bearer access token, httpOnly refresh cookie or `X-Session-Token` for anonymous assessments) ; API ⇄ PostgreSQL ; API ⇄ email provider ; API ⇄ Stripe and RevenueCat (signed webhooks) ; API ⇄ LLM provider (consented scores only, when enabled) ; daily jobs (reminders, retention) ⇄ PostgreSQL.
 
 ## Threats and mitigations
 
@@ -49,6 +49,11 @@ Browser ⇄ Web app (static/JS) ; Browser ⇄ API (JSON, `X-Session-Token`) ; AP
 | T28 | Information disclosure | Admins reading private journals, coaching or answers | No admin endpoint returns encrypted fields or content; tests assert private text never appears | Mitigated, tested |
 | T29 | Information disclosure | An organisation re-identifying a member's results from group statistics | Only opted-in members counted; organisations can't see who opted in; group minimum 10; a trait shows only when every band has 3 or more; programme counts under 3 hidden; no individual endpoint | Mitigated, tested; differencing over time is a residual risk (ADR-023) |
 | T30 | Elevation of privilege | A member or leaked join link gaining management rights or extra seats | Role checks per action (403 for members, 404 for non-members); admins can't invite admins or remove admins or owners; links hashed, limited uses and expiry, cancellable; seat limit checked under a row lock; always one owner | Mitigated, tested |
+| T31 | Information disclosure | Notifications or reminder emails exposing private content (journal, goals, habits, results) in inboxes or lock screens | Text comes from fixed templates with counts only; tested that habit titles never appear; reminder emails off by default; only active, verified accounts emailed | Mitigated, tested |
+| T32 | Information disclosure | Referral or analytics data identifying people (who joined, who pays, browsing) | Referrers see a count only, never names or billing; events carry no cookie, account or page address; whitelist, rate limit, always 204 | Mitigated, tested |
+| T33 | Spoofing | A stolen session or password used without the owner noticing | Refresh-token reuse ends every session in the family; password changes revoke all sessions; both send a security notice by email and in the app that can't be switched off | Mitigated, tested |
+| T34 | Information disclosure | Data kept after its purpose ends (abandoned anonymous answers, old tokens, invitations, audit trail) | Daily purge job with fixed retention per kind; account deletion leaves no row referencing the person | Mitigated, tested; needs the job scheduled in deployment |
+| T35 | Elevation of privilege | A new endpoint shipped without sign-in or ownership checks | Whole-API sweeps run every operation in the OpenAPI document unauthenticated and cross-account; a new public route must be added to an explicit list | Mitigated, tested; write routes with required bodies are covered by per-domain tests (validation answers 422 first in the sweep) |
 
 ## Future flows to model
 

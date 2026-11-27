@@ -49,6 +49,7 @@ from app.database.models import (
     User,
 )
 from app.i18n.locales import load_locales
+from app.marketing.service import acquisition_summary, event_totals
 from app.reports.builder import REPORT_VERSION
 from app.scoring.engine import ENGINE_VERSION
 
@@ -358,8 +359,12 @@ class AdminService:
                 .subquery()
             )
         )
+        referred, by_source = acquisition_summary(db)
         return Metrics(
             generated_at=now,
+            product_events_30_days=event_totals(db),
+            referred_signups_30_days=referred,
+            signups_by_source_30_days=by_source,
             users=window(User, User.created_at),
             verified_users=db.scalar(select(func.count()).where(User.email_verified_at.is_not(None))) or 0,
             disabled_users=db.scalar(select(func.count()).where(User.status == "disabled")) or 0,

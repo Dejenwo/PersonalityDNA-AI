@@ -5,6 +5,11 @@ export const metadata: Metadata = { title: "Learn" };
 
 const TRACKS = [
   {
+    href: "/big-five",
+    title: "The Big Five traits",
+    text: "What the five traits are, where the model comes from, and what a personality questionnaire can and can't tell you.",
+  },
+  {
     href: "/growth",
     title: "Growth programmes",
     text: "Seven-day challenges and 30, 60 and 90-day programmes with a short exercise each day, weekly milestones and self-checks.",

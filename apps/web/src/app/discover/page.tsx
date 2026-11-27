@@ -5,6 +5,7 @@ import { api } from "@/lib/api";
 import { errorMessage } from "@/lib/errors";
 import { useAsync } from "@/lib/use-async";
 import { Button, ButtonLink, Card, EmptyState, ErrorState, LoadingState } from "@/components/ui";
+import { TrackView } from "@/components/growth-tracking";
 
 const tierCopy: Record<AssessmentSummary["tier"], { label: string; blurb: string }> = {
   quick: { label: "Quick Discovery", blurb: "A short first look at your Big Five profile. Free." },
@@ -32,6 +33,7 @@ export default function DiscoverPage() {
   const state = useAsync(() => api.listAssessments(), "assessments");
   return (
     <>
+      <TrackView event="assessment_intro_view" />
       <h1 className="text-3xl font-bold">Discover</h1>
       <p className="mt-2 max-w-2xl text-ink-muted">
         Choose an assessment. Answer honestly and describe yourself as you generally are, not as you wish to be.

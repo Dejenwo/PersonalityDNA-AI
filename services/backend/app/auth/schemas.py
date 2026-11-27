@@ -6,6 +6,17 @@ from pydantic import EmailStr, Field
 
 from app.api.schemas import Model
 
+_TAG = r"^[a-z0-9][a-z0-9_.-]{0,63}$"
+
+
+class AttributionIn(Model):
+    """First-touch tags from the landing link. Unknown referral codes are ignored."""
+
+    referral: str | None = Field(default=None, pattern=r"^[a-z0-9]{4,16}$")
+    source: str | None = Field(default=None, pattern=_TAG)
+    medium: str | None = Field(default=None, pattern=_TAG)
+    campaign: str | None = Field(default=None, pattern=_TAG)
+
 
 class RegisterIn(Model):
     email: EmailStr
@@ -14,6 +25,7 @@ class RegisterIn(Model):
     accepted_terms: bool
     age_confirmed_18_plus: bool
     policy_version: str = Field(max_length=32)
+    attribution: AttributionIn | None = None
 
 
 class EmailIn(Model):

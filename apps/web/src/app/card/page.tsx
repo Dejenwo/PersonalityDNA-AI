@@ -4,6 +4,7 @@ import type { PublicCard } from "@pdna/api-client";
 import { useEffect, useState } from "react";
 import { PersonalityCard } from "@/components/personality-card";
 import { ButtonLink, ErrorState, LoadingState } from "@/components/ui";
+import { TrackView } from "@/components/growth-tracking";
 import { api } from "@/lib/api";
 import { errorMessage, isNotFound } from "@/lib/errors";
 import { tokenFromHash } from "@/lib/share";
@@ -46,6 +47,7 @@ export default function SharedCardPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
+      <TrackView event="share_card_view" />
       <h1 className="text-3xl font-bold">A shared personality card</h1>
       <PersonalityCard card={load.card} />
       <div className="flex flex-wrap gap-3">

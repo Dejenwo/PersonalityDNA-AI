@@ -6,7 +6,7 @@ Not legal advice. A qualified privacy lawyer must review before launch; no compl
 
 | Data | Purpose | Basis (proposed) | Retention |
 | --- | --- | --- | --- |
-| Answers, timestamps | Score and show results | Consent | Anonymous: until user deletes, incomplete purged after 30 days (job pending) |
+| Answers, timestamps | Score and show results | Consent | Anonymous: until user deletes, unfinished ones deleted after 30 days (`scripts/purge_expired.py`) |
 | Results | Show results, history | Consent | As above |
 | Consent records | Prove consent | Legal obligation | Life of data + statutory period |
 | Client IP (in memory only, rate limiting) | Abuse prevention | Legitimate interest | Not persisted |
@@ -20,8 +20,11 @@ Not legal advice. A qualified privacy lawyer must review before launch; no compl
 | Share cards (profile name and description and/or Big Five bands; never names, emails or scores) | Public card the user chose to share by link | Consent (the user's choice to share; withdrawn by stopping sharing) | Until the user stops sharing, deletes the report or the account |
 | Goals, milestones and habits (titles and reasons encrypted; dates, status and done days in the clear) | Goal and habit tracking for the user only | Contract | Until the user deletes them or the account |
 | Growth programme progress (programme, start and finish time, days done, weekly self-check ratings 1 to 5) | Show progress through programmes; ratings are for the user's own reflection and are not sent to AI providers | Contract | Until the user leaves or restarts the programme, or deletes the account |
+| Referral code and acquisition tags (referrer, source, medium, campaign) | Show people how many joined with their link; count sign-ups by campaign | Legitimate interest (to review) | Until account deletion |
+| Notifications and preferences (fixed-template text, never private content) | In-app notices, reminders and email choices | Contract; news by consent (opt-in) | Notifications 90 days; preferences until account deletion |
+| Daily event counts (event name, day, count) | Understand which public pages are used | Not personal data | Aggregate only |
 
-No names, emails, device identifiers, analytics or third-party trackers are collected today.
+No device identifiers or third-party trackers are collected. Product analytics are daily counts with no identifier, and browsers sending Global Privacy Control or Do Not Track are not counted. First-touch campaign tags are kept in device storage for up to 30 days and sent only with registration; a lawyer should confirm this is strictly necessary, or it moves behind consent, before an EU launch (ADR-025).
 
 ## Requirements
 

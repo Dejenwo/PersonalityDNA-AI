@@ -9,9 +9,12 @@ from sqlalchemy.orm import Session
 
 from app.api.errors import ApiError
 from app.auth.passwords import DUMMY_HASH, hash_password, needs_rehash, password_problem, verify_password
+from app.auth.schemas import AttributionIn
 from app.core.config import Settings
 from app.database.models import AuditEvent, AuthToken, ConsentRecord, RefreshToken, User
+from app.marketing.service import record_acquisition
 from app.notifications.email import OutgoingEmail
+from app.notifications.service import NotificationService
 from app.organizations.service import before_account_deletion
 from app.security.consent import CURRENT_POLICY_VERSION
 from app.security.tokens import hash_token, new_token
@@ -84,9 +87,15 @@ class Mailer:
 
 
 class AuthService:
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: Settings, notifications: NotificationService | None = None) -> None:
         self.s = settings
         self.mail = Mailer(settings)
+        self.notifications = notifications
+
+    def _security_notice(self, db: Session, user: User | None, title: str, body: str, link: str) -> None:
+        # Security notices can't be turned off (see notifications.KINDS).
+        if user is not None and self.notifications is not None:
+            self.notifications.notify(db, user, "security", title, body, link)
 
     # ---- tokens emailed to users -------------------------------------------------------
     def _email_token(self, db: Session, user: User, purpose: str, ttl: timedelta) -> str:
@@ -132,6 +141,7 @@ class AuthService:
         accepted_terms: bool,
         age_confirmed: bool,
         policy_version: str,
+        attribution: AttributionIn | None = None,
     ) -> list[OutgoingEmail]:
         if not accepted_terms:
             raise ApiError(422, "consent_required", "Please accept the terms and privacy notice.")
@@ -171,6 +181,15 @@ class AuthService:
                 age_confirmed_18_plus=True,
             )
         )
+        if attribution is not None:
+            record_acquisition(
+                db,
+                user.id,
+                attribution.referral,
+                attribution.source,
+                attribution.medium,
+                attribution.campaign,
+            )
         _audit(db, "user.registered", user.id)
         return [self.mail.verify(email, self._commit_token(db, user, "verify_email"))]
 
@@ -244,6 +263,14 @@ class AuthService:
                 update(RefreshToken).where(RefreshToken.family_id == row.family_id).values(revoked_at=_now())
             )
             _audit(db, "user.refresh_reuse_detected", row.user_id)
+            self._security_notice(
+                db,
+                db.get(User, row.user_id),
+                "We signed you out everywhere",
+                "An old sign-in session was used again, so we ended every session on your account as a "
+                "precaution. Sign in again. If you didn't expect this, reset your password.",
+                "/login",
+            )
             db.commit()
             raise invalid
         user = db.get(User, row.user_id)
@@ -288,6 +315,14 @@ class AuthService:
         user.email_verified_at = user.email_verified_at or _now()
         self.revoke_all(db, user.id)
         _audit(db, "user.password_reset", user.id)
+        self._security_notice(
+            db,
+            user,
+            "Your password was changed",
+            "Your PersonalityDNA password was just changed and every session was signed out. "
+            "If this wasn't you, reset your password straight away.",
+            "/forgot-password",
+        )
         db.commit()
 
     # ---- deletion -------------------------------------------------------------------------

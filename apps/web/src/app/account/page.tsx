@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import type { Referral } from "@pdna/api-client";
 import { BillingCard } from "@/components/billing-card";
 import { LanguageSelect } from "@/components/language-select";
 import { useI18n } from "@/i18n/provider";
@@ -99,6 +100,18 @@ export default function AccountPage() {
       <LanguageCard />
 
       <Card>
+        <h2 className="text-xl font-semibold">Notifications</h2>
+        <p className="mt-1 text-ink-muted">
+          Choose which reminders and updates you get in the app or by email. Security notices are always on.
+        </p>
+        <ButtonLink href="/notifications" variant="secondary" className="mt-4">
+          Notification settings
+        </ButtonLink>
+      </Card>
+
+      <ReferralCard />
+
+      <Card>
         <h2 className="text-xl font-semibold">Organisations</h2>
         <p className="mt-1 text-ink-muted">
           Teams and groups you belong to, and voluntary development programmes they run. They never see your results.
@@ -169,6 +182,68 @@ function LanguageCard() {
         <LanguageSelect id="account-language" label={t("language.label")} onSaved={() => setSaved(true)} />
       </div>
       {saved && <FormMessage kind="success">{t("language.saved")}</FormMessage>}
+    </Card>
+  );
+}
+
+function ReferralCard() {
+  const [referral, setReferral] = useState<Referral | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    api.myReferral().then(
+      (r) => alive && setReferral(r),
+      (err: unknown) => alive && setError(errorMessage(err)),
+    );
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  async function copy() {
+    if (!referral) return;
+    try {
+      await navigator.clipboard.writeText(referral.link);
+      setCopied(true);
+    } catch {
+      setCopied(false);
+    }
+  }
+
+  return (
+    <Card>
+      <h2 className="text-xl font-semibold">Invite friends</h2>
+      {error ? (
+        <FormMessage kind="error">{error}</FormMessage>
+      ) : !referral ? (
+        <p className="mt-1 text-ink-muted">Loading your link…</p>
+      ) : (
+        <>
+          <p className="mt-1 text-ink-muted">{referral.note}</p>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <label htmlFor="referral-link" className="sr-only">
+              Your invite link
+            </label>
+            <input
+              id="referral-link"
+              readOnly
+              value={referral.link}
+              onFocus={(e) => e.currentTarget.select()}
+              className="min-w-0 flex-1 rounded-lg border border-line bg-surface px-3 py-2 text-sm"
+            />
+            <Button variant="secondary" onClick={copy}>
+              Copy link
+            </Button>
+          </div>
+          {copied && <FormMessage kind="success">Link copied.</FormMessage>}
+          <p className="mt-3 text-sm">
+            {referral.joined === 1
+              ? "1 person has joined with your link."
+              : `${referral.joined} people have joined with your link.`}
+          </p>
+        </>
+      )}
     </Card>
   );
 }

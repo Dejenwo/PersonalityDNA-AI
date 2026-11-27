@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { FormMessage } from "@/components/form";
 import { Button, Card, EmptyState, ErrorState, LoadingState } from "@/components/ui";
+import { TrackView } from "@/components/growth-tracking";
 import { api } from "@/lib/api";
 import { errorMessage } from "@/lib/errors";
 import { ROLE_LABEL } from "@/lib/orgs";
@@ -30,6 +31,7 @@ export default function OrgsPage() {
   const { organisations, policy_version } = data.data!;
   return (
     <div className="mx-auto max-w-3xl space-y-10">
+      <TrackView event="organisations_view" />
       <header>
         <h1 className="text-3xl font-bold">Organisations</h1>
         <p className="mt-2 text-ink-muted">

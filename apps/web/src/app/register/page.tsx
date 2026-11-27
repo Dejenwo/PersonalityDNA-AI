@@ -5,7 +5,16 @@ import { useState, type FormEvent } from "react";
 import { FormMessage, TextField } from "@/components/form";
 import { Button, Card } from "@/components/ui";
 import { api, PRIVACY_POLICY_VERSION } from "@/lib/api";
+import { clearAttribution, storedAttribution } from "@/lib/attribution";
 import { errorMessage } from "@/lib/errors";
+
+function localStore() {
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+}
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -29,7 +38,9 @@ export default function RegisterPage() {
         accepted_terms: terms,
         age_confirmed_18_plus: adult,
         policy_version: PRIVACY_POLICY_VERSION,
+        attribution: storedAttribution(localStore()),
       });
+      clearAttribution(localStore());
       setSentTo(email);
     } catch (err) {
       setError(errorMessage(err));

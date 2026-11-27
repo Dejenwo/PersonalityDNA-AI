@@ -113,6 +113,7 @@ def register(body: RegisterIn, request: Request, background: BackgroundTasks, db
         accepted_terms=body.accepted_terms,
         age_confirmed=body.age_confirmed_18_plus,
         policy_version=body.policy_version,
+        attribution=body.attribution,
     )
     _send(background, request, emails)
     return MessageOut(message="Check your email to confirm your account.")

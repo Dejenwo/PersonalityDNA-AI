@@ -682,5 +682,15 @@ def before_account_deletion(db: Session, user_id: uuid.UUID) -> None:
         _audit(db, "org.owner_succeeded", None, m.org_id, member_id=str(heir.id))
 
 
+def managers(db: Session, org_id: uuid.UUID) -> list[User]:
+    return list(
+        db.scalars(
+            select(User)
+            .join(OrgMember, OrgMember.user_id == User.id)
+            .where(OrgMember.org_id == org_id, OrgMember.role.in_(MANAGE))
+        )
+    )
+
+
 def export_for(db: Session, user: User) -> list[dict[str, object]]:
     return [s.model_dump(mode="json") for s in list_mine(db, user).organisations]

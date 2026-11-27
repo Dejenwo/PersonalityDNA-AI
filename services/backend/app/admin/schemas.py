@@ -87,6 +87,11 @@ class Metrics(BaseModel):
     coach_active_users_30_days: int
     cost_note: str
     feature_users: dict[str, int]
+    product_events_30_days: dict[str, int] = Field(
+        description="Anonymous daily counters (no user ids): landing, pricing and other page views."
+    )
+    referred_signups_30_days: int
+    signups_by_source_30_days: dict[str, int]
 
 
 class ContentFile(BaseModel):

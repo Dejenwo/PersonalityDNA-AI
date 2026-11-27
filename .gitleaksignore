@@ -1,3 +1,7 @@
 # Confirmed false positives only. Each entry names one finding: commit:file:rule:line.
 # Made-up invitation token in a web unit test (replaced in b3a62da); approved by the owner on 2026-11-26.
 707714fbc52b4848dcdc0a3d64ac05ba64106450:apps/web/src/lib/relationships.test.ts:generic-api-key:13
+# Browser storage item name "pdna.attribution.v1" held in a constant named KEY (renamed in the next commit); not a secret.
+62b9ccad70f7dbcafc57ff23c5541fd65b066ee1:apps/web/src/lib/attribution.ts:generic-api-key:6
+# Made-up marker string "Zebra-sentinel-7731" in a log-privacy test, held in a constant named SECRET (renamed in the next commit); not a secret.
+be0d21f5d6f53d352e068d92cbe5b8ac24d41735:services/backend/tests/test_security.py:generic-api-key:61

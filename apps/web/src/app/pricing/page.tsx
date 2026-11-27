@@ -4,6 +4,7 @@ import type { Plan } from "@pdna/api-client";
 import { useState } from "react";
 import { FormMessage } from "@/components/form";
 import { Button, ButtonLink, Card, ErrorState, LoadingState } from "@/components/ui";
+import { TrackView } from "@/components/growth-tracking";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { annualSaving, priceLabel } from "@/lib/billing";
@@ -67,6 +68,7 @@ export default function PricingPage() {
 
   return (
     <div className="space-y-8">
+      <TrackView event="pricing_view" />
       <header>
         <h1 className="text-3xl font-bold">Plans and pricing</h1>
         <p className="mt-2 max-w-2xl text-ink-muted">{plans.free_note}</p>

@@ -4,7 +4,7 @@ allow an action get 403."""
 import uuid
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Request, Response, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_content, get_db
@@ -78,8 +78,15 @@ def preview(body: OrgTokenIn, user: Verified, db: Db) -> OrgInvitationPreview:
 
 
 @router.post("/invitations/accept", response_model=OrgOut, responses=CONFLICT)
-def accept(body: OrgAcceptIn, user: Verified, db: Db) -> OrgOut:
-    return service.accept(db, user, body.token, body.consent)
+def accept(body: OrgAcceptIn, request: Request, user: Verified, db: Db) -> OrgOut:
+    org = service.accept(db, user, body.token, body.consent)
+    for manager in service.managers(db, org.id):
+        if manager.id != user.id:
+            request.app.state.notifications.notify(
+                db, manager, "organisations", f"A new member joined {org.name}", "", f"/orgs/{org.id}"
+            )
+    db.commit()
+    return org
 
 
 @router.get("/{org_id}", response_model=OrgOut)

@@ -11,7 +11,7 @@ from app.api.errors import ApiError
 from app.api.schemas import ErrorResponse
 from app.assessments.content import ContentBundle
 from app.auth.deps import CurrentUser
-from app.database.models import User
+from app.database.models import RelationshipLink, User
 from app.relationships import service
 from app.relationships.schemas import (
     AcceptInvitationIn,
@@ -85,8 +85,26 @@ def preview_invitation(body: InvitationTokenIn, user: Verified, db: Db) -> Invit
     status_code=status.HTTP_201_CREATED,
     responses={**NOT_FOUND, 409: {"model": ErrorResponse}},
 )
-def accept_invitation(body: AcceptInvitationIn, user: Verified, db: Db) -> LinkSummary:
-    return service.accept(db, user, body.token, body.consent)
+def accept_invitation(body: AcceptInvitationIn, request: Request, user: Verified, db: Db) -> LinkSummary:
+    summary = service.accept(db, user, body.token, body.consent)
+    link = db.get(RelationshipLink, summary.id)
+    inviter = db.get(User, link.inviter_id) if link else None
+    if inviter is not None:
+        title = (
+            f"{user.display_name} accepted your invitation"
+            if user.display_name
+            else "Your invitation to compare was accepted"
+        )
+        request.app.state.notifications.notify(
+            db,
+            inviter,
+            "relationships",
+            title,
+            "",
+            f"/relationships/{summary.id}",
+        )
+        db.commit()
+    return summary
 
 
 @router.get("/{link_id}", response_model=LinkDetail, responses=NOT_FOUND)
