@@ -67,7 +67,7 @@ export function JournalForm({
 
       <div className="rounded-card border border-line bg-muted p-4">
         <p className="font-semibold">Prompts to get you started</p>
-        <ul className="mt-1 list-disc space-y-1 pl-5 text-sm">
+        <ul className="mt-1 list-disc space-y-1 ps-5 text-sm">
           {current.prompts.map((p) => (
             <li key={p}>{p}</li>
           ))}

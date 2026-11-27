@@ -12,14 +12,14 @@ export function MethodSection({ m }: { m: Methodology }) {
         <p>{m.scoring_summary}</p>
         <p>{m.band_note}</p>
         <h3 className="pt-2 font-semibold text-ink">Limitations</h3>
-        <ul className="list-disc space-y-1 pl-5">
+        <ul className="list-disc space-y-1 ps-5">
           {m.limitations.map((l) => (
             <li key={l}>{l}</li>
           ))}
         </ul>
         <details className="pt-2">
           <summary className="cursor-pointer font-semibold text-ink">References and audit details</summary>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+          <ul className="mt-2 list-disc space-y-1 ps-5 text-sm">
             {m.references.map((ref) => (
               <li key={ref}>{ref}</li>
             ))}
@@ -120,7 +120,7 @@ export function InterestResults({ r, interests }: { r: ResultOut; interests: Int
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
                 <div>
                   <h4 className="font-semibold">You may enjoy</h4>
-                  <ul className="mt-1 list-disc pl-5 text-ink-muted">
+                  <ul className="mt-1 list-disc ps-5 text-ink-muted">
                     {a.enjoys.map((x) => (
                       <li key={x}>{x}</li>
                     ))}
@@ -128,7 +128,7 @@ export function InterestResults({ r, interests }: { r: ResultOut; interests: Int
                 </div>
                 <div>
                   <h4 className="font-semibold">Fields to explore</h4>
-                  <ul className="mt-1 list-disc pl-5 text-ink-muted">
+                  <ul className="mt-1 list-disc ps-5 text-ink-muted">
                     {a.fields.map((x) => (
                       <li key={x}>{x}</li>
                     ))}

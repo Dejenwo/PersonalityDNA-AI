@@ -75,7 +75,7 @@ function GoalView({ initial }: { initial: Goal }) {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <header>
-        <ButtonLink href="/goals" variant="ghost" className="-ml-5">
+        <ButtonLink href="/goals" variant="ghost" className="-ms-5">
           ← Goals and habits
         </ButtonLink>
         <p className="text-sm text-ink-muted">

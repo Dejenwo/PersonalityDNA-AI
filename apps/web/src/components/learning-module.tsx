@@ -40,7 +40,7 @@ function Module({ track, m, signedIn }: { track: LearningTrack; m: LearningModul
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <header>
-        <ButtonLink href={t.path} variant="ghost" className="-ml-5">
+        <ButtonLink href={t.path} variant="ghost" className="-ms-5">
           ← {m.track_title}
         </ButtonLink>
         <h1 className="text-3xl font-bold">{m.title}</h1>
@@ -122,7 +122,7 @@ function ActivityCard({
         <h3 className="text-lg font-semibold">{a.title}</h3>
         {done && <span className="rounded-full border border-line px-2 py-0.5 text-xs">Done</span>}
       </div>
-      <ol className="mt-2 list-decimal space-y-1 pl-5 text-ink-muted">
+      <ol className="mt-2 list-decimal space-y-1 ps-5 text-ink-muted">
         {a.steps.map((s) => (
           <li key={s}>{s}</li>
         ))}

@@ -92,14 +92,14 @@ function Program({ initial, signedIn }: { initial: GrowthProgram; signedIn: bool
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <header>
-        <ButtonLink href="/growth" variant="ghost" className="-ml-5">
+        <ButtonLink href="/growth" variant="ghost" className="-ms-5">
           ← Growth programmes
         </ButtonLink>
         <p className="text-sm text-ink-muted">{lengthLabel(p.days)}</p>
         <h1 className="text-3xl font-bold">{p.title}</h1>
         <p className="mt-2 text-ink-muted">{p.summary}</p>
         <h2 className="mt-4 font-semibold">What you will work on</h2>
-        <ul className="mt-1 list-disc space-y-1 pl-5">
+        <ul className="mt-1 list-disc space-y-1 ps-5">
           {p.objectives.map((o) => (
             <li key={o}>{o}</li>
           ))}
@@ -229,7 +229,7 @@ function WeekBlock({
         <span className="text-lg font-semibold">
           Week {w.number}: {w.title}
         </span>
-        {enrolled && <span className="ml-2 text-sm text-ink-muted">({done} of 7 days done)</span>}
+        {enrolled && <span className="ms-2 text-sm text-ink-muted">({done} of 7 days done)</span>}
       </summary>
       <div className="mt-3 space-y-4">
         <p>
@@ -238,7 +238,7 @@ function WeekBlock({
         <div>
           <h3 className="font-semibold">{w.lesson_title}</h3>
           <h4 className="mt-2 text-sm font-semibold">{w.practice.title}</h4>
-          <ol className="mt-1 list-decimal space-y-1 pl-5 text-ink-muted">
+          <ol className="mt-1 list-decimal space-y-1 ps-5 text-ink-muted">
             {w.practice.steps.map((s) => (
               <li key={s}>{s}</li>
             ))}

@@ -62,7 +62,9 @@ class MessageOut(Model):
 
 class UpdateMeIn(Model):
     display_name: str | None = Field(default=None, max_length=80)
-    locale: Literal["en"] | None = None
+    locale: str | None = Field(
+        default=None, max_length=16, description="A released language code from GET /api/v1/locales."
+    )
 
 
 class ClaimIn(Model):

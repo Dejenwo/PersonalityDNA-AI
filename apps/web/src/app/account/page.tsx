@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { BillingCard } from "@/components/billing-card";
+import { LanguageSelect } from "@/components/language-select";
+import { useI18n } from "@/i18n/provider";
 import { FormMessage, TextField } from "@/components/form";
 import { Button, ButtonLink, Card, LoadingState } from "@/components/ui";
 import { api } from "@/lib/api";
@@ -94,6 +96,8 @@ export default function AccountPage() {
 
       <BillingCard />
 
+      <LanguageCard />
+
       <Card>
         <h2 className="text-xl font-semibold">Organisations</h2>
         <p className="mt-1 text-ink-muted">
@@ -151,5 +155,20 @@ export default function AccountPage() {
         )}
       </Card>
     </div>
+  );
+}
+
+function LanguageCard() {
+  const { t } = useI18n();
+  const [saved, setSaved] = useState(false);
+  return (
+    <Card>
+      <h2 className="text-xl font-semibold">{t("language.title")}</h2>
+      <p className="mt-1 text-ink-muted">{t("language.body")}</p>
+      <div className="mt-4">
+        <LanguageSelect id="account-language" label={t("language.label")} onSaved={() => setSaved(true)} />
+      </div>
+      {saved && <FormMessage kind="success">{t("language.saved")}</FormMessage>}
+    </Card>
   );
 }

@@ -1,10 +1,11 @@
 "use client";
 
-import type { AdminOrg, AdminRole, AdminUserDetail } from "@pdna/api-client";
+import type { AdminContent, AdminOrg, AdminRole, AdminUserDetail } from "@pdna/api-client";
 import { type FormEvent, type ReactNode, useState } from "react";
 import { FormMessage, TextField } from "@/components/form";
 import { Button, Card, EmptyState, ErrorState, LoadingState } from "@/components/ui";
 import { api } from "@/lib/api";
+import { coverage } from "@/i18n/coverage";
 import { eventLabel, money } from "@/lib/admin";
 import { errorMessage } from "@/lib/errors";
 import { useAsync } from "@/lib/use-async";
@@ -178,7 +179,7 @@ export function Accounts({ permissions }: { permissions: string[] }) {
                     type="button"
                     onClick={() => setSelected(u.id)}
                     aria-pressed={selected === u.id}
-                    className="block w-full rounded-card border border-line bg-surface p-3 text-left hover:bg-muted aria-pressed:border-primary"
+                    className="block w-full rounded-card border border-line bg-surface p-3 text-start hover:bg-muted aria-pressed:border-primary"
                   >
                     <span className="block font-semibold">{u.email}</span>
                     <span className="block text-sm text-ink-muted">
@@ -400,7 +401,8 @@ export function ContentPanel() {
                     {i.name} ({i.id} {i.version})
                   </p>
                   <p className="text-sm text-ink-muted">
-                    {i.family}, {i.tier}, {i.items} items, {i.status}, licence {i.license}
+                    {i.family}, {i.tier}, {i.items} items, {i.status}, licence {i.license}, language {i.locale}
+                    {i.adaptation ? ` (adaptation ${i.adaptation.replace("_", " ")})` : ""}
                   </p>
                   <p className="break-all text-xs text-ink-muted">SHA-256 {i.sha256}</p>
                 </li>
@@ -414,15 +416,51 @@ export function ContentPanel() {
             <ul className="mt-3 space-y-2 text-sm">
               {c.files.map((f) => (
                 <li key={f.name}>
-                  <span className="font-medium">{f.name}</span> (version {f.version})
+                  <span className="font-medium">{f.name}</span> (version {f.version}
+                  {f.locale ? `, ${f.locale}` : ""})
                   <span className="block break-all text-xs text-ink-muted">SHA-256 {f.sha256}</span>
                 </li>
               ))}
             </ul>
           </Card>
+          <Languages languages={c.languages} note={c.languages_note} />
         </div>
       )}
     </Loaded>
+  );
+}
+
+function Languages({ languages, note }: { languages: AdminContent["languages"]; note: string }) {
+  return (
+    <Card as="section" aria-labelledby="languages-heading">
+      <h2 id="languages-heading" className="text-xl font-semibold">
+        Languages
+      </h2>
+      <p className="mt-1 text-sm text-ink-muted">{note}</p>
+      <table className="mt-3 w-full text-start text-sm">
+        <caption className="sr-only">Languages, release status and interface translation coverage</caption>
+        <thead>
+          <tr className="border-b border-line">
+            <th scope="col" className="py-2">Language</th>
+            <th scope="col">Status</th>
+            <th scope="col">Direction</th>
+            <th scope="col">Interface text translated</th>
+          </tr>
+        </thead>
+        <tbody>
+          {languages.map((l) => (
+            <tr key={l.code} className="border-b border-line">
+              <th scope="row" className="py-2 font-medium">
+                {l.name} <span lang={l.code}>({l.native_name})</span>
+              </th>
+              <td>{l.status.replace("_", " ")}</td>
+              <td>{l.direction === "rtl" ? "Right to left" : "Left to right"}</td>
+              <td>{Math.round(coverage(l.code) * 100)}%</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Card>
   );
 }
 

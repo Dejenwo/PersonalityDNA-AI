@@ -61,6 +61,23 @@ class LicenseRef(_Frozen):
     file: str
 
 
+class Adaptation(_Frozen):
+    """How a language version was produced and reviewed (docs/LOCALIZATION.md). Translating items does not by
+    itself preserve their meaning or measurement properties, so a non-source language needs this record."""
+
+    source_instrument: str  # "id@version" of the instrument it was adapted from
+    method: Literal["translation_back_translation", "team_translation", "original_development"]
+    status: Literal["in_review", "approved"]
+    reviewers: tuple[str, ...] = ()  # names or roles of qualified reviewers who approved it
+    evidence: tuple[
+        str, ...
+    ] = ()  # pilot, cognitive interviews, invariance analyses (references, not claims)
+    notes: str = ""
+
+
+SOURCE_LOCALE = "en"
+
+
 class Instrument(_Frozen):
     schema_version: Literal[1]
     id: str = Field(pattern=r"^[a-z0-9-]+$")
@@ -80,9 +97,19 @@ class Instrument(_Frozen):
     references: tuple[str, ...]
     scales: tuple[ScaleDef, ...]
     items: tuple[Item, ...]
+    adaptation: Adaptation | None = None
 
     @model_validator(mode="after")
     def _check(self) -> "Instrument":
+        if self.locale != SOURCE_LOCALE:
+            if self.adaptation is None:
+                raise ValueError(f"{self.id}: a {self.locale} version needs an adaptation record")
+            if self.status == "released" and (
+                self.adaptation.status != "approved" or not self.adaptation.reviewers
+            ):
+                raise ValueError(
+                    f"{self.id}: a translated instrument can't be released before approved review"
+                )
         scale_ids = [s.id for s in self.scales]
         if len(set(scale_ids)) != len(scale_ids):
             raise ValueError("duplicate scale ids")

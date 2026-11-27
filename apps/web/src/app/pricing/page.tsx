@@ -88,7 +88,7 @@ export default function PricingPage() {
                   <p className="text-sm text-ink-muted">About {saving}% less than paying monthly for a year.</p>
                 )}
               </div>
-              <ul className="flex-1 list-disc space-y-1 pl-5">
+              <ul className="flex-1 list-disc space-y-1 ps-5">
                 {p.highlights.map((h) => (
                   <li key={h}>{h}</li>
                 ))}

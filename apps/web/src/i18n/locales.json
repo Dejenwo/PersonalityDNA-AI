@@ -1,0 +1,17 @@
+{
+  "version": "1",
+  "default": "en",
+  "note": "English is the only released language. Other languages are added through the reviewed localisation workflow in docs/LOCALIZATION.md; assessment questions are never released in another language without a cultural adaptation review.",
+  "locales": [
+    { "code": "en", "name": "English", "native_name": "English", "direction": "ltr", "status": "released" },
+    { "code": "es", "name": "Spanish", "native_name": "Español", "direction": "ltr", "status": "planned" },
+    { "code": "am", "name": "Amharic", "native_name": "አማርኛ", "direction": "ltr", "status": "planned" },
+    { "code": "fr", "name": "French", "native_name": "Français", "direction": "ltr", "status": "planned" },
+    { "code": "de", "name": "German", "native_name": "Deutsch", "direction": "ltr", "status": "planned" },
+    { "code": "ar", "name": "Arabic", "native_name": "العربية", "direction": "rtl", "status": "planned" },
+    { "code": "pt", "name": "Portuguese", "native_name": "Português", "direction": "ltr", "status": "planned" },
+    { "code": "hi", "name": "Hindi", "native_name": "हिन्दी", "direction": "ltr", "status": "planned" },
+    { "code": "zh", "name": "Chinese (Simplified)", "native_name": "简体中文", "direction": "ltr", "status": "planned" },
+    { "code": "ja", "name": "Japanese", "native_name": "日本語", "direction": "ltr", "status": "planned" }
+  ]
+}

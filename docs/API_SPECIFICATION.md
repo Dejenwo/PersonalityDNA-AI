@@ -136,6 +136,13 @@ Needs an admin role (`scripts/grant_admin.py` creates the first superadmin). A m
 | GET | `/api/v1/admin/organisations?q=` | orgs.read | Organisations by name or id: members, owners, seats, licence |
 | PUT | `/api/v1/admin/organisations/{id}/licence` | orgs.manage (superadmin) | Record a pilot or a licence (seats, days, reason); audited |
 
+## Languages (implemented)
+
+| Method | Path | Auth | Purpose |
+| --- | --- | --- | --- |
+| GET | `/api/v1/locales` | none | Supported languages with status (`planned`, `in_review`, `released`) and direction |
+| PATCH | `/api/v1/me` `{locale}` | user | Save a released language to the profile; others return 422 `locale_unavailable` |
+
 ## Organisations (implemented)
 
 Signed-in, verified accounts. Non-members get 404; members without the right role get 403. Join tokens travel in request bodies, never URLs.

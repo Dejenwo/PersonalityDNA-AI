@@ -7,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import get_content, get_db
+from app.api.errors import ApiError
 from app.api.schemas import ErrorResponse, SessionOut
 from app.api.v1 import presenters
 from app.assessments import service as assessments
@@ -29,6 +30,7 @@ from app.database.models import (
     User,
 )
 from app.goals.service import GoalService
+from app.i18n.locales import load_locales
 from app.journal.service import JournalService
 from app.organizations import service as organizations
 from app.relationships import service as relationships
@@ -47,7 +49,10 @@ def update_me(body: UpdateMeIn, user: CurrentUser, db: Db) -> UserOut:
         name = (data["display_name"] or "").strip()
         user.display_name = name or None
     if data.get("locale"):
-        user.locale = data["locale"]
+        found = load_locales().get(data["locale"])
+        if found is None or found.status != "released":
+            raise ApiError(422, "locale_unavailable", "That language isn't available yet.")
+        user.locale = found.code
     db.commit()
     return user_out(user)
 

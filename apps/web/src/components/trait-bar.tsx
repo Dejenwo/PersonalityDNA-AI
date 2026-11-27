@@ -21,8 +21,8 @@ export function TraitBar({ trait }: { trait: TraitResult }) {
         </p>
       </div>
       <div className="relative mt-2 h-3 rounded-full bg-muted" aria-hidden>
-        <div className="absolute inset-y-0 left-[40%] w-[20%] bg-line/60" />
-        <div className="absolute inset-y-0 left-0 rounded-full bg-primary" style={{ width: `${score}%` }} />
+        <div className="absolute inset-y-0 start-[40%] w-[20%] bg-line/60" />
+        <div className="absolute inset-y-0 start-0 rounded-full bg-primary" style={{ width: `${score}%` }} />
       </div>
       <p className="mt-1 text-sm text-ink-muted">{trait.description}</p>
     </div>

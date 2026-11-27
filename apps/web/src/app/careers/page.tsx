@@ -45,7 +45,7 @@ export default function CareersPage() {
             <h2 id="next-steps" className="text-xl font-semibold">
               Next steps
             </h2>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-ink-muted">
+            <ul className="mt-2 list-disc space-y-1 ps-5 text-ink-muted">
               <li>Pick two or three occupations that sound interesting and read what the work involves day to day.</li>
               <li>Talk to someone who does that work, or try a short course or volunteering role in the area.</li>
               <li>Notice which activities you look forward to, and which ones drain you.</li>
@@ -165,7 +165,7 @@ function WorkingStylePanel({ result }: { result: ResultOut | null }) {
       </p>
       <h3 className="mt-4 font-semibold">Questions to reflect on</h3>
       {questions.length > 0 ? (
-        <ul className="mt-2 list-disc space-y-1 pl-5">
+        <ul className="mt-2 list-disc space-y-1 ps-5">
           {questions.map((q) => (
             <li key={q}>{q}</li>
           ))}

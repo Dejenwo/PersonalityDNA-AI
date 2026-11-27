@@ -1109,6 +1109,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/locales": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Locales */
+        get: operations["locales_api_v1_locales_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/me": {
         parameters: {
             query?: never;
@@ -2168,6 +2185,8 @@ export interface components {
         };
         /** ContentFile */
         ContentFile: {
+            /** Locale */
+            locale: string | null;
             /** Name */
             name: string;
             /** Sha256 */
@@ -2185,6 +2204,10 @@ export interface components {
             files: components["schemas"]["ContentFile"][];
             /** Instruments */
             instruments: components["schemas"]["InstrumentInfo"][];
+            /** Languages */
+            languages: components["schemas"]["Locale"][];
+            /** Languages Note */
+            languages_note: string;
             /** Note */
             note: string;
             /** Plans Version */
@@ -2717,6 +2740,11 @@ export interface components {
         };
         /** InstrumentInfo */
         InstrumentInfo: {
+            /**
+             * Adaptation
+             * @description Review status of a translated version; null for the source.
+             */
+            adaptation: string | null;
             /** Family */
             family: string;
             /** Id */
@@ -2725,6 +2753,8 @@ export interface components {
             items: number;
             /** License */
             license: string;
+            /** Locale */
+            locale: string;
             /** Name */
             name: string;
             /** References */
@@ -3013,6 +3043,34 @@ export interface components {
             relation_type: "partner" | "friend" | "family" | "colleague";
             /** You Invited */
             you_invited: boolean;
+        };
+        /** Locale */
+        Locale: {
+            /** Code */
+            code: string;
+            /**
+             * Direction
+             * @enum {string}
+             */
+            direction: "ltr" | "rtl";
+            /** Name */
+            name: string;
+            /** Native Name */
+            native_name: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "planned" | "in_review" | "released";
+        };
+        /** LocalesOut */
+        LocalesOut: {
+            /** Default */
+            default: string;
+            /** Locales */
+            locales: components["schemas"]["Locale"][];
+            /** Note */
+            note: string;
         };
         /** LoginIn */
         LoginIn: {
@@ -4138,8 +4196,11 @@ export interface components {
         UpdateMeIn: {
             /** Display Name */
             display_name?: string | null;
-            /** Locale */
-            locale?: "en" | null;
+            /**
+             * Locale
+             * @description A released language code from GET /api/v1/locales.
+             */
+            locale?: string | null;
         };
         /** UserDetail */
         UserDetail: {
@@ -8247,6 +8308,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    locales_api_v1_locales_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LocalesOut"];
                 };
             };
         };

@@ -1,37 +1,39 @@
 "use client";
 
 import Link from "next/link";
+import { useI18n } from "@/i18n/provider";
 import { useAuth } from "@/lib/auth";
 
 export function AuthNav() {
   const { state } = useAuth();
+  const { t } = useI18n();
   if (state.status === "loading") return <li aria-hidden className="w-16" />;
   if (state.status === "signed-in") {
     return (
       <>
         <li>
           <Link href="/coach" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
-            Coach
+            {t("nav.coach")}
           </Link>
         </li>
         <li>
           <Link href="/journal" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
-            Journal
+            {t("nav.journal")}
           </Link>
         </li>
         <li>
           <Link href="/goals" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
-            Goals
+            {t("nav.goals")}
           </Link>
         </li>
         <li>
           <Link href="/relationships" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
-            Relationships
+            {t("nav.relationships")}
           </Link>
         </li>
         <li>
           <Link href="/account" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
-            Account
+            {t("nav.account")}
           </Link>
         </li>
       </>
@@ -40,7 +42,7 @@ export function AuthNav() {
   return (
     <li>
       <Link href="/login" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
-        Sign in
+        {t("nav.signIn")}
       </Link>
     </li>
   );

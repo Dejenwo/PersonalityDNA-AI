@@ -111,7 +111,7 @@ function Chat({ conversation }: { conversation: Conversation }) {
     <div className="mx-auto max-w-3xl">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <ButtonLink href="/coach" variant="ghost" className="-ml-5">
+          <ButtonLink href="/coach" variant="ghost" className="-ms-5">
             ← All conversations
           </ButtonLink>
           <h1 className="text-2xl font-bold">{conversation.title}</h1>

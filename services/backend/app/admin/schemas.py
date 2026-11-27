@@ -4,6 +4,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from app.admin.roles import Role
+from app.i18n.locales import Locale
 
 
 class AdminMe(BaseModel):
@@ -91,6 +92,7 @@ class Metrics(BaseModel):
 class ContentFile(BaseModel):
     name: str
     version: str
+    locale: str | None
     sha256: str
 
 
@@ -105,6 +107,8 @@ class InstrumentInfo(BaseModel):
     license: str
     references: list[str]
     sha256: str
+    locale: str
+    adaptation: str | None = Field(description="Review status of a translated version; null for the source.")
 
 
 class ContentOverview(BaseModel):
@@ -115,6 +119,8 @@ class ContentOverview(BaseModel):
     instruments: list[InstrumentInfo]
     files: list[ContentFile]
     note: str
+    languages: list[Locale]
+    languages_note: str
 
 
 class AuditItem(BaseModel):
