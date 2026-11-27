@@ -1,0 +1,134 @@
+{
+  "archetypes": null,
+  "created_at": "<time>",
+  "id": "<id>",
+  "interests": null,
+  "kind": "leadership",
+  "leadership": {
+    "areas": [
+      {
+        "area": "delegating",
+        "name": "Delegating",
+        "score": 91.7,
+        "short": "Handing over real ownership, not just tasks.",
+        "text": "You may free up your time and build trust by letting others own outcomes."
+      },
+      {
+        "area": "conflict",
+        "name": "Handling conflict",
+        "score": 83.3,
+        "short": "Raising and working through disagreement constructively.",
+        "text": "You may help a team deal with tension early, before it grows."
+      },
+      {
+        "area": "strategic",
+        "name": "Strategic thinking",
+        "score": 58.3,
+        "short": "Looking ahead and connecting today's work to a longer-term direction.",
+        "text": "You may naturally help a team see why its work matters and where it is heading."
+      },
+      {
+        "area": "collaborative",
+        "name": "Collaborating",
+        "score": 50.0,
+        "short": "Shaping plans and decisions together with the people involved.",
+        "text": "You may build commitment by involving people early and sharing ownership."
+      },
+      {
+        "area": "deciding",
+        "name": "Making decisions",
+        "score": 50.0,
+        "short": "Making and explaining choices, especially under uncertainty.",
+        "text": "You may help a team move forward by making clear, explained calls."
+      },
+      {
+        "area": "communicating",
+        "name": "Communicating",
+        "score": 41.7,
+        "short": "Keeping people informed and checking understanding.",
+        "text": "You may keep people aligned by sharing information early and clearly."
+      },
+      {
+        "area": "team_development",
+        "name": "Developing the team",
+        "score": 41.7,
+        "short": "Building how a team works together and learns.",
+        "text": "You may enjoy shaping a team's habits, welcome and ways of learning."
+      },
+      {
+        "area": "planning",
+        "name": "Planning and organising",
+        "score": 41.7,
+        "short": "Turning goals into plans, owners and dates, and keeping them on track.",
+        "text": "Writing down milestones and owners for one goal could make progress easier to see."
+      },
+      {
+        "area": "coaching",
+        "name": "Coaching others",
+        "score": 8.3,
+        "short": "Helping people grow by asking, listening and supporting stretch.",
+        "text": "Swapping one piece of advice for one good question could help others grow faster."
+      }
+    ],
+    "even": false,
+    "note": "These are preferences: the parts of leading you enjoy most and least today. They are not abilities, they change with experience, and they must never be used to select, promote or rate anyone.",
+    "recommended_modules": [
+      {
+        "area": "delegating",
+        "id": "delegation",
+        "reason": "build",
+        "summary": "Hand over ownership, not just tasks, and agree how you will stay in touch.",
+        "title": "Delegating well"
+      },
+      {
+        "area": "planning",
+        "id": "plans-that-work",
+        "reason": "stretch",
+        "summary": "Turn goals into milestones, owners and dates, and adjust as things change.",
+        "title": "Plans that work"
+      },
+      {
+        "area": "coaching",
+        "id": "coaching-conversations",
+        "reason": "stretch",
+        "summary": "Help people find their own answers and grow through stretch.",
+        "title": "Coaching conversations"
+      }
+    ],
+    "stretch": [
+      "planning",
+      "coaching"
+    ],
+    "top": [
+      "delegating",
+      "conflict",
+      "strategic"
+    ]
+  },
+  "methodology": {
+    "answers_sha256": "b6310d8676d6016c30de1c935211562e58d1c396efca4d792529813d263cda24",
+    "attribution": "Original PersonalityDNA content.",
+    "band_note": "Leadership areas are ranked against each other, not placed in bands.",
+    "content_sha256": "96513f825c62b64b2188cb347738418761f3bd7df9d7bb820091f32c742393ab",
+    "engine_version": "1.1.0",
+    "instrument_id": "leadership-preferences-27",
+    "instrument_name": "PersonalityDNA Leadership Preferences",
+    "instrument_version": "1.0.0",
+    "limitations": [
+      "This is an original reflection questionnaire. It has not been scientifically validated and has no norms.",
+      "Scores show which leadership activities you enjoy most and least today, compared only with each other. They are not abilities and they change with experience.",
+      "Leadership preferences must never be used to hire, promote, rate or select anyone."
+    ],
+    "negative_emotionality_note": null,
+    "references": [
+      "Original questionnaire written for PersonalityDNA AI. It has not been validated and has no norms."
+    ],
+    "scoring_summary": "Each answer is scored 1 to 5. Each area's score is the average of its three statements, shown on a 0-100 scale where 0 means every answer was 'Not at all' and 100 means every answer was 'Very much'. Areas are ranked against each other; ties keep a fixed order."
+  },
+  "negative_emotionality": null,
+  "quality_flags": [
+    "rapid_completion"
+  ],
+  "session_id": "<id>",
+  "traits": []
+}

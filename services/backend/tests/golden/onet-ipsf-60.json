@@ -1,0 +1,188 @@
+{
+  "archetypes": null,
+  "created_at": "<time>",
+  "id": "<id>",
+  "interests": {
+    "areas": [
+      {
+        "area": "realistic",
+        "count": 5,
+        "enjoys": [
+          "Building, fixing or operating things",
+          "Working with your hands or physical materials",
+          "Seeing a concrete result at the end of the day"
+        ],
+        "fields": [
+          "Construction and the trades",
+          "Manufacturing and maintenance",
+          "Agriculture, forestry and the outdoors",
+          "Transport and logistics",
+          "Public safety"
+        ],
+        "letter": "R",
+        "name": "Realistic",
+        "reflection": "Which practical tasks have you lost track of time doing?",
+        "score": 50.0,
+        "short": "Hands-on work with tools, machines, plants, animals or materials, often outdoors or with practical, visible results.",
+        "total": 10
+      },
+      {
+        "area": "investigative",
+        "count": 5,
+        "enjoys": [
+          "Figuring out how and why things work",
+          "Gathering evidence and testing ideas",
+          "Solving complex problems"
+        ],
+        "fields": [
+          "Science and research",
+          "Health and laboratory work",
+          "Engineering and technology",
+          "Data and analysis"
+        ],
+        "letter": "I",
+        "name": "Investigative",
+        "reflection": "What kind of question do you enjoy chasing down until you find the answer?",
+        "score": 50.0,
+        "short": "Working with ideas, observation and analysis: researching, experimenting and solving problems.",
+        "total": 10
+      },
+      {
+        "area": "artistic",
+        "count": 5,
+        "enjoys": [
+          "Making something original",
+          "Working without rigid rules",
+          "Expressing ideas or feelings through a medium"
+        ],
+        "fields": [
+          "Design and visual arts",
+          "Writing, media and communication",
+          "Music and performing arts",
+          "Film, games and digital media"
+        ],
+        "letter": "A",
+        "name": "Artistic",
+        "reflection": "Where do you have, or want, room to create something of your own?",
+        "score": 50.0,
+        "short": "Creating and expressing: working with designs, words, music, performance or images, often with room for originality.",
+        "total": 10
+      },
+      {
+        "area": "social",
+        "count": 5,
+        "enjoys": [
+          "Teaching or explaining",
+          "Supporting people through change",
+          "Working closely with others toward their wellbeing"
+        ],
+        "fields": [
+          "Education and training",
+          "Health care and support",
+          "Community and social services",
+          "Coaching and human resources"
+        ],
+        "letter": "S",
+        "name": "Social",
+        "reflection": "When have you felt most useful to someone else?",
+        "score": 50.0,
+        "short": "Helping, teaching, supporting or caring for people.",
+        "total": 10
+      },
+      {
+        "area": "enterprising",
+        "count": 5,
+        "enjoys": [
+          "Persuading or negotiating",
+          "Taking charge of a project or team",
+          "Spotting and pursuing opportunities"
+        ],
+        "fields": [
+          "Business and management",
+          "Sales and marketing",
+          "Entrepreneurship",
+          "Law, policy and public affairs"
+        ],
+        "letter": "E",
+        "name": "Enterprising",
+        "reflection": "What goal would you be excited to persuade other people to work toward?",
+        "score": 50.0,
+        "short": "Leading, persuading, selling and starting things: working toward goals with people and resources.",
+        "total": 10
+      },
+      {
+        "area": "conventional",
+        "count": 5,
+        "enjoys": [
+          "Keeping things accurate and orderly",
+          "Following and improving clear procedures",
+          "Working with numbers, records or systems"
+        ],
+        "fields": [
+          "Finance and accounting",
+          "Administration and operations",
+          "Information systems and records",
+          "Logistics and supply"
+        ],
+        "letter": "C",
+        "name": "Conventional",
+        "reflection": "Which systems or routines do you enjoy making run smoothly?",
+        "score": 50.0,
+        "short": "Organising information, records and procedures: working with data and detail in a clear structure.",
+        "total": 10
+      }
+    ],
+    "boundary_ties": [
+      "Realistic",
+      "Investigative",
+      "Artistic",
+      "Social",
+      "Enterprising",
+      "Conventional"
+    ],
+    "code": "RIA",
+    "draft": true,
+    "empty": false,
+    "explore_links": [
+      {
+        "label": "My Next Move (U.S. Department of Labor career exploration site)",
+        "url": "https://www.mynextmove.org/"
+      },
+      {
+        "label": "O*NET OnLine occupation information",
+        "url": "https://www.onetonline.org/"
+      }
+    ],
+    "note": "Original PersonalityDNA descriptive text based on John Holland's widely used six interest areas. Interest scores count the activities a person said they would like to do. They describe preferences, not abilities, and they do not predict success in any job. No population norms are applied."
+  },
+  "kind": "interests",
+  "leadership": null,
+  "methodology": {
+    "answers_sha256": "7191e07cd50b6bc8695be39a6b94b00a0651582b4d7a93b29b22c19e227d2a3a",
+    "attribution": "This assessment uses the O*NET® Interest Profiler Short Form from the O*NET Career Exploration Tools by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA), used under the CC BY-ND 4.0 licence. O*NET® is a trademark of USDOL/ETA. PersonalityDNA is not affiliated with or endorsed by USDOL/ETA.",
+    "band_note": "Interest areas are ranked against each other, not placed in bands.",
+    "content_sha256": "34839d04395abc73565e27ff1f9ea4f5f40e268dbf9c43a86c5e27442d5178ea",
+    "engine_version": "1.1.0",
+    "instrument_id": "onet-ipsf-60",
+    "instrument_name": "O*NET® Interest Profiler Short Form (v1)",
+    "instrument_version": "1.0.0",
+    "limitations": [
+      "Results show which work activities you said you would like to do today. Interests can change over time.",
+      "Interests are not abilities. They say nothing about how well you would do any job, and they are not a recommendation to take or avoid any career.",
+      "Area scores count your choices. They are not percentiles and do not compare you with other people.",
+      "Do not use these results for hiring or other decisions about people."
+    ],
+    "negative_emotionality_note": null,
+    "references": [
+      "National Center for O*NET Development. O*NET® Interest Profiler Short Form. U.S. Department of Labor, Employment and Training Administration. https://www.onetcenter.org/IPSF.html",
+      "Holland, J. L. (1997). Making vocational choices: A theory of vocational personalities and work environments (3rd ed.). Psychological Assessment Resources."
+    ],
+    "scoring_summary": "Each interest area has 10 work activities. Its score is the number of activities you said you would like to do (0 to 10), as on the published self-scoring form. Your interest code is the first letters of your three highest areas."
+  },
+  "negative_emotionality": null,
+  "quality_flags": [
+    "rapid_completion"
+  ],
+  "session_id": "<id>",
+  "traits": []
+}

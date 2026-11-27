@@ -1,0 +1,179 @@
+{
+  "archetypes": {
+    "disclaimer": "Archetypes are original PersonalityDNA descriptive summaries of trait patterns. They are not validated psychological types; most people show elements of several archetypes.",
+    "primary": {
+      "drivers": [
+        "higher agreeableness",
+        "lower openness"
+      ],
+      "fit": 0.424264,
+      "growth": [
+        "Share your ideas, not only support for others' ideas",
+        "Stay open to unfamiliar approaches"
+      ],
+      "id": "collaborator",
+      "name": "The Collaborator",
+      "strengths": [
+        "Team cooperation",
+        "Practical helpfulness",
+        "Keeping things running smoothly"
+      ],
+      "summary": "Tends to value cooperation and practical, familiar ways of working with others."
+    },
+    "secondary": {
+      "drivers": [
+        "higher conscientiousness",
+        "lower openness"
+      ],
+      "fit": 0.282843,
+      "growth": [
+        "Try one small new approach at a time",
+        "Ask what problem a proposed change is solving"
+      ],
+      "id": "organizer",
+      "name": "The Organizer",
+      "strengths": [
+        "Reliability",
+        "Creating order",
+        "Applying proven methods consistently"
+      ],
+      "summary": "Tends to value proven methods, order and dependable routines."
+    },
+    "version": "1.0.0",
+    "weak_fit": false
+  },
+  "created_at": "<time>",
+  "id": "<id>",
+  "interests": null,
+  "kind": "big_five",
+  "leadership": null,
+  "methodology": {
+    "answers_sha256": "0c749f33f0bb6d9a2806f3bb3c77b3cc15bcde722ba12088486e123a3bfa4b47",
+    "attribution": "Items from the International Personality Item Pool (ipip.ori.org), public domain.",
+    "band_note": "Lower is below 40, middle is 40-60, higher is above 60 on that 0-100 scale.",
+    "content_sha256": "3b1dd6c576f3ae18ee6ba3941b9e4b0a70e1118b09e94e96c12ccba4a00616b8",
+    "engine_version": "1.1.0",
+    "instrument_id": "ipip-bfm-50",
+    "instrument_name": "IPIP Big-Five Factor Markers, 50-item version",
+    "instrument_version": "1.0.0",
+    "limitations": [
+      "Results describe how you rated yourself today. Self-ratings can shift with mood, context and time.",
+      "Scores show where your answers fall on the 1-5 response scale. They are not percentiles and do not compare you with other people, because no reference population data is used.",
+      "This is not a clinical or diagnostic tool and says nothing about mental health conditions.",
+      "Archetypes are original descriptive summaries, not scientifically validated types. Most people show elements of several.",
+      "Personality alone does not determine career success, relationship outcomes or suitability for any role. Do not use these results for hiring or other decisions about people."
+    ],
+    "negative_emotionality_note": "The instrument measures Emotional Stability. Negative Emotionality (often called Neuroticism) is the same scale in the reverse direction: 100 minus Emotional Stability.",
+    "references": [
+      "Goldberg, L. R. (1992). The development of markers for the Big-Five factor structure. Psychological Assessment, 4(1), 26-42.",
+      "Goldberg, L. R. (1999). A broad-bandwidth, public domain, personality inventory measuring the lower-level facets of several five-factor models. In I. Mervielde et al. (Eds.), Personality Psychology in Europe, Vol. 7 (pp. 7-28). Tilburg University Press.",
+      "Goldberg, L. R., Johnson, J. A., Eber, H. W., Hogan, R., Ashton, M. C., Cloninger, C. R., & Gough, H. G. (2006). The International Personality Item Pool and the future of public-domain personality measures. Journal of Research in Personality, 40, 84-96."
+    ],
+    "scoring_summary": "Each answer is scored 1-5. Negatively worded items are reversed (6 minus the answer). Each trait score is the average of its items, shown on a 0-100 scale where 0 means every answer was at the low end and 100 means every answer was at the high end."
+  },
+  "negative_emotionality": 62.5,
+  "quality_flags": [
+    "rapid_completion"
+  ],
+  "session_id": "<id>",
+  "traits": [
+    {
+      "answered": 10,
+      "band": "lower",
+      "description": "Sociability, assertiveness and energy from social interaction.",
+      "growth": [
+        "Plan how you will share your views in group settings",
+        "Protect time to recharge"
+      ],
+      "name": "Extraversion",
+      "raw_mean": 2.5,
+      "score": 37.5,
+      "status": "scored",
+      "strengths": [
+        "Thoughtful listening",
+        "Comfort with independent work"
+      ],
+      "summary": "You describe yourself as quieter and more reserved, often preferring smaller settings.",
+      "total": 10,
+      "trait": "extraversion"
+    },
+    {
+      "answered": 10,
+      "band": "higher",
+      "description": "Warmth, empathy, cooperation and consideration for others.",
+      "growth": [
+        "Practise stating your own needs clearly",
+        "Set boundaries when helping others"
+      ],
+      "name": "Agreeableness",
+      "raw_mean": 3.9,
+      "score": 72.5,
+      "status": "scored",
+      "strengths": [
+        "Empathy",
+        "Making others feel at ease"
+      ],
+      "summary": "You describe yourself as warm, caring and attentive to other people's feelings.",
+      "total": 10,
+      "trait": "agreeableness"
+    },
+    {
+      "answered": 10,
+      "band": "higher",
+      "description": "Organisation, reliability, planning and follow-through.",
+      "growth": [
+        "Allow room for change in plans",
+        "Notice when high standards cost more than they return"
+      ],
+      "name": "Conscientiousness",
+      "raw_mean": 3.5,
+      "score": 62.5,
+      "status": "scored",
+      "strengths": [
+        "Reliability",
+        "Planning and follow-through"
+      ],
+      "summary": "You describe yourself as organised, prepared and attentive to detail.",
+      "total": 10,
+      "trait": "conscientiousness"
+    },
+    {
+      "answered": 10,
+      "band": "lower",
+      "description": "How calm and even-tempered you describe yourself in everyday situations. The reverse direction is called Negative Emotionality (Neuroticism).",
+      "growth": [
+        "Try a short routine for stressful moments, such as pausing to name what you feel",
+        "If stress feels overwhelming, consider speaking with a qualified professional"
+      ],
+      "name": "Emotional Stability",
+      "raw_mean": 2.5,
+      "score": 37.5,
+      "status": "scored",
+      "strengths": [
+        "Sensitivity to risks and problems",
+        "Emotional depth"
+      ],
+      "summary": "You describe yourself as experiencing everyday stress and emotional ups and downs fairly often.",
+      "total": 10,
+      "trait": "emotional_stability"
+    },
+    {
+      "answered": 10,
+      "band": "middle",
+      "description": "Curiosity, imagination and interest in ideas and new experiences.",
+      "growth": [
+        "Notice which situations draw out your curiosity, and seek more of them where useful"
+      ],
+      "name": "Openness",
+      "raw_mean": 2.7,
+      "score": 42.5,
+      "status": "scored",
+      "strengths": [
+        "Balancing new ideas with practicality"
+      ],
+      "summary": "You describe a mix of practicality and curiosity, depending on the situation.",
+      "total": 10,
+      "trait": "openness"
+    }
+  ]
+}
