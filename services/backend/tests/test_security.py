@@ -58,7 +58,7 @@ PUBLIC = {
 }
 
 PARAM = re.compile(r"\{[^}]+\}")
-SECRET = "Zebra-sentinel-7731"
+MARKER = "zebra-private-marker"
 
 
 def _operations(client):
@@ -85,9 +85,9 @@ def _populate(client, h):
     rep = client.post(R, headers=h).json()
     assert client.post("/api/v1/share-cards", json={"report_id": rep["id"]}, headers=h).status_code == 201
     calls = [
-        ("POST", "/api/v1/journal/entries", {"body": f"{SECRET} journal"}),
-        ("POST", "/api/v1/goals", {"title": f"{SECRET} goal", "milestones": [{"title": "one"}]}),
-        ("POST", "/api/v1/habits", {"title": f"{SECRET} habit"}),
+        ("POST", "/api/v1/journal/entries", {"body": f"{MARKER} journal"}),
+        ("POST", "/api/v1/goals", {"title": f"{MARKER} goal", "milestones": [{"title": "one"}]}),
+        ("POST", "/api/v1/habits", {"title": f"{MARKER} habit"}),
         ("POST", "/api/v1/growth/programs/focus-7/enrollment", None),
         ("PUT", "/api/v1/notifications/preferences", {"kind": "news", "in_app": True, "email": False}),
     ]
@@ -96,7 +96,7 @@ def _populate(client, h):
         assert r.status_code < 300, (path, r.text)
     cid = client.post("/api/v1/coach/conversations", json={"consent": COACH_CONSENT}, headers=h).json()["id"]
     r = client.post(
-        f"/api/v1/coach/conversations/{cid}/messages", json={"content": f"{SECRET} coach"}, headers=h
+        f"/api/v1/coach/conversations/{cid}/messages", json={"content": f"{MARKER} coach"}, headers=h
     )
     assert r.status_code == 200, r.text
     _invite(client, h)
@@ -150,10 +150,10 @@ def test_private_content_never_reaches_logs(client, caplog):
     caplog.set_level(logging.DEBUG)
     ada = signup(client)
     _populate(client, ada)
-    client.post("/api/v1/journal/search", json={"q": SECRET}, headers=ada)
+    client.post("/api/v1/journal/search", json={"q": MARKER}, headers=ada)
     client.post("/api/v1/auth/login", json={"email": "ada@example.com", "password": PASSWORD})
     assert caplog.records, "logging is captured"
-    assert SECRET not in caplog.text and PASSWORD not in caplog.text
+    assert MARKER not in caplog.text and PASSWORD not in caplog.text
 
 
 def _points_at_users(column) -> bool:
