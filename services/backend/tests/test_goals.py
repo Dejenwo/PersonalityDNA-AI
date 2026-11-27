@@ -70,7 +70,8 @@ def test_goal_lifecycle_and_privacy(client):
     assert [m["title"] for m in g["milestones"]] == ["Run 1k", "Run 3k"]
     with db(client) as s:
         row = s.scalars(select(Goal)).one()
-    assert "5k" not in row.title_encrypted and "stronger" not in (row.why_encrypted or "")
+    # Whole phrases: they contain spaces, which base64 ciphertext never does, so this can't match by chance.
+    assert "Run a 5k" not in row.title_encrypted and "To feel stronger" not in (row.why_encrypted or "")
 
     gid, m1 = g["id"], g["milestones"][0]["id"]
     g = client.patch(f"/api/v1/goals/{gid}/milestones/{m1}", json={"done": True}, headers=ada).json()
