@@ -14,7 +14,8 @@ Machine-readable contract: `packages/api-client/openapi.json` (generated; served
 
 | Method | Path | Purpose | Notes |
 | --- | --- | --- | --- |
-| GET | `/health` | Liveness | |
+| GET | `/health` | Liveness: `{status, release}`; never touches the database | |
+| GET | `/health/ready` | Readiness: checks the database; 503 `not_ready` when it can't be reached | |
 | GET | `/api/v1/assessments` | List latest version of each instrument | Big Five first, then by length; each has `family` and `status` (drafts only outside production) |
 | GET | `/api/v1/assessments/{id}` | Instrument detail with items and response options | Scoring keys are never exposed |
 | POST | `/api/v1/assessment-sessions` | Start a session | Body: `instrument_id`, optional `version`, `locale`, `consent{accepted, age_confirmed_18_plus, policy_version}`. 201 with `resume_token` (shown once). Errors: 422 `consent_required`, `age_requirement`, `locale_unavailable`; 409 `consent_outdated`; 429 `rate_limited` |

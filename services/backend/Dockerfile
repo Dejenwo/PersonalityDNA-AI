@@ -15,6 +15,8 @@ WORKDIR /srv/services/backend
 COPY services/backend/app ./app
 COPY services/backend/alembic ./alembic
 COPY services/backend/alembic.ini ./
+# Operational jobs and tools, run as one-off commands with the same image (docs/DEPLOYMENT_GUIDE.md).
+COPY services/backend/scripts/purge_expired.py services/backend/scripts/send_reminders.py services/backend/scripts/grant_admin.py ./scripts/
 COPY assessment-content /srv/assessment-content
 COPY ai/prompts /srv/ai/prompts
 ENV PDNA_CONTENT_DIR=/srv/assessment-content PDNA_PROMPTS_DIR=/srv/ai/prompts
@@ -22,4 +24,5 @@ USER pdna
 EXPOSE 8000
 HEALTHCHECK --interval=15s --timeout=3s --retries=5 CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health').status==200 else 1)"
 # Migrations run as a separate one-off step (see docker-compose.yml `migrate`), never implicitly here.
+# Uvicorn reads WEB_CONCURRENCY for the number of worker processes (about one per CPU core).
 CMD ["uvicorn", "app.main:app_factory", "--factory", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "127.0.0.1"]

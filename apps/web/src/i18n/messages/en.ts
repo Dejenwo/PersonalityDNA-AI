@@ -31,6 +31,7 @@ export const en = {
     pricing: "Plans and pricing",
     organisations: "For organisations",
     feedback: "Send feedback",
+    help: "Help",
     language: "Language",
   },
   beta: {

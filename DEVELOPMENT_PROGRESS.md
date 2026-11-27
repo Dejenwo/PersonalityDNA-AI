@@ -32,7 +32,7 @@ Last updated: 2026-11-27.
 | 22 | Quality assurance | Tested | Coverage measured (backend 97% of lines) and enforced in CI at 95%; integration tests for SMTP email and the payment HTTP client; regression snapshots of the full result for every instrument; accessibility sweep of every screen in light and dark mode on desktop and mobile; AI coach evaluation runs as its own CI step; test strategy rewritten; QA report (docs/QA_REPORT_2026-11-27.md). No defects found. Manual screen-reader pass, live-provider tests and the live model evaluation remain. |
 | 23 | Performance engineering | Tested | Query budgets per list screen (goals and habits fixed from one query per row to a fixed count); an index on every foreign key (migration 0017); configurable connection pool; load-test script with a sandbox baseline (no errors at 50 users, about 330 requests a second on 3 workers); page-weight budget of 220 KB compressed JavaScript in CI (pages measure 155 to 170 KB); AI coach cost estimate; scaling and production settings in docs/PERFORMANCE_TESTING.md (ADR-027). A staging load test waits for hosting. |
 | 24 | Beta release | In Progress | Built: in-app feedback from every page (encrypted, contact by permission, 10 an hour), support triage with statuses the sender can see, beta notice behind `NEXT_PUBLIC_BETA` (migration 0018, ADR-028); internal test pass of every screen on phone and desktop, which found and fixed four defects (no main heading on error and not-found pages, two unstyled checkboxes, the beta label breaking the home link's accessible name); the sweep now also checks headings, page width and console errors; beta programme plan with test script, triage rules and exit criteria (docs/BETA_PROGRAM.md); scientific and legal review packets (docs/review/). Waiting on the owner: hosting, testers, reviewers and terms of service. |
-| 25 | Commercial launch | Not Started | See docs/PRODUCT_ROADMAP.md. |
+| 25 | Commercial launch | In Progress | Built: request ids and privacy-safe access logs, JSON logging, release name and a database readiness check (`/health/ready`); API image runs the daily jobs; read-only post-deploy smoke test; public help page with crisis resources and a support contact; runbooks for deployment, backup and restore, incidents and customer support; store listing draft and privacy labels; operations and launch-day items in the release checklist (ADR-029). Waiting on the owner: hosting and deployment, the mobile app and store accounts, support and on-call contacts, and the go decision. |
 
 ## Task log
 
@@ -154,6 +154,9 @@ Last updated: 2026-11-27.
 | B-002 | Beta | Internal test pass: page quality checks in the screen sweep and four defects fixed | P0 | Tested | e2e a11y-sweep.spec.ts |
 | B-003 | Beta | Run internal and external beta (docs/BETA_PROGRAM.md) | P0 | Blocked | Needs hosting and testers recruited by the owner |
 | B-004 | Beta | Scientific, legal and clinical reviews; terms of service | P0 | Blocked | Needs reviewers chosen by the owner (docs/review/) |
+| L-001 | Launch | Request ids, privacy-safe logs, readiness, release name, container fixes, smoke test | P0 | Tested | tests/test_ops.py |
+| L-002 | Launch | Help page, runbooks (deployment, restore, incidents, support), store listing draft and privacy labels | P0 | Implemented | docs/, e2e a11y sweep covers /help |
+| L-003 | Launch | Production deployment, uptime alerts, on-call, support mailbox, store submissions, go decision | P0 | Blocked | Needs the owner's accounts, budget and approval |
 | Q-004 | QA | Manual screen-reader and keyboard pass; live-provider tests (SMTP, Stripe test mode, RevenueCat sandbox); live coach evaluation | P1 | Blocked | Needs beta testers and the owner's provider accounts and API key |
 | M-005 | Monetization | One-off report purchases (credit model), live provider setup, tax, final prices, terms update, mobile purchase UI | P1 | Not Started | Needs the owner's Stripe, RevenueCat, Apple and Google accounts |
 
@@ -161,8 +164,8 @@ Last updated: 2026-11-27.
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest --cov=app` | 238 passed, 97.1% line coverage |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 238 passed |
+| Backend, SQLite | `pytest --cov=app` | 242 passed, 97.1% line coverage |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 242 passed |
 | Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |

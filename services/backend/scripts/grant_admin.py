@@ -28,6 +28,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--remove", action="store_true")
     args = parser.parse_args(argv)
     db = Database(Settings().database_url)
+    try:
+        return _apply(db, args)
+    finally:
+        db.engine.dispose()  # close connections, so tests and repeated runs don't leak them
+
+
+def _apply(db: Database, args: argparse.Namespace) -> int:
     with db.sessionmaker() as s:
         user = s.scalar(select(User).where(User.email == args.email.strip().lower()))
         if user is None or user.email_verified_at is None:

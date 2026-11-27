@@ -28,6 +28,7 @@ from tests.test_reports import R, _big_five
 # Routes anyone may call. Everything else must answer 401 without credentials.
 PUBLIC = {
     ("GET", "/health"),
+    ("GET", "/health/ready"),
     ("GET", "/api/v1/assessments"),
     ("GET", "/api/v1/assessments/{instrument_id}"),
     ("GET", "/api/v1/billing/plans"),

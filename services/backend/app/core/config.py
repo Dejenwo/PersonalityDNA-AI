@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./pdna-local.db"
     # Connection pool per API process (PostgreSQL). Keep workers x (size + overflow) below the
     # server's connection limit, or put a pooler (PgBouncer) in front. See docs/PERFORMANCE_TESTING.md.
+    # Shown by /health and in logs, so errors can be tied to a deployment (for example the git commit).
+    release: str = Field(default="dev", max_length=64)
+    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
+    log_format: Literal["text", "json"] = "text"
     db_pool_size: int = Field(default=5, ge=1, le=100)
     db_max_overflow: int = Field(default=10, ge=0, le=100)
     db_pool_timeout_seconds: int = Field(default=10, ge=1, le=60)
