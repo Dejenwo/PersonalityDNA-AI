@@ -11,19 +11,19 @@ Conventions: UUID primary keys (except content ids), `timestamptz` everywhere, f
 | `assessment_instruments` | Instrument ids (e.g. `ipip-bfm-50`) | PK `id` | Permanent |
 | `assessment_versions` | Registered content version: content JSON + SHA-256 | unique (instrument_id, version); FK RESTRICT | Permanent (needed to explain past results) |
 | `consent_records` | Consent type, policy version, 18+ confirmation | `user_id` nullable until accounts | Life of related data + legal minimum |
-| `assessment_sessions` | One attempt; hashed resume token; status; timestamps | status check; FKs to version and consent (RESTRICT) | Anonymous incomplete sessions: purge after 30 days (job pending) |
+| `assessment_sessions` | One attempt; hashed resume token; status; timestamps | status check; FKs to version and consent (RESTRICT) | Anonymous unfinished sessions deleted after 30 days (`purge_expired.py`) |
 | `assessment_responses` | One row per answered item | unique (session_id, item_id); value 1–7 check; cascade on session delete | With session |
 | `assessment_results` | Engine/instrument versions, hashes, archetype ranking (Big Five only, nullable since migration 0004), interest profile (interests only), quality flags | unique session_id; cascade | With session |
 | `personality_trait_scores` | Per-trait status, raw mean, 0–100 score, band, answered/total | unique (result_id, trait); score 0–100 check | With result |
-| `audit_events` | Security and lifecycle events (no answers, no PII) | indexed by type and time | 1 year (job pending) |
+| `audit_events` | Security and lifecycle events (no answers, no PII) | indexed by type and time | 1 year (`purge_expired.py`) |
 
 ## Implemented (migration 0002, accounts)
 
 | Table | Purpose | Key constraints | Retention |
 | --- | --- | --- | --- |
 | `users` | Account: lower-cased unique email, Argon2id hash, verification time, profile | unique email; status check | Until deletion (hard delete) |
-| `auth_tokens` | Single-use verification/reset tokens, SHA-256 only | unique hash; purpose check; cascade on user | Expire 24 h / 60 min; purge job pending |
-| `refresh_tokens` | Rotating refresh tokens grouped by family | unique hash; cascade on user | 30 days; purge job pending |
+| `auth_tokens` | Single-use verification/reset tokens, SHA-256 only | unique hash; purpose check; cascade on user | Expire 24 h / 60 min; deleted a day after expiry |
+| `refresh_tokens` | Rotating refresh tokens grouped by family | unique hash; cascade on user | 30 days; deleted at expiry (revoked ones kept until then for reuse detection) |
 | `assessment_sessions.user_id` | Owner after claim or signed-in start | FK CASCADE (deleting a user deletes their assessments) | |
 | `consent_records.user_id` | Link to account | FK SET NULL (proof kept, unlinked) | |
 

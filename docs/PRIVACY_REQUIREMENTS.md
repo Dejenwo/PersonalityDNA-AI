@@ -6,7 +6,7 @@ Not legal advice. A qualified privacy lawyer must review before launch; no compl
 
 | Data | Purpose | Basis (proposed) | Retention |
 | --- | --- | --- | --- |
-| Answers, timestamps | Score and show results | Consent | Anonymous: until user deletes, incomplete purged after 30 days (job pending) |
+| Answers, timestamps | Score and show results | Consent | Anonymous: until user deletes, unfinished ones deleted after 30 days (`scripts/purge_expired.py`) |
 | Results | Show results, history | Consent | As above |
 | Consent records | Prove consent | Legal obligation | Life of data + statutory period |
 | Client IP (in memory only, rate limiting) | Abuse prevention | Legitimate interest | Not persisted |

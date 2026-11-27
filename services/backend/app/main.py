@@ -76,9 +76,9 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.state.session_limiter = RateLimiter(settings.session_create_rate_limit)
     app.state.auth_limiter = RateLimiter(settings.auth_rate_limit, window_seconds=15 * 60)
     app.state.access_tokens = AccessTokenCodec(settings)
-    app.state.auth = AuthService(settings)
     app.state.email = make_email_sender(settings)
     app.state.notifications = NotificationService(settings, app.state.email)
+    app.state.auth = AuthService(settings, app.state.notifications)
     app.state.events_limiter = RateLimiter(120, window_seconds=60 * 60)
     app.state.cipher = FieldCipher.from_settings(settings)
     app.state.entitlements = Entitlements(settings)
@@ -93,7 +93,7 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
         daily_limit=app.state.entitlements.coach_daily_messages,
     )
 
-    app.add_middleware(SecurityHeadersMiddleware)
+    app.add_middleware(SecurityHeadersMiddleware, hsts=settings.environment in ("staging", "production"))
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,

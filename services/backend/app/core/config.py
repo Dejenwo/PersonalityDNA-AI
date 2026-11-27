@@ -119,6 +119,10 @@ class Settings(BaseSettings):
                 raise ValueError("The development checkout cannot be used outside development")
             if self.coach_enabled and self.coach_provider == "mock":
                 raise ValueError("The stand-in coach provider cannot be used outside development")
+            if any(o == "*" or not o.startswith("https://") for o in self.cors_origins):
+                raise ValueError("PDNA_CORS_ORIGINS must list exact https:// origins outside development")
+            if not self.web_base_url.startswith("https://"):
+                raise ValueError("PDNA_WEB_BASE_URL must use https:// outside development")
         if self.coach_provider == "anthropic" and self.anthropic_api_key is None:
             raise ValueError("PDNA_ANTHROPIC_API_KEY is required when PDNA_COACH_PROVIDER=anthropic")
         return self

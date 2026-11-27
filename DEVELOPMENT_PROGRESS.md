@@ -28,7 +28,8 @@ Last updated: 2026-11-27.
 | 18 | Enterprise portal | Tested | Organisations with owner, admin and member roles; join links with seat limits; voluntary membership with its own consent; programmes built from growth programmes and learning modules that members choose to join; group statistics only from members who opt in, shown for 10 or more with every band at least 3; programme counts under 3 hidden; organisations never see individual results or who opted in; seat licences recorded by a superadmin give members Premium features; ownership handed over on account deletion; export (migration 0015, ADR-023). |
 | 19 | Internationalisation | Tested | One language registry for API and web (the ten languages in the spec; English released, others planned); message catalogues with plurals, links and English fallback; device and profile language choice limited to released languages; locale-aware formatting; right-to-left support through `dir` and logical CSS; pseudo-locales in preview builds; translated instruments need an approved adaptation record before release; Languages section in the admin portal; adaptation workflow in docs/LOCALIZATION.md (ADR-024). Chrome and settings use messages; other screens move over screen by screen (I-003). No translations are released. |
 | 20 | Growth infrastructure | Tested | Referral links with join counts only (never who joined or who pays); first-touch referral and campaign tags sent once at sign-up; anonymous daily event counts from a whitelist, no trackers, honouring GPC and Do Not Track; in-app and email notifications with per-kind preferences (security always on, news opt-in), generic text that never quotes private content; daily reminders for unfinished assessments, programme days and planned habits, sent once and deleted after 90 days; admin metrics for events, referrals and sources; SEO metadata, sitemap, robots rules, structured data and a cited Big Five article (migration 0016, ADR-025). Referral rewards need an owner decision. |
-| 21–25 | Security hardening onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
+| 21 | Security hardening | Tested | Threat model brought up to date (T33–T35, current data flows and assets); whole-API sweeps from the OpenAPI document (sign-in required, no cross-account access by id, no 5xx); log privacy and complete-deletion checks; security notices for password changes and stolen sessions; daily retention purge; stricter API and web headers; production guards for HTTPS origins and links; dependency audit (no known vulnerabilities in project dependencies) and bandit review; security review with pre-launch actions (ADR-026). Penetration test, MFA and KMS keys remain before launch. |
+| 22–25 | Quality assurance onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
 
 ## Task log
 
@@ -136,17 +137,23 @@ Last updated: 2026-11-27.
 | G-004 | Engagement | Daily reminders (unfinished assessment, programme day, planned habits) with generic text, dedupe and 90-day retention; `scripts/send_reminders.py` | P0 | Tested | `test_daily_reminders_are_generic_and_sent_once` |
 | G-005 | Web | Notifications bell and page with preferences, invite-link card, attribution capture, SEO metadata, sitemap, robots, structured data, Big Five article | P0 | Tested | e2e growth-infra.spec.ts (desktop + mobile) + axe |
 | G-006 | Growth | Referral rewards, mobile push, scheduled reminder job in deployment, consent banner review for EU attribution | P1 | Blocked | Needs owner decisions (incentives, terms), the mobile app and hosting |
+| S-001 | Security | Whole-API sweeps: unauthenticated, cross-account by id, no 5xx | P0 | Tested | `test_private_routes_need_sign_in`, `test_nobody_reaches_another_persons_records_by_id` |
+| S-002 | Privacy | Log privacy, complete deletion across every table, retention purge | P0 | Tested | `test_private_content_never_reaches_logs`, `test_every_table_with_personal_data_is_removed_with_the_account`, `test_retention_purges_only_what_has_expired` |
+| S-003 | Security | Security notices; API and web headers; HTTPS production guards; raw HTML guard | P0 | Tested | `test_security_notices_for_password_change_and_stolen_sessions`, `test_api_security_headers`, `test_production_needs_https_origins_and_links`; vitest security |
+| S-004 | Security | Independent penetration test, MFA (required for admins), KMS keys with rotation, shared rate limiting, WAF, alerting | P0 | Blocked | Needs hosting, a security vendor and the owner's budget (docs/security/SECURITY_REVIEW_2026-11-27.md) |
 | M-005 | Monetization | One-off report purchases (credit model), live provider setup, tax, final prices, terms update, mobile purchase UI | P1 | Not Started | Needs the owner's Stripe, RevenueCat, Apple and Google accounts |
 
 ## Test results (latest local run, 2026-11-27)
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest` | 215 passed |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 215 passed |
+| Backend, SQLite | `pytest` | 223 passed |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 223 passed |
 | Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
-| Web unit | `vitest run` | 59 passed |
+| Web unit | `vitest run` | 60 passed |
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
+| Dependency audit | `pip-audit .`, `pnpm audit --prod` | no known vulnerabilities |
+| Static analysis | `bandit -r app` | no high findings (review in docs/security/SECURITY_REVIEW_2026-11-27.md) |
 | End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7, preview build) | 50 passed |

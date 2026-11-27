@@ -108,6 +108,8 @@ def test_drafts_never_enabled_in_production():
         "data_encryption_key": "k" * 44,
         "coach_provider": "anthropic",
         "anthropic_api_key": "k",
+        "cors_origins": ["https://app.example.com"],
+        "web_base_url": "https://app.example.com",
     }
     assert Settings(environment="production", **base).include_drafts is False
     with pytest.raises(ValidationError, match="Draft"):
