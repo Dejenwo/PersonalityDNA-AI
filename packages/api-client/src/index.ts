@@ -30,6 +30,9 @@ export type LinkSummary = Schemas["LinkSummary"];
 export type LinkDetail = Schemas["LinkDetail"];
 export type TraitComparison = Schemas["TraitComparisonOut"];
 export type InvitationPreview = Schemas["InvitationPreview"];
+export type LeadershipOut = Schemas["LeadershipOut"];
+export type ModuleList = Schemas["ModuleList"];
+export type LeadershipModule = Schemas["ModuleOut"];
 
 /** Events streamed by POST /coach/conversations/{id}/messages (server-sent events). */
 export type CoachEvent =
@@ -240,6 +243,12 @@ export function createApiClient({
       }),
     getRelationship: (id: string) => request<LinkDetail>("GET", `/api/v1/relationships/${seg(id)}`),
     revokeRelationship: (id: string) => request<void>("DELETE", `/api/v1/relationships/${seg(id)}`),
+
+    // Leadership development
+    leadershipModules: () => request<ModuleList>("GET", "/api/v1/leadership/modules"),
+    leadershipModule: (id: string) => request<LeadershipModule>("GET", `/api/v1/leadership/modules/${seg(id)}`),
+    setActivityDone: (moduleId: string, activityId: string, done: boolean) =>
+      request<void>(done ? "PUT" : "DELETE", `/api/v1/leadership/modules/${seg(moduleId)}/activities/${seg(activityId)}/done`),
   };
 }
 

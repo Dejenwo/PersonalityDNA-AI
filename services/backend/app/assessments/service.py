@@ -238,7 +238,7 @@ def complete_session(db: Session, bundle: ContentBundle, session: AssessmentSess
                 {"id": f.id, "fit": f.fit, "drivers": [list(d) for d in f.drivers]} for f in match.ranking
             ],
         }
-    else:
+    elif instrument.family == "interests":
         profile = interest_profile({s.scale_id: int(s.raw_mean or 0) for s in output.scales})
         result.interest_profile = {
             "code": profile.code,

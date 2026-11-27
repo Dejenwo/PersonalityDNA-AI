@@ -1,0 +1,397 @@
+{
+  "id": "leadership-program",
+  "version": "1.0.0",
+  "locale": "en",
+  "note": "These are preferences: the parts of leading you enjoy most and least today. They are not abilities, they change with experience, and they must never be used to select, promote or rate anyone.",
+  "areas": {
+    "strategic": {
+      "short": "Looking ahead and connecting today's work to a longer-term direction.",
+      "preferred": "You may naturally help a team see why its work matters and where it is heading.",
+      "stretch": "Setting aside regular time to look further ahead could help you lead beyond the next deadline.",
+      "module": "direction"
+    },
+    "collaborative": {
+      "short": "Shaping plans and decisions together with the people involved.",
+      "preferred": "You may build commitment by involving people early and sharing ownership.",
+      "stretch": "Inviting others into a decision before it is made could strengthen buy-in and ideas.",
+      "module": "shared-decisions"
+    },
+    "coaching": {
+      "short": "Helping people grow by asking, listening and supporting stretch.",
+      "preferred": "You may enjoy helping others find their own answers and grow in confidence.",
+      "stretch": "Swapping one piece of advice for one good question could help others grow faster.",
+      "module": "coaching-conversations"
+    },
+    "delegating": {
+      "short": "Handing over real ownership, not just tasks.",
+      "preferred": "You may free up your time and build trust by letting others own outcomes.",
+      "stretch": "Handing over one whole piece of work, including its decisions, could build trust both ways.",
+      "module": "delegation"
+    },
+    "deciding": {
+      "short": "Making and explaining choices, especially under uncertainty.",
+      "preferred": "You may help a team move forward by making clear, explained calls.",
+      "stretch": "Agreeing how and when a decision will be made could help you decide with more confidence.",
+      "module": "decisions"
+    },
+    "communicating": {
+      "short": "Keeping people informed and checking understanding.",
+      "preferred": "You may keep people aligned by sharing information early and clearly.",
+      "stretch": "A short, regular update rhythm could save confusion and repeated questions.",
+      "module": "clear-communication"
+    },
+    "conflict": {
+      "short": "Raising and working through disagreement constructively.",
+      "preferred": "You may help a team deal with tension early, before it grows.",
+      "stretch": "Practising how to open a difficult conversation could make the next one easier.",
+      "module": "constructive-conflict"
+    },
+    "team_development": {
+      "short": "Building how a team works together and learns.",
+      "preferred": "You may enjoy shaping a team's habits, welcome and ways of learning.",
+      "stretch": "A short team check-in on how you work together could surface easy improvements.",
+      "module": "team-habits"
+    },
+    "planning": {
+      "short": "Turning goals into plans, owners and dates, and keeping them on track.",
+      "preferred": "You may give a team clarity about who does what and by when.",
+      "stretch": "Writing down milestones and owners for one goal could make progress easier to see.",
+      "module": "plans-that-work"
+    }
+  },
+  "modules": [
+    {
+      "id": "direction",
+      "area": "strategic",
+      "title": "Setting direction",
+      "summary": "Connect everyday work to a direction people can describe in their own words.",
+      "lessons": [
+        {
+          "title": "Purpose before plans",
+          "text": "People commit more readily when they understand why the work matters. Before talking about tasks, explain the problem you are solving and who it helps."
+        },
+        {
+          "title": "Look up and ahead",
+          "text": "Direction rarely appears in a busy week. A short, regular slot for thinking about trends, risks and opportunities keeps you from leading only the next deadline."
+        }
+      ],
+      "activities": [
+        {
+          "id": "one-sentence",
+          "title": "Write the one-sentence direction",
+          "steps": [
+            "Write one sentence about where your team or project should be in a year.",
+            "Ask two people to describe the direction in their own words.",
+            "Note any differences and adjust how you explain it."
+          ]
+        },
+        {
+          "id": "thinking-slot",
+          "title": "Book a thinking slot",
+          "steps": [
+            "Block 30 minutes in your calendar each week for the next month.",
+            "Use it to list one trend, one risk and one opportunity.",
+            "Share one idea with your team afterwards."
+          ]
+        }
+      ],
+      "reflection": "Which part of your work would people struggle to connect to a bigger purpose today?"
+    },
+    {
+      "id": "shared-decisions",
+      "area": "collaborative",
+      "title": "Deciding together",
+      "summary": "Involve people in the right decisions, at the right time, in the right way.",
+      "lessons": [
+        {
+          "title": "Say how a decision will be made",
+          "text": "Collaboration goes wrong when people think they are deciding but are only being consulted. Say up front whether you will decide, decide after input, or let the group decide."
+        },
+        {
+          "title": "Ask before you anchor",
+          "text": "Once a leader shares a preferred answer, others tend to follow it. Ask for ideas first, then share your own."
+        }
+      ],
+      "activities": [
+        {
+          "id": "decision-mode",
+          "title": "Name the decision mode",
+          "steps": [
+            "Pick an upcoming decision.",
+            "Tell the people involved whether you will decide, decide after input, or let them decide.",
+            "Afterwards, ask whether that felt clear and fair."
+          ]
+        },
+        {
+          "id": "ideas-first",
+          "title": "Ideas first, mine last",
+          "steps": [
+            "In your next planning conversation, ask everyone for an idea before giving yours.",
+            "Write all ideas down without judging them.",
+            "Notice whether any idea was better than your own starting point."
+          ]
+        }
+      ],
+      "reflection": "When did you last change your mind because of someone else's idea?"
+    },
+    {
+      "id": "coaching-conversations",
+      "area": "coaching",
+      "title": "Coaching conversations",
+      "summary": "Help people find their own answers and grow through stretch.",
+      "lessons": [
+        {
+          "title": "Questions before advice",
+          "text": "Advice solves today's problem; good questions build someone's ability to solve the next one. Try asking what they have already considered and what they would try first."
+        },
+        {
+          "title": "Stretch with support",
+          "text": "People grow most from work slightly beyond their current comfort, with a clear way to ask for help. Agree on check-in points rather than stepping in."
+        }
+      ],
+      "activities": [
+        {
+          "id": "three-questions",
+          "title": "Three questions",
+          "steps": [
+            "Next time someone brings you a problem, ask: what have you tried, what options do you see, and what would you do?",
+            "Only offer your view after those three questions.",
+            "Note how the conversation changed."
+          ]
+        },
+        {
+          "id": "stretch-task",
+          "title": "Offer one stretch task",
+          "steps": [
+            "Choose a task slightly beyond someone's current experience.",
+            "Agree on what success looks like and when you will check in.",
+            "Afterwards, ask what they learned and what support helped."
+          ]
+        }
+      ],
+      "reflection": "Whose growth would benefit most from a coaching conversation this month?"
+    },
+    {
+      "id": "delegation",
+      "area": "delegating",
+      "title": "Delegating well",
+      "summary": "Hand over ownership, not just tasks, and agree how you will stay in touch.",
+      "lessons": [
+        {
+          "title": "Delegate outcomes",
+          "text": "Delegating a list of steps keeps you as the bottleneck. Delegate the result you need, the limits that apply, and the decisions the person can make on their own."
+        },
+        {
+          "title": "Agree the check-ins",
+          "text": "Hovering and disappearing both undermine delegation. Agree in advance when and how you will check progress."
+        }
+      ],
+      "activities": [
+        {
+          "id": "handover",
+          "title": "Hand over one whole piece of work",
+          "steps": [
+            "Pick one piece of work you usually keep.",
+            "Explain the outcome, the limits and the decisions they own.",
+            "Agree two check-in points and stick to them."
+          ]
+        },
+        {
+          "id": "strength-match",
+          "title": "Match work to strengths",
+          "steps": [
+            "List the main tasks coming up.",
+            "Ask each person which task they would most like to own and why.",
+            "Use their answers when you next assign work."
+          ]
+        }
+      ],
+      "reflection": "What do you keep doing yourself that someone else could own?"
+    },
+    {
+      "id": "decisions",
+      "area": "deciding",
+      "title": "Making clear decisions",
+      "summary": "Decide with enough information, explain the reasons, and review the outcome.",
+      "lessons": [
+        {
+          "title": "Good enough to decide",
+          "text": "Waiting for complete information often costs more than a reversible decision. Ask whether a decision is easy or hard to undo, and match your care to that."
+        },
+        {
+          "title": "Explain the why",
+          "text": "People accept decisions they disagree with more readily when they understand the reasons and the options that were weighed."
+        }
+      ],
+      "activities": [
+        {
+          "id": "reversible",
+          "title": "Sort decisions by reversibility",
+          "steps": [
+            "List three decisions you are putting off.",
+            "Mark each one as easy or hard to undo.",
+            "Make one easy-to-undo decision this week."
+          ]
+        },
+        {
+          "id": "decision-note",
+          "title": "Write a short decision note",
+          "steps": [
+            "For your next decision, write the options, what mattered most and why you chose.",
+            "Share it with the people affected.",
+            "Review the note a month later: what would you do differently?"
+          ]
+        }
+      ],
+      "reflection": "Which decision are you delaying, and what would make it easier to take?"
+    },
+    {
+      "id": "clear-communication",
+      "area": "communicating",
+      "title": "Communicating clearly",
+      "summary": "Share information early, keep a rhythm, and check understanding.",
+      "lessons": [
+        {
+          "title": "Before they have to ask",
+          "text": "When people have to chase information, trust drops. A predictable rhythm of short updates prevents most surprises."
+        },
+        {
+          "title": "Check what landed",
+          "text": "What you said and what people heard can differ. Ask people to play back the key points in their own words."
+        }
+      ],
+      "activities": [
+        {
+          "id": "weekly-update",
+          "title": "Start a weekly three-line update",
+          "steps": [
+            "Each week, share what changed, what is next and where you need help.",
+            "Keep it to three lines.",
+            "After a month, ask whether it helps."
+          ]
+        },
+        {
+          "id": "play-back",
+          "title": "Ask for a play-back",
+          "steps": [
+            "After explaining something important, ask someone to summarise it.",
+            "Fill any gaps without blame.",
+            "Notice which parts were most often misheard."
+          ]
+        }
+      ],
+      "reflection": "What do people on your team most often learn too late?"
+    },
+    {
+      "id": "constructive-conflict",
+      "area": "conflict",
+      "title": "Working through conflict",
+      "summary": "Raise issues early and help people with different views move forward.",
+      "lessons": [
+        {
+          "title": "Early and specific",
+          "text": "Small issues are easier to discuss than big ones. Describe what happened and its effect, without labelling the person."
+        },
+        {
+          "title": "Interests behind positions",
+          "text": "Two people arguing for different solutions often want compatible things underneath. Ask each what they need and why."
+        }
+      ],
+      "activities": [
+        {
+          "id": "opening-line",
+          "title": "Prepare an opening line",
+          "steps": [
+            "Think of an issue you have been avoiding.",
+            "Write one sentence that describes what happened and its effect, without blame.",
+            "Use it in a conversation this week."
+          ]
+        },
+        {
+          "id": "needs-map",
+          "title": "Map the needs",
+          "steps": [
+            "When two views clash, ask each person what they need from the outcome.",
+            "Write the needs side by side.",
+            "Look for an option that meets the most important need on each side."
+          ]
+        }
+      ],
+      "reflection": "Which disagreement would be easier to solve if it had been raised a month ago?"
+    },
+    {
+      "id": "team-habits",
+      "area": "team_development",
+      "title": "Building team habits",
+      "summary": "Agree how the team works together and keep learning from experience.",
+      "lessons": [
+        {
+          "title": "Make the unwritten rules visible",
+          "text": "Every team has habits about meetings, replies and decisions. Writing a few down helps new people settle in and surfaces disagreements early."
+        },
+        {
+          "title": "Learn on purpose",
+          "text": "Teams improve fastest when they regularly ask what went well and what to change, and then actually change one thing."
+        }
+      ],
+      "activities": [
+        {
+          "id": "working-agreement",
+          "title": "Draft a working agreement",
+          "steps": [
+            "Ask the team for three habits that help them work well together.",
+            "Write them down and share them.",
+            "Revisit them after a month."
+          ]
+        },
+        {
+          "id": "short-retro",
+          "title": "Run a 15-minute retrospective",
+          "steps": [
+            "Ask: what went well, what was hard, what will we change?",
+            "Pick one change and an owner.",
+            "Check on it at the next retrospective."
+          ]
+        }
+      ],
+      "reflection": "What would a new team member find confusing about how your team works?"
+    },
+    {
+      "id": "plans-that-work",
+      "area": "planning",
+      "title": "Plans that work",
+      "summary": "Turn goals into milestones, owners and dates, and adjust as things change.",
+      "lessons": [
+        {
+          "title": "Milestones and owners",
+          "text": "A goal without milestones and owners is a wish. Break it into steps that each have one owner and a date."
+        },
+        {
+          "title": "Plans are for changing",
+          "text": "A plan is a tool for noticing change early, not a promise. Review it regularly and adjust openly."
+        }
+      ],
+      "activities": [
+        {
+          "id": "milestone-map",
+          "title": "Map one goal",
+          "steps": [
+            "Choose one goal for the next three months.",
+            "Write three to five milestones, each with one owner and a date.",
+            "Share it and invite corrections."
+          ]
+        },
+        {
+          "id": "plan-review",
+          "title": "Hold a short plan review",
+          "steps": [
+            "Every two weeks, compare progress with the plan.",
+            "Agree what to change, drop or add.",
+            "Tell the people affected what changed and why."
+          ]
+        }
+      ],
+      "reflection": "Which goal would benefit most from clearer owners and dates?"
+    }
+  ]
+}

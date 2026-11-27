@@ -16,7 +16,12 @@ from app.auth.routes import REFRESH_COOKIE, user_out
 from app.auth.schemas import ClaimIn, DeleteAccountIn, HistoryItem, HistoryOut, UpdateMeIn, UserOut
 from app.auth.service import AuthService
 from app.coaching.service import CoachService
-from app.database.models import AssessmentSession, CoachConversation, ConsentRecord
+from app.database.models import (
+    AssessmentSession,
+    CoachConversation,
+    ConsentRecord,
+    LeadershipActivityProgress,
+)
 from app.relationships import service as relationships
 
 router = APIRouter(prefix="/api/v1", tags=["account"], responses={401: {"model": ErrorResponse}})
@@ -72,6 +77,10 @@ def history(user: CurrentUser, db: Db, content: Content) -> HistoryOut:
             primary = arch_names.get(arch["ranking"][0]["id"])
         elif s.result is not None and s.result.interest_profile and not s.result.interest_profile["empty"]:
             primary = f"Interest code {s.result.interest_profile['code']}"
+        elif s.result is not None and inst.family == "leadership":
+            ranked = [ts for ts in sorted(s.result.trait_scores, key=lambda t: -(t.score or 0)) if ts.score]
+            names = {sc.id: sc.name for sc in inst.scales}
+            primary = f"Top preference: {names[ranked[0].trait]}" if ranked else None
         items.append(
             HistoryItem(
                 session_id=s.id,
@@ -139,6 +148,12 @@ def export(request: Request, user: CurrentUser, db: Db, content: Content) -> dic
             for c in conversations
         ],
         "relationships": relationships.export_for(db, user),
+        "leadership_activities": [
+            {"module": p.module_id, "activity": p.activity_id, "completed_at": p.completed_at.isoformat()}
+            for p in db.scalars(
+                select(LeadershipActivityProgress).where(LeadershipActivityProgress.user_id == user.id)
+            )
+        ],
     }
 
 

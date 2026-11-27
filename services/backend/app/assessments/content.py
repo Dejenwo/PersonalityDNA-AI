@@ -67,7 +67,7 @@ class Instrument(_Frozen):
     version: str = Field(pattern=r"^\d+\.\d+\.\d+$")
     # Draft instruments load only where drafts are enabled (development and tests) and may still change.
     status: Literal["released", "draft"] = "released"
-    family: Literal["big_five", "interests"] = "big_five"
+    family: Literal["big_five", "interests", "leadership"] = "big_five"
     scoring: Literal["likert_mean", "count_endorsed"] = "likert_mean"
     name: str
     tier: Literal["quick", "comprehensive", "advanced"]
@@ -204,6 +204,62 @@ class RelationshipInsights(_Frozen):
     shared_goals: tuple[str, ...]
 
 
+class LeadershipArea(_Frozen):
+    short: str
+    preferred: str
+    stretch: str
+    module: str
+
+
+class Lesson(_Frozen):
+    title: str
+    text: str
+
+
+class Activity(_Frozen):
+    id: str = Field(pattern=r"^[a-z0-9-]+$")
+    title: str
+    steps: tuple[str, ...]
+
+
+class LeadershipModule(_Frozen):
+    id: str = Field(pattern=r"^[a-z0-9-]+$")
+    area: str
+    title: str
+    summary: str
+    lessons: tuple[Lesson, ...]
+    activities: tuple[Activity, ...]
+    reflection: str
+
+
+class LeadershipProgram(_Frozen):
+    id: str
+    version: str
+    locale: str
+    note: str
+    areas: dict[str, LeadershipArea]
+    modules: tuple[LeadershipModule, ...]
+
+    @model_validator(mode="after")
+    def _check(self) -> "LeadershipProgram":
+        ids = [m.id for m in self.modules]
+        if len(set(ids)) != len(ids):
+            raise ValueError("duplicate module ids")
+        for m in self.modules:
+            if m.area not in self.areas:
+                raise ValueError(f"module {m.id} references unknown area {m.area}")
+            acts = [a.id for a in m.activities]
+            if len(set(acts)) != len(acts):
+                raise ValueError(f"module {m.id} has duplicate activity ids")
+        for area_id, area in self.areas.items():
+            if area.module not in ids:
+                raise ValueError(f"area {area_id} references unknown module {area.module}")
+        return self
+
+    def module(self, module_id: str) -> LeadershipModule | None:
+        return next((m for m in self.modules if m.id == module_id), None)
+
+
 class LoadedFile[T: BaseModel](BaseModel):
     model_config = ConfigDict(frozen=True)
     data: T
@@ -218,6 +274,7 @@ class ContentBundle(BaseModel):
     interpretations: LoadedFile[Interpretations]
     interests: LoadedFile[InterestInterpretations]
     relationships: LoadedFile[RelationshipInsights]
+    leadership: LoadedFile[LeadershipProgram]
 
     def instrument(self, instrument_id: str, version: str) -> LoadedFile[Instrument]:
         try:
@@ -259,19 +316,21 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
     interests = InterestInterpretations.model_validate(interest_data)
     rel_data, rel_sha = _read(content_dir / "scoring-rules" / "relationship-insights.v1.json")
     relationships = RelationshipInsights.model_validate(rel_data)
+    lead_data, lead_sha = _read(content_dir / "scoring-rules" / "leadership-program.v1.json")
+    leadership = LeadershipProgram.model_validate(lead_data)
 
     trait_ids = set(archetypes.traits)
     for inst_file in instruments.values():
         inst = inst_file.data
         scales = {s.id for s in inst.scales}
-        expected_ids, what = (
-            (trait_ids, "archetype traits")
-            if inst.family == "big_five"
-            else (set(interests.areas), "interest areas")
-        )
+        expected_ids, what = {
+            "big_five": (trait_ids, "archetype traits"),
+            "interests": (set(interests.areas), "interest areas"),
+            "leadership": (set(leadership.areas), "leadership areas"),
+        }[inst.family]
         if scales != expected_ids:
             raise ContentError(f"{inst.id}: scales {scales} do not match {what}")
-        expected_scoring = "likert_mean" if inst.family == "big_five" else "count_endorsed"
+        expected_scoring = "count_endorsed" if inst.family == "interests" else "likert_mean"
         if inst.scoring != expected_scoring:
             raise ContentError(f"{inst.id}: {inst.family} instruments use {expected_scoring} scoring")
     if set(interpretations.traits) != trait_ids:
@@ -293,5 +352,8 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
         ),
         relationships=LoadedFile[RelationshipInsights](
             data=relationships, sha256=rel_sha, path="relationship-insights.v1.json"
+        ),
+        leadership=LoadedFile[LeadershipProgram](
+            data=leadership, sha256=lead_sha, path="leadership-program.v1.json"
         ),
     )

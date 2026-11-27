@@ -2,57 +2,23 @@
 
 import type { ResultOut } from "@pdna/api-client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Button, ButtonLink, Card, ErrorState, LoadingState } from "@/components/ui";
-import { api } from "@/lib/api";
-import { useAuth } from "@/lib/auth";
-import { latestByFamily, workingStyleQuestions, type ResultRef } from "@/lib/careers";
+import { workingStyleQuestions } from "@/lib/careers";
 import { errorMessage } from "@/lib/errors";
-import { readSessions } from "@/lib/session-store";
-
-type Load =
-  | { status: "loading" }
-  | { status: "error"; error: unknown }
-  | { status: "ready"; interests: ResultOut | null; personality: ResultOut | null; interestsId: string | null };
+import { useLatestResults } from "@/lib/latest-results";
 
 export default function CareersPage() {
-  const { state: auth } = useAuth();
-  const [load, setLoad] = useState<Load>({ status: "loading" });
-  const [attempt, setAttempt] = useState(0);
-  const authReady = auth.status !== "loading";
-  const signedIn = auth.status === "signed-in";
-
-  useEffect(() => {
-    if (!authReady) return;
-    let alive = true;
-    (async () => {
-      try {
-        const catalogue = await api.listAssessments();
-        const families = Object.fromEntries(catalogue.items.map((a) => [a.id, a.family]));
-        const interestsId = catalogue.items.find((a) => a.family === "interests")?.id ?? null;
-        let refs: ResultRef[];
-        if (signedIn) {
-          const history = await api.history();
-          refs = history.items.flatMap((h) =>
-            h.result_id ? [{ instrumentId: h.instrument_id, resultId: h.result_id, at: h.completed_at ?? h.started_at }] : [],
-          );
-        } else {
-          refs = readSessions().flatMap((s) =>
-            s.resultId ? [{ instrumentId: s.instrumentId, resultId: s.resultId, at: s.startedAt, token: s.token }] : [],
-          );
+  const latest = useLatestResults(["interests", "big_five"]);
+  const load =
+    latest.status === "ready"
+      ? {
+          status: "ready" as const,
+          interests: latest.results.interests ?? null,
+          personality: latest.results.big_five ?? null,
+          interestsId: latest.instruments.interests ?? null,
         }
-        const latest = latestByFamily(refs, families);
-        const fetch = (ref?: ResultRef) => (ref ? api.getResult(ref.resultId, ref.token) : Promise.resolve(null));
-        const [interests, personality] = await Promise.all([fetch(latest.interests), fetch(latest.big_five)]);
-        if (alive) setLoad({ status: "ready", interests, personality, interestsId });
-      } catch (error) {
-        if (alive) setLoad({ status: "error", error });
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [authReady, signedIn, attempt]);
+      : latest;
+  const signedIn = latest.status === "ready" && latest.signedIn;
 
   return (
     <div className="space-y-8">
@@ -68,7 +34,7 @@ export default function CareersPage() {
         <ErrorState
           title="We couldn't load your results"
           message={errorMessage(load.error)}
-          action={<Button onClick={() => { setLoad({ status: "loading" }); setAttempt((n) => n + 1); }}>Try again</Button>}
+          action={<Button onClick={latest.retry}>Try again</Button>}
         />
       )}
       {load.status === "ready" && (

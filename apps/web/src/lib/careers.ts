@@ -4,7 +4,7 @@
  * about, not predictions: personality scores never say which job someone should do.
  */
 
-export type Family = "big_five" | "interests";
+export type Family = "big_five" | "interests" | "leadership";
 
 export interface ResultRef {
   instrumentId: string;
@@ -20,7 +20,7 @@ export function latestByFamily(refs: ResultRef[], families: Record<string, strin
   const out: Partial<Record<Family, ResultRef>> = {};
   for (const ref of refs) {
     const family = families[ref.instrumentId];
-    if (family !== "big_five" && family !== "interests") continue;
+    if (family !== "big_five" && family !== "interests" && family !== "leadership") continue;
     const current = out[family];
     if (!current || ref.at > current.at) out[family] = ref;
   }

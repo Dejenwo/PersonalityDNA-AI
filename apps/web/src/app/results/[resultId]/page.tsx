@@ -3,7 +3,7 @@
 import type { ArchetypeOut, ResultOut } from "@pdna/api-client";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { InterestResults, MethodSection } from "@/components/result-sections";
+import { InterestResults, LeadershipResults, MethodSection } from "@/components/result-sections";
 import { TraitBar } from "@/components/trait-bar";
 import { ButtonLink, Card, ErrorState, LoadingState } from "@/components/ui";
 import { api } from "@/lib/api";
@@ -99,6 +99,7 @@ export default function ResultsPage() {
   const r = load.result;
   const m = r.methodology;
   if (r.interests) return <InterestResults r={r} interests={r.interests} />;
+  if (r.leadership) return <LeadershipResults r={r} leadership={r.leadership} />;
   const archetypes = r.archetypes!;
   return (
     <div className="space-y-8">

@@ -179,20 +179,27 @@ class CoachService:
             query = query.where(AssessmentResult.archetype_version.is_not(None))
         elif kind == "interests":
             query = query.where(AssessmentResult.interest_profile.is_not(None))
+        elif kind == "leadership":
+            query = query.where(
+                AssessmentResult.archetype_version.is_(None), AssessmentResult.interest_profile.is_(None)
+            )
         return db.scalar(query.order_by(AssessmentResult.created_at.desc()).limit(1))
 
     def _context_results(
         self, db: Session, conv: CoachConversation
-    ) -> tuple[AssessmentResult | None, AssessmentResult | None]:
-        """(Big Five result, interest result) the coach may use. None unless the user shared results."""
+    ) -> tuple[AssessmentResult | None, AssessmentResult | None, AssessmentResult | None]:
+        """(Big Five, interests, leadership) results the coach may use: the chosen result plus the latest
+        of each other kind. All None unless the user shared results."""
         if conv.result_id is None:
-            return None, None
+            return None, None, None
         chosen = db.get(AssessmentResult, conv.result_id)
         if chosen is None:
-            return None, None
-        if chosen.interest_profile is not None:
-            return self._latest_result(db, conv.user_id, "big_five"), chosen
-        return chosen, self._latest_result(db, conv.user_id, "interests")
+            return None, None, None
+        kinds = ("big_five", "interests", "leadership")
+        found = {
+            k: chosen if result_kind(chosen) == k else self._latest_result(db, conv.user_id, k) for k in kinds
+        }
+        return found["big_five"], found["interests"], found["leadership"]
 
     def create_conversation(self, db: Session, user: User, body: CreateConversationIn) -> CoachConversation:
         consent = self._consent(db, user.id, body.consent.policy_version)
@@ -335,12 +342,13 @@ class CoachService:
                     "You've reached today's coaching limit.",
                     {"resets_at": resets_at.isoformat() if resets_at else None},
                 )
-            result, interests = self._context_results(db, conv)
+            result, interests, leadership = self._context_results(db, conv)
             facts = facts_from_result(
                 bundle,
                 result,
                 conv.topic,
                 interests=interests,
+                leadership=leadership,
                 crisis_support_shown=any(m.kind == "crisis_support" for m in conv.messages),
             )
             turns = self._merge([*self._history(conv), Turn(role="user", content=text)])
@@ -573,3 +581,9 @@ class CoachService:
                 except SQLAlchemyError:
                     pass
             self._release(turn.conversation_id)
+
+
+def result_kind(r: AssessmentResult) -> str:
+    if r.archetype_version is not None:
+        return "big_five"
+    return "interests" if r.interest_profile is not None else "leadership"

@@ -15,6 +15,7 @@ def test_list_and_detail(client):
         ("mini-ipip-20", 20, "quick"),
         ("ipip-bfm-50", 50, "comprehensive"),
         ("onet-ipsf-60", 60, "quick"),
+        ("leadership-preferences-27", 27, "quick"),
     ]
     d = client.get("/api/v1/assessments/ipip-bfm-50").json()
     assert len(d["items"]) == 50 and len(d["response_options"]) == 5
