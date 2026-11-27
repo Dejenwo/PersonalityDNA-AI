@@ -12,6 +12,9 @@ from app.auth.jwt_tokens import AccessTokenCodec
 from app.auth.routes import dev_router
 from app.auth.routes import router as auth_router
 from app.auth.service import AuthService
+from app.billing.entitlements import Entitlements
+from app.billing.routes import router as billing_router
+from app.billing.service import BillingService
 from app.coaching.prompts import load_prompt
 from app.coaching.providers import make_provider
 from app.coaching.routes import router as coach_router
@@ -69,12 +72,15 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.state.auth = AuthService(settings)
     app.state.email = make_email_sender(settings)
     app.state.cipher = FieldCipher.from_settings(settings)
+    app.state.entitlements = Entitlements(settings)
+    app.state.billing = BillingService(settings, app.state.entitlements)
     app.state.coach = CoachService(
         settings,
         make_provider(settings),
         app.state.cipher,
         load_prompt("coach.v1.md", settings.prompts_dir),
         db.sessionmaker,
+        daily_limit=app.state.entitlements.coach_daily_messages,
     )
 
     app.add_middleware(SecurityHeadersMiddleware)
@@ -98,6 +104,7 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.include_router(reports_router)
     app.include_router(share_router)
     app.include_router(public_card_router)
+    app.include_router(billing_router)
     if settings.dev_outbox_endpoint and settings.environment in ("development", "test"):
         app.include_router(dev_router)
 

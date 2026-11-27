@@ -117,6 +117,20 @@ Signed-in users only; other users' reports return 404. A report is a snapshot an
 | GET / DELETE | `/api/v1/reports/{id}` | Read the full report body with its SHA-256, or delete it |
 | GET | `/api/v1/reports/{id}/pdf` | The report as a PDF (attachment, `no-store`) |
 
+## Billing (implemented)
+
+Gated features return 403 `premium_required` with `details.feature` once `PDNA_BILLING_ENFORCE=true`.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/billing/plans` | Public plan list, prices, notes, whether checkout is available |
+| GET | `/api/v1/billing/me` | The account's plan, features, coaching allowance, subscription and whether it can be managed here |
+| POST | `/api/v1/billing/checkout` | `{plan_id}` → `{url}` of the payment page; 409 `already_subscribed`, 503 `billing_unavailable` |
+| POST | `/api/v1/billing/manage` | `{url}` of the Stripe customer portal; 409 `manage_in_store` for app store subscriptions; 404 `no_subscription` |
+| POST | `/api/v1/billing/restore` | Re-read app store purchases from RevenueCat |
+| POST | `/api/v1/billing/webhooks/stripe` | Stripe events (signature required); not in the public schema |
+| POST | `/api/v1/billing/webhooks/revenuecat` | RevenueCat events (shared secret); not in the public schema |
+
 ## Share cards (implemented)
 
 Creating, listing and stopping a share needs an account; reading a card needs only its link token. Unknown, revoked and malformed tokens all return 404.

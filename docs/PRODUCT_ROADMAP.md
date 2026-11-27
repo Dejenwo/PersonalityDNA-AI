@@ -19,7 +19,7 @@ Follows MASTER_PROMPT.md §24 (25 phases). Status is kept in DEVELOPMENT_PROGRES
 | 13 | Growth academy | Done (code); content review by a learning designer before launch | 3 seven-day challenges, 30/60/90-day programmes from 12 weekly units, enrolment, daily progress, weekly self-checks (ADR-016) |
 | 14 | Journaling and habits | Done (code); reminders wait for notifications | Encrypted journal (ADR-017); goals, milestones and habits without streaks (ADR-018) |
 | 15 | Reports | Done (code) | Encrypted report snapshots with a reportlab PDF (ADR-019); opt-in, revocable share cards (ADR-020) |
-| 16 | Monetization | Stripe account, RevenueCat, Apple/Google developer accounts | Entitlement service first, providers after |
+| 16 | Monetization | Done (code), off by default; needs Stripe, RevenueCat, Apple and Google accounts to switch on | Plans as data, entitlement service, Stripe checkout and portal, RevenueCat webhooks and restore, pricing page (ADR-021) |
 | 17 | Administration | — | |
 | 18 | Enterprise portal | Legal review of employer use | |
 | 19 | Internationalization | Professional translators + psychometric review | |

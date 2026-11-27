@@ -56,6 +56,13 @@ Comparisons are computed on request from each person's latest Big Five result an
 | --- | --- | --- | --- |
 | `learning_activity_progress` | Which learning activities a user marked done: track (`leadership`, `emotional-awareness`), module and activity ids and time, no free text | FK user CASCADE; unique (user, track, module, activity) | Until unmarked or account deletion |
 
+## Implemented (migration 0013, billing)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `subscriptions` | Provider (`stripe`, `revenuecat`, `dev`), provider subscription and customer ids, plan, status, period end, cancel flag. No card data | FK user CASCADE; unique (provider, provider subscription id); provider and status checks | Until account deletion (financial records stay with the provider) |
+| `billing_events` | Webhook event ids already applied (idempotency), type, time | Unique (provider, event id); FK user SET NULL | Kept for audit; no personal content |
+
 ## Implemented (migration 0012, share cards)
 
 | Table | Purpose | Key constraints | Retention |

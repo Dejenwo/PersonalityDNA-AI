@@ -59,6 +59,22 @@ class Settings(BaseSettings):
     #   python -c "import base64,os;print(base64.urlsafe_b64encode(os.urandom(32)).decode())"
     data_encryption_key: SecretStr | None = None
 
+    # --- Billing (ADR-021) ---
+    # Off until the owner has set up Stripe and RevenueCat: every feature stays available.
+    billing_enforce: bool = False
+    stripe_secret_key: SecretStr | None = None
+    stripe_webhook_secret: SecretStr | None = None
+    # Plan id -> Stripe price id, e.g. {"premium-monthly": "price_123"}.
+    stripe_price_ids: dict[str, str] = {}
+    stripe_api_base: str = "https://api.stripe.com"
+    revenuecat_webhook_auth: SecretStr | None = None
+    revenuecat_api_key: SecretStr | None = None
+    # Store product id -> plan id, e.g. {"pdna_premium_monthly": "premium-monthly"}.
+    revenuecat_product_plans: dict[str, str] = {}
+    revenuecat_api_base: str = "https://api.revenuecat.com"
+    # Local checkout that grants Premium without payment. Refused in staging/production.
+    billing_dev_checkout: bool = False
+
     # --- AI coach ---
     coach_enabled: bool = True
     # "mock" is a deterministic stand-in used in development, tests and demos. It calls no AI service.
@@ -94,6 +110,8 @@ class Settings(BaseSettings):
                 raise ValueError("PDNA_DATA_ENCRYPTION_KEY is required outside development")
             if self.content_include_drafts:
                 raise ValueError("Draft assessment content cannot be enabled outside development")
+            if self.billing_dev_checkout:
+                raise ValueError("The development checkout cannot be used outside development")
             if self.coach_enabled and self.coach_provider == "mock":
                 raise ValueError("The stand-in coach provider cannot be used outside development")
         if self.coach_provider == "anthropic" and self.anthropic_api_key is None:

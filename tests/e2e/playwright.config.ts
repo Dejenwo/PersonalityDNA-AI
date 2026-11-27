@@ -26,7 +26,7 @@ export default defineConfig({
     ? undefined
     : [
         {
-          command: `cd ../../services/backend && PDNA_DATABASE_URL=sqlite:///${dbFile} PDNA_CORS_ORIGINS='["${WEB}"]' PDNA_SESSION_CREATE_RATE_LIMIT=1000 PDNA_AUTH_RATE_LIMIT=1000 PDNA_DEV_OUTBOX_ENDPOINT=true PDNA_WEB_BASE_URL=${WEB} python -c "import uvicorn; from app.main import create_app; uvicorn.run(create_app(create_schema=True), host='127.0.0.1', port=8000)"`,
+          command: `cd ../../services/backend && PDNA_DATABASE_URL=sqlite:///${dbFile} PDNA_CORS_ORIGINS='["${WEB}"]' PDNA_SESSION_CREATE_RATE_LIMIT=1000 PDNA_AUTH_RATE_LIMIT=1000 PDNA_DEV_OUTBOX_ENDPOINT=true PDNA_BILLING_DEV_CHECKOUT=true PDNA_WEB_BASE_URL=${WEB} python -c "import uvicorn; from app.main import create_app; uvicorn.run(create_app(create_schema=True), host='127.0.0.1', port=8000)"`,
           url: `${API}/health`,
           reuseExistingServer: false,
           timeout: 60_000,

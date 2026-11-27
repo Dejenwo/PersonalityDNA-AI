@@ -602,3 +602,48 @@ class ShareCard(Base):
     token_encrypted: Mapped[str] = mapped_column(Text)
     card: Mapped[dict[str, Any]] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Subscription(Base):
+    """A paid plan from a billing provider. Provider ids are references, not payment details: card data
+    never reaches PersonalityDNA."""
+
+    __tablename__ = "subscriptions"
+    __table_args__ = (
+        UniqueConstraint("provider", "provider_subscription_id", name="uq_subscriptions_provider_ref"),
+        CheckConstraint("provider in ('stripe','revenuecat','dev')", name="ck_subscriptions_provider"),
+        CheckConstraint(
+            "status in ('active','trialing','past_due','incomplete','canceled','expired')",
+            name="ck_subscriptions_status",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_subscriptions_user_id_users"), index=True
+    )
+    provider: Mapped[str] = mapped_column(String(16))
+    provider_subscription_id: Mapped[str] = mapped_column(String(255))
+    provider_customer_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    plan_id: Mapped[str] = mapped_column(String(64))
+    status: Mapped[str] = mapped_column(String(16))
+    current_period_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    cancel_at_period_end: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class BillingEvent(Base):
+    """Webhook events already processed, so a provider's retries are applied once."""
+
+    __tablename__ = "billing_events"
+    __table_args__ = (UniqueConstraint("provider", "event_id", name="uq_billing_events_provider_event"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    provider: Mapped[str] = mapped_column(String(16))
+    event_id: Mapped[str] = mapped_column(String(255))
+    event_type: Mapped[str] = mapped_column(String(64))
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_billing_events_user_id_users"), nullable=True
+    )
+    received_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

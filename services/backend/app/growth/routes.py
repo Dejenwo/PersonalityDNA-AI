@@ -5,7 +5,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Request, Response, status
 from sqlalchemy import delete, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -32,7 +32,12 @@ router = APIRouter(prefix="/api/v1/growth", tags=["growth"], responses={404: {"m
 Db = Annotated[Session, Depends(get_db)]
 Content = Annotated[ContentBundle, Depends(get_content)]
 MaybeUser = Annotated[User | None, Depends(optional_user)]
-AUTH: dict[int | str, dict[str, Any]] = {401: {"model": ErrorResponse}, 409: {"model": ErrorResponse}}
+AUTH: dict[int | str, dict[str, Any]] = {
+    401: {"model": ErrorResponse},
+    403: {"model": ErrorResponse},
+    409: {"model": ErrorResponse},
+}
+FREE_PROGRAM_DAYS = 7
 
 
 def _program(content: ContentBundle, program_id: str) -> GrowthProgram:
@@ -145,9 +150,14 @@ def get_program(program_id: str, content: Content, db: Db, user: MaybeUser) -> P
 
 
 @router.post("/programs/{program_id}/enrollment", response_model=ProgramOut, responses=AUTH)
-def start_program(program_id: str, user: CurrentUser, db: Db, content: Content) -> ProgramOut:
-    """Starts the programme, or restarts it from day 1 (clearing progress and self-evaluations)."""
+def start_program(
+    program_id: str, request: Request, user: CurrentUser, db: Db, content: Content
+) -> ProgramOut:
+    """Starts the programme, or restarts it from day 1 (clearing progress and self-evaluations).
+    Seven-day challenges are free; longer programmes are part of Premium once billing is enforced."""
     p = _program(content, program_id)
+    if p.days > FREE_PROGRAM_DAYS:
+        request.app.state.entitlements.require(db, user.id, "growth_programs")
     e = _enrollment(db, user, program_id)
     if e is not None:
         db.delete(e)

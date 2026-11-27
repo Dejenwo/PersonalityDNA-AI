@@ -25,6 +25,7 @@ from app.database.models import (
     GrowthEnrollment,
     LearningActivityProgress,
     Report,
+    Subscription,
     User,
 )
 from app.goals.service import GoalService
@@ -162,6 +163,17 @@ def export(request: Request, user: CurrentUser, db: Db, content: Content) -> dic
         "reports": [
             ReportService(request.app.state.cipher).out(r).model_dump(mode="json")
             for r in db.scalars(select(Report).where(Report.user_id == user.id))
+        ],
+        "subscriptions": [
+            {
+                "provider": x.provider,
+                "plan": x.plan_id,
+                "status": x.status,
+                "current_period_end": x.current_period_end.isoformat() if x.current_period_end else None,
+                "cancel_at_period_end": x.cancel_at_period_end,
+                "created_at": x.created_at.isoformat(),
+            }
+            for x in db.scalars(select(Subscription).where(Subscription.user_id == user.id))
         ],
         "share_cards": [
             c.model_dump(mode="json") for c in ShareService(request.app.state.cipher).list(db, user).cards

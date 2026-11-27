@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { BillingCard } from "@/components/billing-card";
 import { FormMessage, TextField } from "@/components/form";
 import { Button, Card, LoadingState } from "@/components/ui";
 import { api } from "@/lib/api";
@@ -90,6 +91,8 @@ export default function AccountPage() {
           <Button type="submit" variant="secondary">Save</Button>
         </form>
       </Card>
+
+      <BillingCard />
 
       <Card>
         <h2 className="text-xl font-semibold">Your data</h2>

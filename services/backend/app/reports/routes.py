@@ -50,10 +50,11 @@ def get_report(report_id: str, user: CurrentUser, db: Db, svc: Reports) -> Repor
 @router.get(
     "/{report_id}/pdf",
     response_class=Response,
-    responses={**NOT_FOUND, 200: {"content": {"application/pdf": {}}}},
+    responses={**NOT_FOUND, 403: {"model": ErrorResponse}, 200: {"content": {"application/pdf": {}}}},
 )
-def report_pdf(report_id: str, user: CurrentUser, db: Db, svc: Reports) -> Response:
+def report_pdf(report_id: str, request: Request, user: CurrentUser, db: Db, svc: Reports) -> Response:
     r = svc.get(db, user, report_id)
+    request.app.state.entitlements.require(db, user.id, "report_pdf")
     pdf = render_pdf(svc.body(r), r.created_at.strftime("%-d %B %Y"))
     return Response(
         pdf,

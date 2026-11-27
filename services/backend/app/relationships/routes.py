@@ -3,7 +3,7 @@
 import uuid
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Request, Response, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_content, get_db
@@ -52,9 +52,13 @@ def overview(user: Verified, db: Db) -> RelationshipsOut:
     "/invitations",
     response_model=CreatedInvitation,
     status_code=status.HTTP_201_CREATED,
-    responses={409: {"model": ErrorResponse}, 429: {"model": ErrorResponse}},
+    responses={403: {"model": ErrorResponse}, 409: {"model": ErrorResponse}, 429: {"model": ErrorResponse}},
 )
-def create_invitation(body: CreateInvitationIn, user: Verified, db: Db) -> CreatedInvitation:
+def create_invitation(
+    body: CreateInvitationIn, request: Request, user: Verified, db: Db
+) -> CreatedInvitation:
+    """Inviting is part of Premium once billing is enforced; accepting an invitation is always free."""
+    request.app.state.entitlements.require(db, user.id, "relationships")
     return service.create_invitation(db, user, body.relation_type, body.consent)
 
 
