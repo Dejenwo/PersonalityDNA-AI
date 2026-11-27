@@ -4,6 +4,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.admin.routes import router as admin_router
+from app.admin.service import AdminService
 from app.api.errors import install_error_handlers
 from app.api.v1.routes import router as v1
 from app.assessments.content import load_content
@@ -12,6 +14,9 @@ from app.auth.jwt_tokens import AccessTokenCodec
 from app.auth.routes import dev_router
 from app.auth.routes import router as auth_router
 from app.auth.service import AuthService
+from app.billing.entitlements import Entitlements
+from app.billing.routes import router as billing_router
+from app.billing.service import BillingService
 from app.coaching.prompts import load_prompt
 from app.coaching.providers import make_provider
 from app.coaching.routes import router as coach_router
@@ -19,14 +24,18 @@ from app.coaching.service import CoachService
 from app.core.config import Settings, get_settings
 from app.database.base import Base
 from app.database.session import Database
+from app.goals.routes import router as goals_router
 from app.growth.routes import router as growth_router
 from app.journal.routes import router as journal_router
 from app.learning.routes import router as learning_router
 from app.notifications.email import make_email_sender
 from app.relationships.routes import router as relationships_router
+from app.reports.routes import router as reports_router
 from app.security.crypto import FieldCipher
 from app.security.headers import SecurityHeadersMiddleware
 from app.security.rate_limit import RateLimiter
+from app.sharing.routes import public_router as public_card_router
+from app.sharing.routes import router as share_router
 from app.users.routes import router as users_router
 
 
@@ -65,12 +74,16 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.state.auth = AuthService(settings)
     app.state.email = make_email_sender(settings)
     app.state.cipher = FieldCipher.from_settings(settings)
+    app.state.entitlements = Entitlements(settings)
+    app.state.billing = BillingService(settings, app.state.entitlements)
+    app.state.admin = AdminService(settings, app.state.entitlements)
     app.state.coach = CoachService(
         settings,
         make_provider(settings),
         app.state.cipher,
         load_prompt("coach.v1.md", settings.prompts_dir),
         db.sessionmaker,
+        daily_limit=app.state.entitlements.coach_daily_messages,
     )
 
     app.add_middleware(SecurityHeadersMiddleware)
@@ -90,6 +103,12 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.include_router(learning_router)
     app.include_router(growth_router)
     app.include_router(journal_router)
+    app.include_router(goals_router)
+    app.include_router(reports_router)
+    app.include_router(share_router)
+    app.include_router(public_card_router)
+    app.include_router(billing_router)
+    app.include_router(admin_router)
     if settings.dev_outbox_endpoint and settings.environment in ("development", "test"):
         app.include_router(dev_router)
 

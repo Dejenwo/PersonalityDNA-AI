@@ -44,6 +44,31 @@ export type JournalList = Schemas["EntryList"];
 export type JournalSearch = Schemas["SearchIn"];
 export type JournalPrompts = Schemas["PromptsOut"];
 export type JournalKind = JournalEntry["kind"];
+export type Goal = Schemas["GoalOut"];
+export type GoalIn = Schemas["GoalIn"];
+export type GoalPatch = Schemas["GoalPatch"];
+export type Habit = Schemas["HabitOut"];
+export type HabitIn = Schemas["HabitIn"];
+export type HabitPatch = Schemas["HabitPatch"];
+export type HabitList = Schemas["HabitList"];
+export type Report = Schemas["ReportOut"];
+export type ReportBody = Schemas["ReportBody"];
+export type ReportSummary = Schemas["ReportSummary"];
+export type ReportList = Schemas["ReportList"];
+export type ShareCard = Schemas["ShareCardOut"];
+export type PublicCard = Schemas["Card"];
+export type CreateCardIn = Schemas["CreateCardIn"];
+export type Plans = Schemas["PlansOut"];
+export type Plan = Schemas["Plan"];
+export type Billing = Schemas["BillingOut"];
+export type AdminMe = Schemas["AdminMe"];
+export type AdminUser = Schemas["UserSummary"];
+export type AdminUserDetail = Schemas["UserDetail"];
+export type AdminMetrics = Schemas["Metrics"];
+export type AdminContent = Schemas["ContentOverview"];
+export type AdminAudit = Schemas["AuditList"];
+export type AdminHealth = Schemas["Health"];
+export type AdminRole = Schemas["RoleIn"]["role"];
 
 /** Events streamed by POST /coach/conversations/{id}/messages (server-sent events). */
 export type CoachEvent =
@@ -165,6 +190,12 @@ export function createApiClient({
     const res = await authorized("GET", path, { headers: { Accept: accept } });
     if (!res.ok) return fail(res);
     return res.text();
+  }
+
+  async function requestBlob(path: string, accept: string): Promise<Blob> {
+    const res = await authorized("GET", path, { headers: { Accept: accept } });
+    if (!res.ok) return fail(res);
+    return res.blob();
   }
 
   /** Sends a coach message and calls onEvent for each streamed event. Resolves when the stream ends. */
@@ -293,8 +324,67 @@ export function createApiClient({
     deleteJournalEntry: (id: string) => request<void>("DELETE", `/api/v1/journal/entries/${seg(id)}`),
     deleteAllJournalEntries: () => request<void>("POST", "/api/v1/journal/delete-all", { body: { confirm: true } }),
     journalTags: () => request<Schemas["TagsOut"]>("GET", "/api/v1/journal/tags"),
+    // Goals, milestones and habits. `today` is the person's local date (YYYY-MM-DD).
+    goals: () => request<Schemas["GoalList"]>("GET", "/api/v1/goals"),
+    goal: (id: string) => request<Goal>("GET", `/api/v1/goals/${seg(id)}`),
+    createGoal: (body: GoalIn) => request<Goal>("POST", "/api/v1/goals", { body }),
+    updateGoal: (id: string, body: GoalPatch) => request<Goal>("PATCH", `/api/v1/goals/${seg(id)}`, { body }),
+    deleteGoal: (id: string) => request<void>("DELETE", `/api/v1/goals/${seg(id)}`),
+    addMilestone: (goalId: string, title: string, due_date: string | null = null) =>
+      request<Goal>("POST", `/api/v1/goals/${seg(goalId)}/milestones`, { body: { title, due_date } }),
+    updateMilestone: (goalId: string, id: string, body: Schemas["MilestonePatch"]) =>
+      request<Goal>("PATCH", `/api/v1/goals/${seg(goalId)}/milestones/${seg(id)}`, { body }),
+    deleteMilestone: (goalId: string, id: string) =>
+      request<Goal>("DELETE", `/api/v1/goals/${seg(goalId)}/milestones/${seg(id)}`),
+    habits: (today: string) => request<HabitList>("GET", `/api/v1/habits?today=${seg(today)}`),
+    createHabit: (body: HabitIn, today: string) =>
+      request<Habit>("POST", `/api/v1/habits?today=${seg(today)}`, { body }),
+    updateHabit: (id: string, body: HabitPatch, today: string) =>
+      request<Habit>("PATCH", `/api/v1/habits/${seg(id)}?today=${seg(today)}`, { body }),
+    deleteHabit: (id: string) => request<void>("DELETE", `/api/v1/habits/${seg(id)}`),
+    setHabitDone: (id: string, day: string, done: boolean, today: string) =>
+      request<Habit>(done ? "PUT" : "DELETE", `/api/v1/habits/${seg(id)}/checks/${seg(day)}?today=${seg(today)}`),
+
     exportJournal: (format: "markdown" | "json") =>
       requestText(`/api/v1/journal/export?format=${format}`, format === "json" ? "application/json" : "text/markdown"),
+
+    reports: () => request<ReportList>("GET", "/api/v1/reports"),
+    report: (id: string) => request<Report>("GET", `/api/v1/reports/${seg(id)}`),
+    createReport: () => request<Report>("POST", "/api/v1/reports"),
+    deleteReport: (id: string) => request<void>("DELETE", `/api/v1/reports/${seg(id)}`),
+    reportPdf: (id: string) => requestBlob(`/api/v1/reports/${seg(id)}/pdf`, "application/pdf"),
+    shareCards: () => request<{ cards: ShareCard[] }>("GET", "/api/v1/share-cards"),
+    createShareCard: (body: CreateCardIn) => request<ShareCard>("POST", "/api/v1/share-cards", { body }),
+    revokeShareCard: (id: string) => request<void>("DELETE", `/api/v1/share-cards/${seg(id)}`),
+    publicCard: (token: string) => request<PublicCard>("GET", `/api/v1/public/cards/${seg(token)}`, { auth: false }),
+    plans: () => request<Plans>("GET", "/api/v1/billing/plans", { auth: false }),
+    billing: () => request<Billing>("GET", "/api/v1/billing/me"),
+    checkout: (planId: string) =>
+      request<{ url: string }>("POST", "/api/v1/billing/checkout", { body: { plan_id: planId } }),
+    manageSubscription: () => request<{ url: string }>("POST", "/api/v1/billing/manage"),
+    adminMe: () => request<AdminMe>("GET", "/api/v1/admin/me"),
+    adminUsers: (q: string) => request<{ users: AdminUser[] }>("GET", `/api/v1/admin/users?q=${seg(q)}`),
+    adminUser: (id: string) => request<AdminUserDetail>("GET", `/api/v1/admin/users/${seg(id)}`),
+    adminSetStatus: (id: string, status: "active" | "disabled", reason: string) =>
+      request<AdminUserDetail>("POST", `/api/v1/admin/users/${seg(id)}/status`, { body: { status, reason } }),
+    adminGrant: (id: string, plan_id: string, days: number, reason: string) =>
+      request<AdminUserDetail>("POST", `/api/v1/admin/users/${seg(id)}/grants`, { body: { plan_id, days, reason } }),
+    adminRevokeGrant: (id: string, subscriptionId: string) =>
+      request<AdminUserDetail>("DELETE", `/api/v1/admin/users/${seg(id)}/grants/${seg(subscriptionId)}`),
+    adminAddRole: (id: string, role: AdminRole) =>
+      request<AdminUserDetail>("POST", `/api/v1/admin/users/${seg(id)}/roles`, { body: { role } }),
+    adminRemoveRole: (id: string, role: AdminRole) =>
+      request<AdminUserDetail>("DELETE", `/api/v1/admin/users/${seg(id)}/roles/${seg(role)}`),
+    adminMetrics: () => request<AdminMetrics>("GET", "/api/v1/admin/metrics"),
+    adminContent: () => request<AdminContent>("GET", "/api/v1/admin/content"),
+    adminAudit: (before?: string | null, eventType?: string) => {
+      const p = new URLSearchParams();
+      if (before) p.set("before", before);
+      if (eventType) p.set("event_type", eventType);
+      return request<AdminAudit>("GET", `/api/v1/admin/audit?${p.toString()}`);
+    },
+    adminHealth: () => request<AdminHealth>("GET", "/api/v1/admin/health"),
+    publicCardImageUrl: (token: string) => `${root}/api/v1/public/cards/${seg(token)}/image.svg`,
   };
 }
 

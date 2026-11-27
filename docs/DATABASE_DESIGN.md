@@ -56,6 +56,42 @@ Comparisons are computed on request from each person's latest Big Five result an
 | --- | --- | --- | --- |
 | `learning_activity_progress` | Which learning activities a user marked done: track (`leadership`, `emotional-awareness`), module and activity ids and time, no free text | FK user CASCADE; unique (user, track, module, activity) | Until unmarked or account deletion |
 
+## Implemented (migration 0014, admin roles)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `admin_roles` | Admin role per account (support, analyst, content, security, superadmin) and who granted it | FK user CASCADE; FK granted_by SET NULL; unique (user, role); role check | Until removed or account deletion |
+
+`subscriptions.provider` also accepts `manual` (complimentary access granted by support).
+
+## Implemented (migration 0013, billing)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `subscriptions` | Provider (`stripe`, `revenuecat`, `dev`), provider subscription and customer ids, plan, status, period end, cancel flag. No card data | FK user CASCADE; unique (provider, provider subscription id); provider and status checks | Until account deletion (financial records stay with the provider) |
+| `billing_events` | Webhook event ids already applied (idempotency), type, time | Unique (provider, event id); FK user SET NULL | Kept for audit; no personal content |
+
+## Implemented (migration 0012, share cards)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `share_cards` | Public cards the user chose to share: card content (profile name and description and/or bands, date) in the clear; link token hash for lookup and the token encrypted for the owner | FK user CASCADE; FK report CASCADE; unique token hash | Until the user stops sharing, deletes the report or deletes the account |
+
+## Implemented (migration 0011, reports)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `reports` | Report snapshots: version, headline, result kinds used and creation time in the clear; the whole body encrypted (AES-256-GCM, row id as associated data) with its SHA-256 | FK user CASCADE; index (user, created) | Until the user deletes the report or the account |
+
+## Implemented (migration 0010, goals and habits)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `goals` | Encrypted title and reason; target date, status, timestamps | FK user CASCADE; status check | Until deleted by the user or account deletion |
+| `goal_milestones` | Encrypted title, due date, done time, position | FK goal CASCADE | As the goal |
+| `habits` | Encrypted title, weekday mask (1–127), start date, pause time, optional goal | FK user CASCADE; FK goal SET NULL; days check | Until deleted |
+| `habit_checks` | Local dates a habit was done | FK habit CASCADE; unique (habit, day) | As the habit |
+
 ## Implemented (migration 0009, journal)
 
 | Table | Purpose | Key constraints | Retention |

@@ -20,6 +20,11 @@ export function AuthNav() {
           </Link>
         </li>
         <li>
+          <Link href="/goals" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
+            Goals
+          </Link>
+        </li>
+        <li>
           <Link href="/relationships" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
             Relationships
           </Link>

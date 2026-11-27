@@ -8,7 +8,8 @@ import { defineConfig, devices } from "@playwright/test";
 const API = "http://127.0.0.1:8000";
 const WEB = "http://127.0.0.1:3000";
 const external = process.env.E2E_EXTERNAL === "1";
-const dbFile = `${process.env.E2E_TMP ?? "/tmp"}/pdna-e2e-${Date.now()}.db`;
+// Set once in the main process; workers inherit it, so specs can reach the same database (for admin roles).
+const dbFile = (process.env.PDNA_E2E_DB ??= `${process.env.E2E_TMP ?? "/tmp"}/pdna-e2e-${Date.now()}.db`);
 
 export default defineConfig({
   testDir: "./specs",
@@ -16,7 +17,8 @@ export default defineConfig({
   fullyParallel: false,
   retries: process.env.CI ? 1 : 0,
   reporter: [["list"]],
-  use: { baseURL: WEB, trace: "off" },
+  // Reduced motion turns off colour transitions, so axe never measures a colour half-way through one.
+  use: { baseURL: WEB, trace: "off", reducedMotion: "reduce" },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
     { name: "mobile", use: { ...devices["Pixel 7"] } },
@@ -25,7 +27,7 @@ export default defineConfig({
     ? undefined
     : [
         {
-          command: `cd ../../services/backend && PDNA_DATABASE_URL=sqlite:///${dbFile} PDNA_CORS_ORIGINS='["${WEB}"]' PDNA_SESSION_CREATE_RATE_LIMIT=1000 PDNA_AUTH_RATE_LIMIT=1000 PDNA_DEV_OUTBOX_ENDPOINT=true PDNA_WEB_BASE_URL=${WEB} python -c "import uvicorn; from app.main import create_app; uvicorn.run(create_app(create_schema=True), host='127.0.0.1', port=8000)"`,
+          command: `cd ../../services/backend && PDNA_DATABASE_URL=sqlite:///${dbFile} PDNA_CORS_ORIGINS='["${WEB}"]' PDNA_SESSION_CREATE_RATE_LIMIT=1000 PDNA_AUTH_RATE_LIMIT=1000 PDNA_DEV_OUTBOX_ENDPOINT=true PDNA_BILLING_DEV_CHECKOUT=true PDNA_WEB_BASE_URL=${WEB} python -c "import uvicorn; from app.main import create_app; uvicorn.run(create_app(create_schema=True), host='127.0.0.1', port=8000)"`,
           url: `${API}/health`,
           reuseExistingServer: false,
           timeout: 60_000,

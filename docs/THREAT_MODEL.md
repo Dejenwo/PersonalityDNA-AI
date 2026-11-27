@@ -41,6 +41,12 @@ Browser ⇄ Web app (static/JS) ; Browser ⇄ API (JSON, `X-Session-Token`) ; AP
 | T20 | Info disclosure | Emailed token leakage | Tokens in URL fragment, single use, short expiry, stored hashed | Mitigated |
 | T21 | Elevation | Claiming someone else's assessment | Requires that session's resume token; owned sessions can't be re-claimed | Mitigated, tested |
 | T22 | Misconfiguration | Weak production secrets or dev email outbox in production | Settings validation refuses to start | Mitigated, tested |
+| T23 | Information disclosure | A shared card reveals more than intended, or stays visible after the person changes their mind | Card holds only the chosen profile text and bands (no name, email or scores); token in the URL fragment; `no-store` and `noindex`; stopping sharing deletes the row; report and account deletion cascade | Mitigated, tested |
+| T24 | Tampering | Script injection through card text in the SVG image | All text escaped; SVG served with `default-src 'none'`; card text comes only from versioned content | Mitigated, tested |
+| T25 | Spoofing | Forged payment webhooks granting Premium | Stripe signature (HMAC-SHA256, 5-minute tolerance); RevenueCat shared secret compared in constant time; webhooks refuse to run unconfigured; plan must be a known paid plan | Mitigated, tested |
+| T26 | Tampering | Replayed webhook events | Event ids stored once per provider (unique constraint) | Mitigated, tested |
+| T27 | Elevation of privilege | A member or a narrow admin role reaching admin functions | Per-route permission checks; roles only by command line or superadmin; confirmed email required; 404 for missing permission; superadmin cannot remove their own role | Mitigated, tested |
+| T28 | Information disclosure | Admins reading private journals, coaching or answers | No admin endpoint returns encrypted fields or content; tests assert private text never appears | Mitigated, tested |
 
 ## Future flows to model
 

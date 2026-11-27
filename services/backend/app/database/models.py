@@ -495,3 +495,180 @@ class JournalEntry(Base):
     tags_encrypted: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Goal(Base):
+    """A personal goal. Title and reason are encrypted with the row id as associated data."""
+
+    __tablename__ = "goals"
+    __table_args__ = (CheckConstraint("status in ('active','completed','archived')", name="ck_goal_status"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_goals_user_id_users"), index=True
+    )
+    title_encrypted: Mapped[str] = mapped_column(Text)
+    why_encrypted: Mapped[str | None] = mapped_column(Text, nullable=True)
+    target_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    status: Mapped[str] = mapped_column(String(16), default="active")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class GoalMilestone(Base):
+    """A step towards a goal, optionally with a due date. Title encrypted."""
+
+    __tablename__ = "goal_milestones"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    goal_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("goals.id", ondelete="CASCADE", name="fk_goal_milestones_goal_id_goals"), index=True
+    )
+    title_encrypted: Mapped[str] = mapped_column(Text)
+    due_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    done_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    position: Mapped[int] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Habit(Base):
+    """A habit planned on some days of the week (bit 0 = Monday ... bit 6 = Sunday). Title encrypted."""
+
+    __tablename__ = "habits"
+    __table_args__ = (CheckConstraint("days between 1 and 127", name="ck_habit_days"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_habits_user_id_users"), index=True
+    )
+    goal_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("goals.id", ondelete="SET NULL", name="fk_habits_goal_id_goals"), nullable=True
+    )
+    title_encrypted: Mapped[str] = mapped_column(Text)
+    days: Mapped[int] = mapped_column(Integer)
+    start_date: Mapped[date] = mapped_column(Date)
+    archived_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class HabitCheck(Base):
+    """A day on which the user did a habit. Dates are the user's local dates."""
+
+    __tablename__ = "habit_checks"
+    __table_args__ = (UniqueConstraint("habit_id", "day", name="uq_habit_check"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    habit_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("habits.id", ondelete="CASCADE", name="fk_habit_checks_habit_id_habits"), index=True
+    )
+    day: Mapped[date] = mapped_column(Date)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Report(Base):
+    """A generated personality report. The body (scores and texts) is stored encrypted as JSON, with a hash
+    of the plaintext so a rebuild from the same results and content can be checked for equality."""
+
+    __tablename__ = "reports"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_reports_user_id_users"), index=True
+    )
+    report_version: Mapped[str] = mapped_column(String(16))
+    headline: Mapped[str] = mapped_column(String(120))
+    kinds: Mapped[list[str]] = mapped_column(JSON)
+    body_encrypted: Mapped[str] = mapped_column(Text)
+    body_sha256: Mapped[str] = mapped_column(String(64))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class ShareCard(Base):
+    """A public, revocable card made from one of the user's reports. The card text is stored in the clear
+    because the user chose to publish it; it holds no name or scores. Only the link token's hash is used
+    for lookup; the token itself is kept encrypted so the owner can copy the link again."""
+
+    __tablename__ = "share_cards"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_share_cards_user_id_users"), index=True
+    )
+    report_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("reports.id", ondelete="CASCADE", name="fk_share_cards_report_id_reports"), index=True
+    )
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    token_encrypted: Mapped[str] = mapped_column(Text)
+    card: Mapped[dict[str, Any]] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Subscription(Base):
+    """A paid plan from a billing provider. Provider ids are references, not payment details: card data
+    never reaches PersonalityDNA."""
+
+    __tablename__ = "subscriptions"
+    __table_args__ = (
+        UniqueConstraint("provider", "provider_subscription_id", name="uq_subscriptions_provider_ref"),
+        CheckConstraint(
+            "provider in ('stripe','revenuecat','dev','manual')", name="ck_subscriptions_provider"
+        ),
+        CheckConstraint(
+            "status in ('active','trialing','past_due','incomplete','canceled','expired')",
+            name="ck_subscriptions_status",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_subscriptions_user_id_users"), index=True
+    )
+    provider: Mapped[str] = mapped_column(String(16))
+    provider_subscription_id: Mapped[str] = mapped_column(String(255))
+    provider_customer_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    plan_id: Mapped[str] = mapped_column(String(64))
+    status: Mapped[str] = mapped_column(String(16))
+    current_period_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    cancel_at_period_end: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class BillingEvent(Base):
+    """Webhook events already processed, so a provider's retries are applied once."""
+
+    __tablename__ = "billing_events"
+    __table_args__ = (UniqueConstraint("provider", "event_id", name="uq_billing_events_provider_event"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    provider: Mapped[str] = mapped_column(String(16))
+    event_id: Mapped[str] = mapped_column(String(255))
+    event_type: Mapped[str] = mapped_column(String(64))
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_billing_events_user_id_users"), nullable=True
+    )
+    received_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class AdminRole(Base):
+    """An administrative role held by an account. Granted from the command line or by a superadmin;
+    never self-service. Roles give access to account metadata and aggregates, never to private content."""
+
+    __tablename__ = "admin_roles"
+    __table_args__ = (
+        UniqueConstraint("user_id", "role", name="uq_admin_roles_user_role"),
+        CheckConstraint(
+            "role in ('support','analyst','content','security','superadmin')", name="ck_admin_roles_role"
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_admin_roles_user_id_users"), index=True
+    )
+    role: Mapped[str] = mapped_column(String(16))
+    granted_by: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_admin_roles_granted_by_users"), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

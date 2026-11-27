@@ -106,6 +106,74 @@ Signed-in users only, except prompts. Entries belong to their author; other user
 | GET | `/api/v1/journal/export?format=markdown\|json` | Download every entry (attachment, `no-store`) |
 | POST | `/api/v1/journal/delete-all` | Delete every entry; body `{"confirm": true}` |
 
+## Reports (implemented)
+
+Signed-in users only; other users' reports return 404. A report is a snapshot and never changes after it is created.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/reports` | The user's reports, newest first (id, time, version, headline, result kinds used) |
+| POST | `/api/v1/reports` | Create from the latest Big Five (required), interest and leadership results; 409 `no_results` without a Big Five result, 409 `too_many_reports` past 50 |
+| GET / DELETE | `/api/v1/reports/{id}` | Read the full report body with its SHA-256, or delete it |
+| GET | `/api/v1/reports/{id}/pdf` | The report as a PDF (attachment, `no-store`) |
+
+## Administration (implemented)
+
+Needs an admin role (`scripts/grant_admin.py` creates the first superadmin). A missing role or permission returns 404. Changes need a reason and are audited.
+
+| Method | Path | Permission | Purpose |
+| --- | --- | --- | --- |
+| GET | `/api/v1/admin/me` | any role | Roles and permissions |
+| GET | `/api/v1/admin/users?q=` | users.read | Find accounts by email text or id (25 max) |
+| GET | `/api/v1/admin/users/{id}` | users.read | Account metadata, counts, subscriptions, roles. Never private content |
+| POST | `/api/v1/admin/users/{id}/status` | users.manage | Disable (signs out everywhere) or enable, with a reason |
+| POST / DELETE | `/api/v1/admin/users/{id}/grants[/{sub}]` | subscriptions.manage | Complimentary Premium for 1–366 days, or remove it |
+| POST / DELETE | `/api/v1/admin/users/{id}/roles[/{role}]` | roles.manage | Grant or remove admin roles |
+| GET | `/api/v1/admin/metrics` | metrics.read | Accounts, assessments, subscriptions, estimated revenue, AI usage and cost, feature adoption (aggregates) |
+| GET | `/api/v1/admin/content` | content.read | Engine, report, prompt and plan versions; instruments and content files with SHA-256 |
+| GET | `/api/v1/admin/audit?before=&event_type=&limit=` | audit.read | Audit events, newest first |
+| GET | `/api/v1/admin/health` | health.read | Database, environment and provider configuration |
+
+## Billing (implemented)
+
+Gated features return 403 `premium_required` with `details.feature` once `PDNA_BILLING_ENFORCE=true`.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/billing/plans` | Public plan list, prices, notes, whether checkout is available |
+| GET | `/api/v1/billing/me` | The account's plan, features, coaching allowance, subscription and whether it can be managed here |
+| POST | `/api/v1/billing/checkout` | `{plan_id}` → `{url}` of the payment page; 409 `already_subscribed`, 503 `billing_unavailable` |
+| POST | `/api/v1/billing/manage` | `{url}` of the Stripe customer portal; 409 `manage_in_store` for app store subscriptions; 404 `no_subscription` |
+| POST | `/api/v1/billing/restore` | Re-read app store purchases from RevenueCat |
+| POST | `/api/v1/billing/webhooks/stripe` | Stripe events (signature required); not in the public schema |
+| POST | `/api/v1/billing/webhooks/revenuecat` | RevenueCat events (shared secret); not in the public schema |
+
+## Share cards (implemented)
+
+Creating, listing and stopping a share needs an account; reading a card needs only its link token. Unknown, revoked and malformed tokens all return 404.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/share-cards` | The user's shared cards with their link tokens |
+| POST | `/api/v1/share-cards` | Share a card from a report (`report_id`, `include_archetype`, `include_traits`); 422 `empty_card`, 409 `too_many_cards` past 10 |
+| DELETE | `/api/v1/share-cards/{id}` | Stop sharing (the link stops working at once) |
+| GET | `/api/v1/public/cards/{token}` | The card: profile name and description and/or trait bands, report date, note. `no-store`, `noindex` |
+| GET | `/api/v1/public/cards/{token}/image.svg` | The card as a 1200 x 630 SVG with a text alternative |
+
+## Goals and habits (implemented)
+
+Signed-in users only; other users' goals and habits return 404. Habit endpoints take `?today=YYYY-MM-DD` (the person's local date, within a day of the server's).
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET / POST | `/api/v1/goals` | List (active first) or create (title, why, target date, up to 20 milestones) |
+| GET / PATCH / DELETE | `/api/v1/goals/{id}` | Read, adjust (only sent fields; status active, completed or archived), delete (linked habits are kept) |
+| POST | `/api/v1/goals/{id}/milestones` | Add a milestone |
+| PATCH / DELETE | `/api/v1/goals/{id}/milestones/{mid}` | Rename, set due date, mark done or not done; remove |
+| GET / POST | `/api/v1/habits` | Habits with today's state, last 7 and 30 days (planned, done on planned, extra) and a four-week grid; create (title, weekdays 0–6, optional goal) |
+| PATCH / DELETE | `/api/v1/habits/{id}` | Rename, change days or goal, pause or resume; delete |
+| PUT / DELETE | `/api/v1/habits/{id}/checks/{day}` | Record or remove a done day (today or up to 30 days back) |
+
 ## Growth programmes (implemented)
 
 Programmes are public to read; everything else needs an account. Progress calls on a programme the user has not started return 409 `not_enrolled`. Day and week numbers outside the programme return 404.

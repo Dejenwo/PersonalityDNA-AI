@@ -14,15 +14,18 @@ Last updated: 2026-11-26.
 | 4 | Design system | In Progress | Tokens with contrast tests and web components. No icon, mobile components or `packages/ui` yet. |
 | 5 | Authentication | Tested | Email/password accounts, verification, reset, rotating sessions, claim, history, export, deletion (ADR-010). No social login or MFA yet. |
 | 6 | Assessment engine | Tested | Instruments, sessions, autosave, resume, deterministic scoring, versioning, audit. History is device-local until accounts exist. |
-| 7 | Personality intelligence | In Progress | Big Five results, archetypes, trait explanations, strengths and growth. No shareable card or comparison yet. |
+| 7 | Personality intelligence | In Progress | Big Five results, archetypes, trait explanations, strengths and growth. Shareable cards in Phase 15; comparison in Phase 10. |
 | 8 | AI coaching | Tested | Provider interface (stand-in + Anthropic), consented context from scores only, versioned prompt, crisis routing, input flags, streaming output guard, grounding check, encrypted messages, daily limits, usage records, evaluation suite, web chat (ADR-011). Live model not yet run: needs the owner's API key and spending cap. |
 | 9 | Career intelligence | Tested | O*NET Interest Profiler Short Form (60 activities) as a **draft** instrument, count-based RIASEC scoring (engine 1.1.0), interest code with tie reporting, interest results page, career exploration page joining interests and Big Five working style, interests in coach context (ADR-012). Draft is hidden in production until the wording is checked against the official PDF and a lawyer confirms the CC BY-ND reading. |
 | 10 | Relationship intelligence | Tested | One-time invitation links, consent from both people, one link per pair, comparison of Big Five bands with original similarity, difference, misunderstanding and prompt text, exercises and shared goals, revoke by either person, export and deletion (ADR-013). No compatibility score or prediction. |
 | 11 | Leadership intelligence | Tested | Original 27-statement leadership preferences questionnaire (9 areas from the spec, labelled unvalidated), ranked results with build and stretch suggestions, 9 development modules with lessons, activities and reflection, activity progress for accounts, leadership preferences in coach context (ADR-014). Never presented as ability or used for employment decisions. |
 | 12 | Emotional awareness | Tested | Original learning track: 7 modules (self-awareness, reflective communication, active listening, empathy, stress reflection, interpersonal understanding, constructive expression) with lessons, activities, reflection and a support note; no score or test; shared learning-track API and progress (migration 0007); "Emotions and communication" coach topic; Learn page (ADR-015). Needs a clinical safety review of wording before launch. |
 | 13 | Personal growth academy | Tested | Original content: 12 weekly units across the 10 topics in the spec, composed into three 7-day challenges and 30, 60 and 90-day programmes with objectives, lessons, practice, daily exercises, weekly milestones, review days and weekly 1 to 5 self-checks; enrolment, day progress and self-checks for accounts (migration 0008); Learn page entry (ADR-016). Annual goals move to Phase 14 goals. |
-| 14 | Journaling, goals and habits | In Progress | Journal tested: encrypted entries (title, text, tags), six kinds with original prompts, optional mood, tags, search after decryption (POST, not logged), Markdown and JSON export, delete one or all, privacy export (ADR-017). Goals and habits next. |
-| 15–25 | Reports onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
+| 14 | Journaling, goals and habits | Tested | Journal: encrypted entries (title, text, tags), six kinds with original prompts, optional mood, tags, search after decryption (POST, not logged), Markdown and JSON export, delete one or all (ADR-017). Goals with milestones and adjustment, habits on chosen weekdays with history, neutral 7 and 30-day summaries and a four-week grid, no streaks (ADR-018). Reminders wait for the notification service. |
+| 15 | Reports | Tested | Personality reports: a snapshot of the latest Big Five, interest and leadership results with profile, trait scores as text and bars, strengths, development, communication and relationship guidance, career interests, leadership preferences, values note, a development plan of growth programmes and leadership modules, methodology, references and limitations; stored encrypted with a body fingerprint (migration 0011); report library, report page and server-rendered PDF download (ADR-019). Shareable personality cards: opt-in, revocable public links with profile name and Big Five bands only, an SVG image, no name, email or scores (migration 0012, ADR-020). |
+| 16 | Monetization | Tested | Plans and prices as validated data; entitlement service (report PDFs, programmes over 7 days, relationship invitations, coaching allowance); Stripe checkout, customer portal and signed, idempotent webhooks; RevenueCat webhooks and restore for Apple and Google; local checkout for development; pricing page and plan card on the account page (migration 0013, ADR-021). Off until the owner sets up providers (`PDNA_BILLING_ENFORCE`). |
+| 17 | Administration | Tested | Five least-privilege roles (first superadmin from the command line), account search and detail without private content, disable or enable with sign-out, complimentary Premium, role management, metrics (accounts, assessments, subscriptions, estimated revenue, AI tokens and cost, feature adoption), content and version overview, audit log, health; every change audited with a reason (migration 0014, ADR-022). |
+| 18–25 | Enterprise onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
 
 ## Task log
 
@@ -94,17 +97,36 @@ Last updated: 2026-11-26.
 | J-003 | Privacy | Markdown and JSON export, privacy export, delete one, delete all, account deletion; text never logged | P0 | Tested | `test_export_and_deletion`, `test_journal_text_is_never_logged` |
 | J-004 | Web | Journal list with search and filters, new entry with prompts, entry view, edit and delete, downloads, delete all with confirmation; nav link | P0 | Tested | e2e journal.spec.ts (desktop + mobile) + axe; vitest journal helpers |
 | J-005 | Journal | Optional AI reflection on entries (separate consent), mood charts, attachments, KMS-held keys and rotation | P2 | Not Started | AI use needs its own consent design; keys are a deployment task |
-| M-001 | Monetization | Entitlements service with plan config; Stripe and RevenueCat webhooks | P0 | Not Started | Needs accounts; live keys needed for real payments |
+| H-001 | Goals | Goals with encrypted title and reason, target date, status changes, milestones (add, rename, done, remove), deletion keeps habits | P0 | Tested | `test_goal_lifecycle_and_privacy`, `test_goal_validation` |
+| H-002 | Habits | Weekday schedules, local-date checks (30-day back-fill), pause, goal link, deletion, export | P0 | Tested | `test_habit_checks_history_and_stats`, `test_habits_link_to_goals_archive_and_delete` |
+| H-003 | Habits | Pure analytics: masks, 7 and 30-day windows from the start date, extra days, four-week grid; no streaks | P0 | Tested | `test_masks`, `test_window_counts_planned_and_extra_days`, `test_grid_is_whole_weeks_ending_this_week` |
+| H-004 | Web | Goals and habits page (today's habits, history grid, pause, new habit and goal forms) and goal page (adjust, milestones, complete, archive, delete, reflection links); nav link | P0 | Tested | e2e goals.spec.ts (desktop + mobile) + axe; vitest habit helpers |
+| H-005 | Habits | Opt-in reminders with quiet hours; annual goals view; coach awareness with a sharing choice | P1 | Not Started | Reminders need the notification service |
+| R-001 | Reports | Deterministic report builder from the latest result of each kind and versioned original content; plan grounded in existing programmes and modules; content fingerprint | P0 | Tested | `test_build_is_deterministic_and_plan_is_grounded` |
+| R-002 | Reports | Encrypted storage, library, read, PDF (attachment, `no-store`), delete, 50-report limit, owner-only access, privacy export, account deletion | P0 | Tested | `test_create_read_pdf_and_delete`, `test_reports_belong_to_their_owner`, `test_report_limit`, `test_export_and_account_deletion` |
+| R-003 | Web | Report library with create, report page with every section as text, PDF download, delete with confirmation; link from My results | P0 | Tested | e2e reports.spec.ts (desktop + mobile) + axe; vitest report helpers |
+| R-004 | Sharing | Share cards from a report: choose profile and/or bands, public read and SVG image without sign-in (`no-store`, `noindex`, strict CSP on the SVG), token hashed for lookup and encrypted for the owner, stop sharing, 10-card limit, removed with the report or account, in the privacy export | P1 | Tested | tests/test_sharing.py (4 tests); e2e reports.spec.ts share steps + axe; vitest share helpers |
+| R-006 | Sharing | PNG image for social previews (needs server-side rendering of the page with Open Graph tags) | P2 | Not Started | Links carry the token in the fragment, so previews would need a different link design |
+| R-005 | Reports | Values assessment section (needs a licensed values instrument); PDF accessibility tagging (PDF/UA) | P2 | Not Started | reportlab does not produce tagged PDFs; the web report is the accessible version |
+| M-001 | Monetization | Plan config validation; entitlement service and enforcement points; coaching allowance by plan | P0 | Tested | `test_plan_config_and_helpers`, `test_everything_available_until_enforced`, `test_free_plan_limits_and_upgrade` |
+| M-002 | Monetization | Stripe checkout and portal (fake HTTP), webhook signatures, idempotency, status mapping, customer reuse | P0 | Tested | `test_stripe_signature_verification`, `test_stripe_checkout_webhooks_and_portal` |
+| M-003 | Monetization | RevenueCat webhooks (auth, purchase, cancellation, expiry, unknown products) and restore | P0 | Tested | `test_revenuecat_webhooks_and_restore` |
+| M-004 | Web | Pricing page, plan card with manage or cancel, export and account deletion | P0 | Tested | e2e pricing.spec.ts (desktop + mobile) + axe; vitest billing helpers; `test_export_ownership_and_account_deletion` |
+| A-001 | Admin | Roles and permissions, 404 for non-admins, command-line grant | P0 | Tested | `test_role_permissions_are_least_privilege`, `test_non_admins_see_nothing`, `test_grant_admin_command_line` |
+| A-002 | Admin | Support tools with audit; no private content in responses; self-protection | P0 | Tested | `test_support_tools_are_audited_and_never_show_private_content` |
+| A-003 | Admin | Metrics, revenue and AI cost estimates, content overview, audit pagination, roles | P0 | Tested | `test_superadmin_roles_audit_metrics_and_content`, `test_revenue_and_ai_cost_estimates`; e2e admin.spec.ts + axe |
+| A-004 | Admin | Feature flags, translation management, privacy request queue, plan and content editing with review, MFA for admins, reporting store | P1 | Not Started | Needs review flows; MFA is a security phase item |
+| M-005 | Monetization | One-off report purchases (credit model), live provider setup, tax, final prices, terms update, mobile purchase UI | P1 | Not Started | Needs the owner's Stripe, RevenueCat, Apple and Google accounts |
 
 ## Test results (latest local run, 2026-11-27)
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest` | 171 passed |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 171 passed |
+| Backend, SQLite | `pytest` | 201 passed |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 201 passed |
 | Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
-| Web unit | `vitest run` | 29 passed |
+| Web unit | `vitest run` | 42 passed |
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
-| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 34 passed |
+| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 42 passed |

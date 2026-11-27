@@ -1,3 +1,5 @@
+import { execFileSync } from "node:child_process";
+import { resolve } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type APIRequestContext, type Page } from "@playwright/test";
 
@@ -64,4 +66,15 @@ export async function signIn(page: Page, email: string, password = PASSWORD) {
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.getByRole("heading", { name: "My results" })).toBeVisible();
+}
+
+/** Grants an admin role with the backend's command-line tool (the only way to create the first admin). */
+export function grantAdminRole(email: string, role: string) {
+  const db = process.env.PDNA_E2E_DB;
+  if (!db) throw new Error("PDNA_E2E_DB is not set; admin specs need the servers started by Playwright");
+  execFileSync("python", ["scripts/grant_admin.py", email, role], {
+    cwd: resolve(process.cwd(), "../../services/backend"),
+    env: { ...process.env, PDNA_DATABASE_URL: `sqlite:///${db}` },
+    stdio: "pipe",
+  });
 }

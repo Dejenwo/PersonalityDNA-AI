@@ -15,6 +15,10 @@ Not legal advice. A qualified privacy lawyer must review before launch; no compl
 | Relationship invitations (token hash, type) and links (two user ids, type, consent ids) | Let two people compare trait bands | Consent from both people | Invitations: until accepted, cancelled or 7 days; links: until either person ends it or deletes their account |
 | Learning activity progress (track, module and activity ids, time; leadership and emotional awareness) | Show progress through learning modules | Contract | Until unmarked or account deletion |
 | Journal entries (title, text and tags encrypted; kind, date and optional mood in the clear) | The user's private journal; never shared, never shown to staff, never sent to AI providers | Contract | Until the user deletes them or the account |
+| Personality reports (body encrypted; version, headline, kinds used and time in the clear) | Snapshot of the user's own results for reading and PDF download; never shared unless the user later creates a share card | Contract | Until the user deletes them or the account |
+| Subscription references (provider, provider ids, plan, status, period end). Card details stay with Stripe, Apple or Google | Providing and verifying Premium | Contract | Until account deletion; providers keep their own financial records |
+| Share cards (profile name and description and/or Big Five bands; never names, emails or scores) | Public card the user chose to share by link | Consent (the user's choice to share; withdrawn by stopping sharing) | Until the user stops sharing, deletes the report or the account |
+| Goals, milestones and habits (titles and reasons encrypted; dates, status and done days in the clear) | Goal and habit tracking for the user only | Contract | Until the user deletes them or the account |
 | Growth programme progress (programme, start and finish time, days done, weekly self-check ratings 1 to 5) | Show progress through programmes; ratings are for the user's own reflection and are not sent to AI providers | Contract | Until the user leaves or restarts the programme, or deletes the account |
 
 No names, emails, device identifiers, analytics or third-party trackers are collected today.
@@ -31,3 +35,7 @@ No names, emails, device identifiers, analytics or third-party trackers are coll
 8. Cross-border transfers: document provider regions (Supabase, LLM providers) before launch.
 9. Children: block under-18; no knowingly collected children's data.
 10. Logs: no answers, journals or coaching text in logs (enforced by code review; add a log-scrubbing test with structured logging).
+
+## Administrative access (ADR-022)
+
+Admin roles see account metadata (email, dates, status, plan, counts) and aggregates only. No admin endpoint returns journal text, coaching messages, assessment answers or report contents. Every admin change is audited with the admin's id and a reason.
