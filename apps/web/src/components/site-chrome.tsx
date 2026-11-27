@@ -54,7 +54,8 @@ export function SiteFooter() {
           <a className="underline" href="https://ipip.ori.org/" rel="noopener noreferrer" target="_blank">
             International Personality Item Pool
           </a>{" "}
-          (public domain). <Link className="underline" href="/privacy">Privacy notice</Link>
+          (public domain). <Link className="underline" href="/privacy">Privacy notice</Link> ·{" "}
+          <Link className="underline" href="/pricing">Plans and pricing</Link>
         </p>
       </div>
     </footer>

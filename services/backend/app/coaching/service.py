@@ -85,8 +85,11 @@ class CoachService:
         cipher: FieldCipher,
         prompt: PromptTemplate,
         sessionmaker: Callable[[], Session],
+        daily_limit: Callable[[Session, uuid.UUID], int] | None = None,
     ) -> None:
         self.settings = settings
+        # Messages per rolling day for a user; the plan decides it once billing is enforced.
+        self.daily_limit = daily_limit or (lambda _db, _uid: settings.coach_daily_message_limit)
         self.provider = provider
         self.cipher = cipher
         self.prompt = prompt
@@ -115,15 +118,15 @@ class CoachService:
             .order_by(AiUsageRecord.created_at)
         ).all()
         used = len(rows)
-        limit = self.settings.coach_daily_message_limit
+        limit = self.daily_limit(db, user_id)
         resets_at = None
-        if used >= limit and rows:
+        if limit > 0 and used >= limit and rows:
             resets_at = _aware(rows[used - limit]) + WINDOW
         return used, resets_at
 
     def status(self, db: Session, user: User) -> CoachStatus:
         used, resets_at = self.usage(db, user.id)
-        limit = self.settings.coach_daily_message_limit
+        limit = self.daily_limit(db, user.id)
         return CoachStatus(
             enabled=self.settings.coach_enabled,
             demo_mode=self.provider.name == "mock",
@@ -335,7 +338,7 @@ class CoachService:
                 # Never blocked by limits and never sent to the model.
                 return self._crisis_turn(db, conv, text, screen.flags, screen.crisis)
             used, resets_at = self.usage(db, conv.user_id)
-            if used >= self.settings.coach_daily_message_limit:
+            if used >= self.daily_limit(db, conv.user_id):
                 raise ApiError(
                     429,
                     "coach_limit_reached",
@@ -401,7 +404,7 @@ class CoachService:
         return {
             "user_message": self.message_out(user_msg).model_dump(mode="json"),
             "assistant_message": self.message_out(reply).model_dump(mode="json"),
-            "remaining": max(0, self.settings.coach_daily_message_limit - used),
+            "remaining": max(0, self.daily_limit(db, user_id) - used),
         }
 
     def _persist(

@@ -58,6 +58,9 @@ export type ReportList = Schemas["ReportList"];
 export type ShareCard = Schemas["ShareCardOut"];
 export type PublicCard = Schemas["Card"];
 export type CreateCardIn = Schemas["CreateCardIn"];
+export type Plans = Schemas["PlansOut"];
+export type Plan = Schemas["Plan"];
+export type Billing = Schemas["BillingOut"];
 
 /** Events streamed by POST /coach/conversations/{id}/messages (server-sent events). */
 export type CoachEvent =
@@ -346,6 +349,11 @@ export function createApiClient({
     createShareCard: (body: CreateCardIn) => request<ShareCard>("POST", "/api/v1/share-cards", { body }),
     revokeShareCard: (id: string) => request<void>("DELETE", `/api/v1/share-cards/${seg(id)}`),
     publicCard: (token: string) => request<PublicCard>("GET", `/api/v1/public/cards/${seg(token)}`, { auth: false }),
+    plans: () => request<Plans>("GET", "/api/v1/billing/plans", { auth: false }),
+    billing: () => request<Billing>("GET", "/api/v1/billing/me"),
+    checkout: (planId: string) =>
+      request<{ url: string }>("POST", "/api/v1/billing/checkout", { body: { plan_id: planId } }),
+    manageSubscription: () => request<{ url: string }>("POST", "/api/v1/billing/manage"),
     publicCardImageUrl: (token: string) => `${root}/api/v1/public/cards/${seg(token)}/image.svg`,
   };
 }

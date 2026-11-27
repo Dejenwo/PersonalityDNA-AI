@@ -1,0 +1,57 @@
+{
+  "version": "1",
+  "currency": "USD",
+  "note": "Prices are initial and may change. You always see the price before you pay, you can cancel at any time, and you keep Premium until the end of the period you paid for.",
+  "free_note": "The free plan stays useful: assessments, results, your profile, reports, a share card, 7-day challenges and some daily coaching.",
+  "features": [
+    { "id": "report_pdf", "label": "PDF copies of your reports" },
+    { "id": "growth_programs", "label": "30, 60 and 90-day growth programmes" },
+    { "id": "relationships", "label": "Relationship communication comparisons" },
+    { "id": "expanded_coaching", "label": "More daily AI coaching messages" }
+  ],
+  "plans": [
+    {
+      "id": "free",
+      "name": "Free",
+      "price_cents": 0,
+      "interval": null,
+      "features": [],
+      "coach_daily_messages": 5,
+      "highlights": [
+        "Big Five assessments and results",
+        "Your personality profile and archetype",
+        "Personality reports and a share card",
+        "Career interest and leadership questionnaires",
+        "7-day growth challenges, journal, goals and habits",
+        "5 AI coaching messages a day"
+      ]
+    },
+    {
+      "id": "premium-monthly",
+      "name": "Premium monthly",
+      "price_cents": 999,
+      "interval": "month",
+      "features": ["report_pdf", "growth_programs", "relationships", "expanded_coaching"],
+      "coach_daily_messages": 30,
+      "highlights": [
+        "Everything in Free",
+        "PDF copies of your reports",
+        "30, 60 and 90-day growth programmes",
+        "Relationship communication comparisons",
+        "30 AI coaching messages a day"
+      ]
+    },
+    {
+      "id": "premium-annual",
+      "name": "Premium annual",
+      "price_cents": 6999,
+      "interval": "year",
+      "features": ["report_pdf", "growth_programs", "relationships", "expanded_coaching"],
+      "coach_daily_messages": 30,
+      "highlights": [
+        "Everything in Premium monthly",
+        "Billed once a year"
+      ]
+    }
+  ]
+}
