@@ -30,6 +30,7 @@ from app.database.models import (
 )
 from app.goals.service import GoalService
 from app.journal.service import JournalService
+from app.organizations import service as organizations
 from app.relationships import service as relationships
 from app.reports.service import ReportService
 from app.sharing.service import ShareService
@@ -158,6 +159,7 @@ def export(request: Request, user: CurrentUser, db: Db, content: Content) -> dic
             for c in conversations
         ],
         "relationships": relationships.export_for(db, user),
+        "organisations": organizations.export_for(db, user),
         "growth_programs": _growth_export(db, user),
         "goals_and_habits": GoalService(request.app.state.cipher).export(db, user),
         "reports": [

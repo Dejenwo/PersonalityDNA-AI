@@ -77,6 +77,16 @@ Comparisons are computed on request from each person's latest Big Five result an
 | --- | --- | --- | --- |
 | `share_cards` | Public cards the user chose to share: card content (profile name and description and/or bands, date) in the clear; link token hash for lookup and the token encrypted for the owner | FK user CASCADE; FK report CASCADE; unique token hash | Until the user stops sharing, deletes the report or deletes the account |
 
+## Implemented (migration 0015, organisations)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `organizations` | Name, licence (pilot or licensed), seat limit, licence end | Licence and seat checks; creator SET NULL | Until an owner deletes it, or its last person leaves through account deletion |
+| `org_members` | Membership: role, aggregate opt-in flag, consent record | Unique (org, user); role check; FK org and user CASCADE | Until the member leaves or is removed, or either side is deleted |
+| `org_invitations` | Join links: token hash, role, uses and limit, expiry | Unique token hash; role check; FK org CASCADE | Until used up, cancelled, expired and cleaned up, or the organisation is deleted |
+| `org_programs` | Programme title, description, growth programme id and learning module refs | FK org CASCADE | Until deleted by a manager or with the organisation |
+| `org_program_participants` | Who joined a programme (never shown by name) | Unique (program, user); CASCADE | Until the member leaves the programme or the organisation |
+
 ## Implemented (migration 0011, reports)
 
 | Table | Purpose | Key constraints | Retention |

@@ -672,3 +672,108 @@ class AdminRole(Base):
         ForeignKey("users.id", ondelete="SET NULL", name="fk_admin_roles_granted_by_users"), nullable=True
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Organization(Base):
+    """An organisation running voluntary development programmes. It sees who its members are, never their
+    answers, results, journals or coaching, and only suppressed aggregates from members who opt in."""
+
+    __tablename__ = "organizations"
+    __table_args__ = (
+        CheckConstraint("licence in ('pilot','licensed')", name="ck_organizations_licence"),
+        CheckConstraint("seat_limit >= 1", name="ck_organizations_seat_limit"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    name: Mapped[str] = mapped_column(String(120))
+    created_by: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_organizations_created_by_users"), nullable=True
+    )
+    licence: Mapped[str] = mapped_column(String(16), default="pilot")
+    seat_limit: Mapped[int] = mapped_column(Integer)
+    licensed_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class OrgMember(Base):
+    """Membership is voluntary and revocable: leaving deletes the row. share_aggregates is a separate,
+    revocable opt-in to include the member's latest Big Five bands in suppressed group statistics."""
+
+    __tablename__ = "org_members"
+    __table_args__ = (
+        UniqueConstraint("org_id", "user_id", name="uq_org_members_org_user"),
+        CheckConstraint("role in ('owner','admin','member')", name="ck_org_members_role"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    org_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("organizations.id", ondelete="CASCADE", name="fk_org_members_org_id_organizations"),
+        index=True,
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_org_members_user_id_users"), index=True
+    )
+    role: Mapped[str] = mapped_column(String(16))
+    share_aggregates: Mapped[bool] = mapped_column(default=False)
+    consent_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("consent_records.id", ondelete="SET NULL", name="fk_org_members_consent_id"), nullable=True
+    )
+    joined_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class OrgInvitation(Base):
+    """A join link. Only the token hash is stored; it can be used up to max_uses times before it expires."""
+
+    __tablename__ = "org_invitations"
+    __table_args__ = (CheckConstraint("role in ('admin','member')", name="ck_org_invitations_role"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    org_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("organizations.id", ondelete="CASCADE", name="fk_org_invitations_org_id_organizations"),
+        index=True,
+    )
+    created_by: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_org_invitations_created_by_users"), nullable=True
+    )
+    role: Mapped[str] = mapped_column(String(16))
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    max_uses: Mapped[int] = mapped_column(Integer)
+    uses: Mapped[int] = mapped_column(Integer, default=0)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class OrgProgram(Base):
+    """A voluntary development programme: a growth programme and/or learning modules members may join."""
+
+    __tablename__ = "org_programs"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    org_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("organizations.id", ondelete="CASCADE", name="fk_org_programs_org_id_organizations"),
+        index=True,
+    )
+    title: Mapped[str] = mapped_column(String(120))
+    description: Mapped[str] = mapped_column(Text, default="")
+    growth_program_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    learning: Mapped[list[dict[str, str]]] = mapped_column(JSON, default=list)
+    created_by: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_org_programs_created_by_users"), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class OrgProgramParticipant(Base):
+    __tablename__ = "org_program_participants"
+    __table_args__ = (UniqueConstraint("program_id", "user_id", name="uq_org_program_participants"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    program_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("org_programs.id", ondelete="CASCADE", name="fk_org_program_participants_program_id"),
+        index=True,
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_org_program_participants_user_id_users"),
+        index=True,
+    )
+    joined_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

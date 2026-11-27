@@ -55,7 +55,8 @@ export function SiteFooter() {
             International Personality Item Pool
           </a>{" "}
           (public domain). <Link className="underline" href="/privacy">Privacy notice</Link> ·{" "}
-          <Link className="underline" href="/pricing">Plans and pricing</Link>
+          <Link className="underline" href="/pricing">Plans and pricing</Link> ·{" "}
+          <Link className="underline" href="/orgs">For organisations</Link>
         </p>
       </div>
     </footer>

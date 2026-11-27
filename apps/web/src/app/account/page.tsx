@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { BillingCard } from "@/components/billing-card";
 import { FormMessage, TextField } from "@/components/form";
-import { Button, Card, LoadingState } from "@/components/ui";
+import { Button, ButtonLink, Card, LoadingState } from "@/components/ui";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { errorMessage } from "@/lib/errors";
@@ -93,6 +93,16 @@ export default function AccountPage() {
       </Card>
 
       <BillingCard />
+
+      <Card>
+        <h2 className="text-xl font-semibold">Organisations</h2>
+        <p className="mt-1 text-ink-muted">
+          Teams and groups you belong to, and voluntary development programmes they run. They never see your results.
+        </p>
+        <ButtonLink href="/orgs" variant="secondary" className="mt-4">
+          Your organisations
+        </ButtonLink>
+      </Card>
 
       <Card>
         <h2 className="text-xl font-semibold">Your data</h2>

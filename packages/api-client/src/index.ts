@@ -69,6 +69,19 @@ export type AdminContent = Schemas["ContentOverview"];
 export type AdminAudit = Schemas["AuditList"];
 export type AdminHealth = Schemas["Health"];
 export type AdminRole = Schemas["RoleIn"]["role"];
+export type AdminOrg = Schemas["AdminOrg"];
+export type LicenceIn = Schemas["LicenceIn"];
+export type OrgSummary = Schemas["OrgSummary"];
+export type Org = Schemas["OrgOut"];
+export type OrgRole = Schemas["OrgRoleIn"]["role"];
+export type OrgMember = Schemas["OrgMemberOut"];
+export type OrgInvitation = Schemas["OrgInvitationOut"];
+export type OrgInvitationIn = Schemas["OrgInvitationIn"];
+export type OrgInvitationPreview = Schemas["OrgInvitationPreview"];
+export type OrgProgram = Schemas["OrgProgramOut"];
+export type OrgProgramIn = Schemas["OrgProgramIn"];
+export type ProgramCatalog = Schemas["ProgramCatalog"];
+export type OrgAnalytics = Schemas["OrgAnalytics"];
 
 /** Events streamed by POST /coach/conversations/{id}/messages (server-sent events). */
 export type CoachEvent =
@@ -384,6 +397,48 @@ export function createApiClient({
       return request<AdminAudit>("GET", `/api/v1/admin/audit?${p.toString()}`);
     },
     adminHealth: () => request<AdminHealth>("GET", "/api/v1/admin/health"),
+    adminOrgs: (q: string) =>
+      request<{ organisations: AdminOrg[] }>("GET", `/api/v1/admin/organisations?q=${seg(q)}`),
+    adminSetLicence: (id: string, body: LicenceIn) =>
+      request<AdminOrg>("PUT", `/api/v1/admin/organisations/${seg(id)}/licence`, { body }),
+
+    orgs: () => request<{ organisations: OrgSummary[]; policy_version: string }>("GET", "/api/v1/orgs"),
+    createOrg: (name: string, policyVersion: string) =>
+      request<Org>("POST", "/api/v1/orgs", { body: { name, consent: { accepted: true, policy_version: policyVersion } } }),
+    org: (id: string) => request<Org>("GET", `/api/v1/orgs/${seg(id)}`),
+    renameOrg: (id: string, name: string) => request<Org>("PATCH", `/api/v1/orgs/${seg(id)}`, { body: { name } }),
+    deleteOrg: (id: string) => request<void>("DELETE", `/api/v1/orgs/${seg(id)}`),
+    leaveOrg: (id: string) => request<void>("DELETE", `/api/v1/orgs/${seg(id)}/membership`),
+    setOrgSharing: (id: string, share: boolean) =>
+      request<Org>("PUT", `/api/v1/orgs/${seg(id)}/membership/sharing`, { body: { share_aggregates: share } }),
+    orgMembers: (id: string) => request<{ members: OrgMember[] }>("GET", `/api/v1/orgs/${seg(id)}/members`),
+    setOrgRole: (id: string, memberId: string, role: OrgRole) =>
+      request<{ members: OrgMember[] }>("PUT", `/api/v1/orgs/${seg(id)}/members/${seg(memberId)}/role`, {
+        body: { role },
+      }),
+    removeOrgMember: (id: string, memberId: string) =>
+      request<void>("DELETE", `/api/v1/orgs/${seg(id)}/members/${seg(memberId)}`),
+    orgInvitations: (id: string) =>
+      request<{ invitations: OrgInvitation[] }>("GET", `/api/v1/orgs/${seg(id)}/invitations`),
+    createOrgInvitation: (id: string, body: OrgInvitationIn) =>
+      request<Schemas["OrgCreatedInvitation"]>("POST", `/api/v1/orgs/${seg(id)}/invitations`, { body }),
+    cancelOrgInvitation: (id: string, invitationId: string) =>
+      request<void>("DELETE", `/api/v1/orgs/${seg(id)}/invitations/${seg(invitationId)}`),
+    previewOrgInvitation: (token: string) =>
+      request<OrgInvitationPreview>("POST", "/api/v1/orgs/invitations/preview", { body: { token } }),
+    acceptOrgInvitation: (token: string, policyVersion: string) =>
+      request<Org>("POST", "/api/v1/orgs/invitations/accept", {
+        body: { token, consent: { accepted: true, policy_version: policyVersion } },
+      }),
+    orgCatalog: () => request<ProgramCatalog>("GET", "/api/v1/orgs/catalog"),
+    orgPrograms: (id: string) => request<{ programs: OrgProgram[] }>("GET", `/api/v1/orgs/${seg(id)}/programs`),
+    createOrgProgram: (id: string, body: OrgProgramIn) =>
+      request<OrgProgram>("POST", `/api/v1/orgs/${seg(id)}/programs`, { body }),
+    deleteOrgProgram: (id: string, programId: string) =>
+      request<void>("DELETE", `/api/v1/orgs/${seg(id)}/programs/${seg(programId)}`),
+    setOrgProgramJoined: (id: string, programId: string, joined: boolean) =>
+      request<OrgProgram>(joined ? "PUT" : "DELETE", `/api/v1/orgs/${seg(id)}/programs/${seg(programId)}/participation`),
+    orgAnalytics: (id: string) => request<OrgAnalytics>("GET", `/api/v1/orgs/${seg(id)}/analytics`),
     publicCardImageUrl: (token: string) => `${root}/api/v1/public/cards/${seg(token)}/image.svg`,
   };
 }

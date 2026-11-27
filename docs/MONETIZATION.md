@@ -10,7 +10,7 @@
 | Premium monthly | $9.99 a month | Free, plus PDF reports, 30/60/90-day programmes, relationship comparisons, 30 coaching messages a day |
 | Premium annual | $69.99 a year | Same as monthly |
 | One-off reports | $9.99–$19.99 | Not built yet (needs a credit model; tracked as M-005) |
-| Enterprise | Custom | Phase 19 |
+| Organisation licence | Custom, per seat | Recorded by a superadmin (seats and length); members get Premium features while it is active. Pilots get 25 seats free. Self-serve checkout and invoices are not built (E-006) |
 
 Plan contents and prices are data, validated at startup (the free plan has no paid features; every feature is described and used). Admin editing comes with the admin portal (Phase 17).
 

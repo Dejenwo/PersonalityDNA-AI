@@ -1,4 +1,4 @@
-export type AdminTab = "overview" | "users" | "content" | "audit";
+export type AdminTab = "overview" | "users" | "orgs" | "content" | "audit";
 
 /** Which sections a set of permissions opens, in display order. */
 export function tabsFor(permissions: string[]): AdminTab[] {
@@ -6,6 +6,7 @@ export function tabsFor(permissions: string[]): AdminTab[] {
   const tabs: AdminTab[] = [];
   if (has("metrics.read") || has("health.read")) tabs.push("overview");
   if (has("users.read")) tabs.push("users");
+  if (has("orgs.read")) tabs.push("orgs");
   if (has("content.read")) tabs.push("content");
   if (has("audit.read")) tabs.push("audit");
   return tabs;
@@ -14,6 +15,7 @@ export function tabsFor(permissions: string[]): AdminTab[] {
 export const TAB_LABEL: Record<AdminTab, string> = {
   overview: "Overview",
   users: "Accounts",
+  orgs: "Organisations",
   content: "Content",
   audit: "Audit log",
 };
