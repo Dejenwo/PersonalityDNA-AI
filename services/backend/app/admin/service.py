@@ -48,6 +48,7 @@ from app.database.models import (
     Subscription,
     User,
 )
+from app.i18n.locales import load_locales
 from app.reports.builder import REPORT_VERSION
 from app.scoring.engine import ENGINE_VERSION
 
@@ -395,7 +396,10 @@ class AdminService:
     def content(self, bundle: ContentBundle, coach_prompt: str) -> ContentOverview:
         files = [
             ContentFile(
-                name=f.path.rsplit("/", 1)[-1], version=getattr(f.data, "version", "1"), sha256=f.sha256
+                name=f.path.rsplit("/", 1)[-1],
+                version=getattr(f.data, "version", "1"),
+                locale=getattr(f.data, "locale", None),
+                sha256=f.sha256,
             )
             for f in (
                 bundle.archetypes,
@@ -426,6 +430,8 @@ class AdminService:
                     license=i.data.license.id,
                     references=list(i.data.references),
                     sha256=i.sha256,
+                    locale=i.data.locale,
+                    adaptation=i.data.adaptation.status if i.data.adaptation else None,
                 )
                 for i in sorted(bundle.instruments.values(), key=lambda x: (x.data.id, x.data.version))
             ],
@@ -435,6 +441,8 @@ class AdminService:
                 "new version file; the server refuses to start if a released file is edited. Drafts are "
                 "hidden in production."
             ),
+            languages=load_locales().locales,
+            languages_note=load_locales().note,
         )
 
     def audit_log(

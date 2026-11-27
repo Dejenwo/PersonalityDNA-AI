@@ -26,6 +26,7 @@ from app.database.base import Base
 from app.database.session import Database
 from app.goals.routes import router as goals_router
 from app.growth.routes import router as growth_router
+from app.i18n.routes import router as locales_router
 from app.journal.routes import router as journal_router
 from app.learning.routes import router as learning_router
 from app.notifications.email import make_email_sender
@@ -111,6 +112,7 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.include_router(billing_router)
     app.include_router(admin_router)
     app.include_router(orgs_router)
+    app.include_router(locales_router)
     if settings.dev_outbox_endpoint and settings.environment in ("development", "test"):
         app.include_router(dev_router)
 

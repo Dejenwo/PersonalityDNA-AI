@@ -46,7 +46,7 @@ function Section({ id, title, children }: { id: string; title: string; children:
 
 function Bullets({ items }: { items: string[] }) {
   return (
-    <ul className="list-disc space-y-1 pl-5">
+    <ul className="list-disc space-y-1 ps-5">
       {items.map((x) => (
         <li key={x}>{x}</li>
       ))}
@@ -152,8 +152,8 @@ function ReportView({ report }: { report: Report }) {
             </h3>
             {t.score != null && (
               <div className="relative mt-2 h-3 rounded-full bg-muted" aria-hidden>
-                <div className="absolute inset-y-0 left-[40%] w-[20%] bg-line/60" />
-                <div className="absolute inset-y-0 left-0 rounded-full bg-primary" style={{ width: `${t.score}%` }} />
+                <div className="absolute inset-y-0 start-[40%] w-[20%] bg-line/60" />
+                <div className="absolute inset-y-0 start-0 rounded-full bg-primary" style={{ width: `${t.score}%` }} />
               </div>
             )}
             <p className="mt-1 text-sm text-ink-muted">{t.description}</p>
@@ -217,7 +217,7 @@ function ReportView({ report }: { report: Report }) {
 
       {b.plan.length > 0 && (
         <Section id="plan" title="Your development plan">
-          <ol className="list-decimal space-y-2 pl-5">
+          <ol className="list-decimal space-y-2 ps-5">
             {b.plan.map((p) => (
               <li key={p.id}>
                 <Link href={p.href} className="font-semibold underline">

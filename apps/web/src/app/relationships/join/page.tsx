@@ -107,7 +107,7 @@ function Accept({ token, preview }: { token: string; preview: InvitationPreview 
           They invited you as their {relationLabel(preview.relation_type).toLowerCase()}. If you accept, you each see
           whether the other&apos;s Big Five traits are lower, middle or higher, with conversation starters and exercises.
         </p>
-        <ul className="mt-3 list-disc space-y-1 pl-5 text-ink-muted">
+        <ul className="mt-3 list-disc space-y-1 ps-5 text-ink-muted">
           <li>No scores, answers, journal entries or coach conversations are shared.</li>
           <li>There is no compatibility score, and nothing predicts how a relationship will go.</li>
           <li>Either of you can end it at any time, and then neither of you can see it.</li>

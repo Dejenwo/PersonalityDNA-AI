@@ -41,7 +41,7 @@ function Comparison({ d }: { d: LinkDetail }) {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <header>
-        <ButtonLink href="/relationships" variant="ghost" className="-ml-5">
+        <ButtonLink href="/relationships" variant="ghost" className="-ms-5">
           ← Relationships
         </ButtonLink>
         <h1 className="text-3xl font-bold">You and {them}</h1>
@@ -86,7 +86,7 @@ function Comparison({ d }: { d: LinkDetail }) {
           {d.exercises.map((e) => (
             <Card key={e.title} as="article">
               <h3 className="font-semibold">{e.title}</h3>
-              <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-ink-muted">
+              <ol className="mt-2 list-decimal space-y-1 ps-5 text-sm text-ink-muted">
                 {e.steps.map((s) => (
                   <li key={s}>{s}</li>
                 ))}
@@ -96,7 +96,7 @@ function Comparison({ d }: { d: LinkDetail }) {
         </div>
         <Card>
           <h3 className="font-semibold">Shared goals to consider</h3>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-ink-muted">
+          <ul className="mt-2 list-disc space-y-1 ps-5 text-ink-muted">
             {d.shared_goals.map((g) => (
               <li key={g}>{g}</li>
             ))}

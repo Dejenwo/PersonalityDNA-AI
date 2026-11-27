@@ -102,6 +102,8 @@ jobs:
       - run: pnpm --filter @pdna/web build
         env:
           NEXT_PUBLIC_API_URL: http://127.0.0.1:8000
+          # Offers pseudo-locales so the right-to-left layout is tested end to end.
+          NEXT_PUBLIC_I18N_PREVIEW: "true"
       - run: pnpm --filter @pdna/e2e exec playwright install --with-deps chromium
       - run: pnpm --filter @pdna/e2e test
         env:

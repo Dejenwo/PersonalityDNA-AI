@@ -32,7 +32,7 @@ function ArchetypeCard({ a, rank }: { a: ArchetypeOut; rank: "Primary" | "Second
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div>
           <h4 className="font-semibold">Possible strengths</h4>
-          <ul className="mt-1 list-disc pl-5 text-ink-muted">
+          <ul className="mt-1 list-disc ps-5 text-ink-muted">
             {a.strengths.map((s) => (
               <li key={s}>{s}</li>
             ))}
@@ -40,7 +40,7 @@ function ArchetypeCard({ a, rank }: { a: ArchetypeOut; rank: "Primary" | "Second
         </div>
         <div>
           <h4 className="font-semibold">Ideas to grow</h4>
-          <ul className="mt-1 list-disc pl-5 text-ink-muted">
+          <ul className="mt-1 list-disc ps-5 text-ink-muted">
             {a.growth.map((s) => (
               <li key={s}>{s}</li>
             ))}
@@ -118,7 +118,7 @@ export default function ResultsPage() {
       {r.quality_flags.length > 0 && (
         <Card role="note" className="border-accent">
           <h2 className="font-semibold">A note about these results</h2>
-          <ul className="mt-2 list-disc pl-5 text-ink-muted">
+          <ul className="mt-2 list-disc ps-5 text-ink-muted">
             {r.quality_flags.map((f) => (
               <li key={f}>{flagText[f] ?? f}</li>
             ))}
@@ -166,7 +166,7 @@ export default function ResultsPage() {
             <div className="mt-3 grid gap-4 sm:grid-cols-2">
               <div>
                 <h4 className="font-semibold">Possible strengths</h4>
-                <ul className="mt-1 list-disc pl-5 text-ink-muted">
+                <ul className="mt-1 list-disc ps-5 text-ink-muted">
                   {t.strengths.map((s) => (
                     <li key={s}>{s}</li>
                   ))}
@@ -174,7 +174,7 @@ export default function ResultsPage() {
               </div>
               <div>
                 <h4 className="font-semibold">Growth opportunities</h4>
-                <ul className="mt-1 list-disc pl-5 text-ink-muted">
+                <ul className="mt-1 list-disc ps-5 text-ink-muted">
                   {t.growth.map((s) => (
                     <li key={s}>{s}</li>
                   ))}

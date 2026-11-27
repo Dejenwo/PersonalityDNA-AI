@@ -201,7 +201,7 @@ function StartConversation({ status }: { status: CoachStatus }) {
 
         <div className="rounded-card bg-muted p-4 text-sm">
           <h3 className="font-semibold">Before you start</h3>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-ink-muted">
+          <ul className="mt-2 list-disc space-y-1 ps-5 text-ink-muted">
             <li>
               {status.demo_mode
                 ? "In demo mode nothing is sent to an AI service."

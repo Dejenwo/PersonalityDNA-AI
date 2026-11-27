@@ -29,7 +29,7 @@ export default function NewJournalEntryPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <header>
-        <ButtonLink href="/journal" variant="ghost" className="-ml-5">
+        <ButtonLink href="/journal" variant="ghost" className="-ms-5">
           ← Journal
         </ButtonLink>
         <h1 className="text-3xl font-bold">New entry</h1>

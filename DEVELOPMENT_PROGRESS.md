@@ -26,7 +26,8 @@ Last updated: 2026-11-27.
 | 16 | Monetization | Tested | Plans and prices as validated data; entitlement service (report PDFs, programmes over 7 days, relationship invitations, coaching allowance); Stripe checkout, customer portal and signed, idempotent webhooks; RevenueCat webhooks and restore for Apple and Google; local checkout for development; pricing page and plan card on the account page (migration 0013, ADR-021). Off until the owner sets up providers (`PDNA_BILLING_ENFORCE`). |
 | 17 | Administration | Tested | Five least-privilege roles (first superadmin from the command line), account search and detail without private content, disable or enable with sign-out, complimentary Premium, role management, metrics (accounts, assessments, subscriptions, estimated revenue, AI tokens and cost, feature adoption), content and version overview, audit log, health; every change audited with a reason (migration 0014, ADR-022). |
 | 18 | Enterprise portal | Tested | Organisations with owner, admin and member roles; join links with seat limits; voluntary membership with its own consent; programmes built from growth programmes and learning modules that members choose to join; group statistics only from members who opt in, shown for 10 or more with every band at least 3; programme counts under 3 hidden; organisations never see individual results or who opted in; seat licences recorded by a superadmin give members Premium features; ownership handed over on account deletion; export (migration 0015, ADR-023). |
-| 19–25 | Internationalisation onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
+| 19 | Internationalisation | Tested | One language registry for API and web (the ten languages in the spec; English released, others planned); message catalogues with plurals, links and English fallback; device and profile language choice limited to released languages; locale-aware formatting; right-to-left support through `dir` and logical CSS; pseudo-locales in preview builds; translated instruments need an approved adaptation record before release; Languages section in the admin portal; adaptation workflow in docs/LOCALIZATION.md (ADR-024). Chrome and settings use messages; other screens move over screen by screen (I-003). No translations are released. |
+| 20–25 | Growth infrastructure onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
 
 ## Task log
 
@@ -123,17 +124,22 @@ Last updated: 2026-11-27.
 | E-004 | Enterprise | Licence by superadmin (support can only look up) gives members the organisation plan; export; ownership handover on account deletion | P0 | Tested | `test_seat_limit_and_licence_gives_premium`, `test_export_and_account_deletion_hand_over_ownership` |
 | E-005 | Web | Organisations list, join link page, organisation page with programmes, sharing choice, statistics, invitations, members and settings; admin Organisations tab | P0 | Tested | e2e organisations.spec.ts (desktop + mobile) + axe; vitest org helpers |
 | E-006 | Enterprise | Self-serve organisation billing (per-seat checkout and invoices), SSO/SCIM, assigning programmes by team, member email invitations, statistics over time with differencing protection | P1 | Not Started | Needs the owner's pricing and a sales process; see ADR-023 consequences |
+| I-001 | i18n | Language registry, negotiation, profile language validation, public list, admin languages | P0 | Tested | `test_registry_and_negotiation`, `test_public_list_and_profile_language`, `test_admin_content_lists_languages` |
+| I-002 | i18n | Message formatting, pseudo-localisation, catalogue key and placeholder checks, registry parity, coverage; adaptation rule for translated instruments | P0 | Tested | vitest src/i18n (8 tests); `test_translated_instruments_need_an_approved_adaptation` |
+| I-003 | i18n | Move remaining screens' text into messages; server-rendered language; localised emails, PDFs and educational content | P1 | Not Started | Needed before the first non-English release |
+| I-004 | i18n | Professional translations and cultural adaptation of instruments | P1 | Blocked | Needs translators, native-speaker reviewers and psychometric review (docs/LOCALIZATION.md) |
+| I-005 | Web | Language choice in footer and account, right-to-left layout with pseudo-locale, axe | P0 | Tested | e2e i18n.spec.ts (desktop + mobile) |
 | M-005 | Monetization | One-off report purchases (credit model), live provider setup, tax, final prices, terms update, mobile purchase UI | P1 | Not Started | Needs the owner's Stripe, RevenueCat, Apple and Google accounts |
 
 ## Test results (latest local run, 2026-11-27)
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest` | 207 passed |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 207 passed |
+| Backend, SQLite | `pytest` | 211 passed |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 211 passed |
 | Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
-| Web unit | `vitest run` | 47 passed |
+| Web unit | `vitest run` | 55 passed |
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
-| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 44 passed |
+| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7, preview build) | 46 passed |

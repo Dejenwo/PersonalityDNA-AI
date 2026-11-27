@@ -9,7 +9,7 @@ test("career interests: take the assessment, see the code and the career explora
   await expectAccessible(page);
 
   await page.goto("/discover");
-  await expect(page.getByText("Preview")).toBeVisible();
+  await expect(page.getByText("Preview", { exact: true })).toBeVisible();
   await page.getByRole("link", { name: /Start Career Interests/ }).click();
   await expect(page.getByText(/not affiliated with or endorsed by USDOL\/ETA/)).toBeVisible();
   await expectAccessible(page);

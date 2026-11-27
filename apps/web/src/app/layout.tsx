@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
+import { SkipLink } from "@/components/skip-link";
+import { I18nProvider } from "@/i18n/provider";
 import { AuthProvider } from "@/lib/auth";
 import "./globals.css";
 
@@ -17,21 +19,18 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" dir="ltr">
       <body className="bg-bg text-ink antialiased">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-surface focus:p-3"
-        >
-          Skip to content
-        </a>
-        <AuthProvider>
-          <SiteHeader />
-          <main id="main" className="mx-auto max-w-5xl px-4 py-8">
-            {children}
-          </main>
-          <SiteFooter />
-        </AuthProvider>
+        <I18nProvider>
+          <SkipLink />
+          <AuthProvider>
+            <SiteHeader />
+            <main id="main" className="mx-auto max-w-5xl px-4 py-8">
+              {children}
+            </main>
+            <SiteFooter />
+          </AuthProvider>
+        </I18nProvider>
       </body>
     </html>
   );

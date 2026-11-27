@@ -1069,6 +1069,17 @@
       },
       "ContentFile": {
         "properties": {
+          "locale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          },
           "name": {
             "title": "Name",
             "type": "string"
@@ -1085,6 +1096,7 @@
         "required": [
           "name",
           "version",
+          "locale",
           "sha256"
         ],
         "title": "ContentFile",
@@ -1114,6 +1126,17 @@
             "title": "Instruments",
             "type": "array"
           },
+          "languages": {
+            "items": {
+              "$ref": "#/components/schemas/Locale"
+            },
+            "title": "Languages",
+            "type": "array"
+          },
+          "languages_note": {
+            "title": "Languages Note",
+            "type": "string"
+          },
           "note": {
             "title": "Note",
             "type": "string"
@@ -1134,7 +1157,9 @@
           "plans_version",
           "instruments",
           "files",
-          "note"
+          "note",
+          "languages",
+          "languages_note"
         ],
         "title": "ContentOverview",
         "type": "object"
@@ -2631,6 +2656,18 @@
       },
       "InstrumentInfo": {
         "properties": {
+          "adaptation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Review status of a translated version; null for the source.",
+            "title": "Adaptation"
+          },
           "family": {
             "title": "Family",
             "type": "string"
@@ -2645,6 +2682,10 @@
           },
           "license": {
             "title": "License",
+            "type": "string"
+          },
+          "locale": {
+            "title": "Locale",
             "type": "string"
           },
           "name": {
@@ -2685,7 +2726,9 @@
           "items",
           "license",
           "references",
-          "sha256"
+          "sha256",
+          "locale",
+          "adaptation"
         ],
         "title": "InstrumentInfo",
         "type": "object"
@@ -3308,6 +3351,75 @@
           "created_at"
         ],
         "title": "LinkSummary",
+        "type": "object"
+      },
+      "Locale": {
+        "properties": {
+          "code": {
+            "pattern": "^[a-z]{2,3}(-[A-Z][a-z]{3})?(-[A-Z]{2})?$",
+            "title": "Code",
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "ltr",
+              "rtl"
+            ],
+            "title": "Direction",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "native_name": {
+            "title": "Native Name",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "planned",
+              "in_review",
+              "released"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "native_name",
+          "direction",
+          "status"
+        ],
+        "title": "Locale",
+        "type": "object"
+      },
+      "LocalesOut": {
+        "properties": {
+          "default": {
+            "title": "Default",
+            "type": "string"
+          },
+          "locales": {
+            "items": {
+              "$ref": "#/components/schemas/Locale"
+            },
+            "title": "Locales",
+            "type": "array"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "default",
+          "note",
+          "locales"
+        ],
+        "title": "LocalesOut",
         "type": "object"
       },
       "LoginIn": {
@@ -6453,13 +6565,14 @@
           "locale": {
             "anyOf": [
               {
-                "const": "en",
+                "maxLength": 16,
                 "type": "string"
               },
               {
                 "type": "null"
               }
             ],
+            "description": "A released language code from GET /api/v1/locales.",
             "title": "Locale"
           }
         },
@@ -12890,6 +13003,27 @@
         "summary": "Mark Done",
         "tags": [
           "learning"
+        ]
+      }
+    },
+    "/api/v1/locales": {
+      "get": {
+        "operationId": "locales_api_v1_locales_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocalesOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Locales",
+        "tags": [
+          "locales"
         ]
       }
     },

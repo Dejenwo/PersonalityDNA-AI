@@ -62,7 +62,7 @@ function Entry({ initial, prompts }: { initial: JournalEntry; prompts: JournalPr
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <header>
-        <ButtonLink href="/journal" variant="ghost" className="-ml-5">
+        <ButtonLink href="/journal" variant="ghost" className="-ms-5">
           ← Journal
         </ButtonLink>
         <p className="text-sm text-ink-muted">

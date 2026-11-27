@@ -49,7 +49,7 @@ export function CoachText({ text }: { text: string }) {
               </p>
             )}
             {bullets.length > 0 && (
-              <ul className="list-disc space-y-1 pl-5">
+              <ul className="list-disc space-y-1 ps-5">
                 {bullets.map((l, i) => (
                   <li key={i}>{inline(l.replace(/^\s*[-*] /, ""), `${b}-li-${i}`)}</li>
                 ))}
