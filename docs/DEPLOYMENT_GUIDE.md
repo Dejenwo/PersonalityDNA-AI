@@ -6,9 +6,10 @@
 
 | Component | Proposed host | Notes |
 | --- | --- | --- |
-| Web | Vercel (or the web Docker image anywhere) | `NEXT_PUBLIC_API_URL` at build time |
+| Web | Vercel (or the web Docker image anywhere) | `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_SITE_URL` at build time |
 | API | Container platform (Fly.io, Render, Cloud Run or AWS ECS) using `services/backend/Dockerfile` | Behind TLS; set `--forwarded-allow-ips` to the proxy |
 | Database | Supabase Postgres | Connection pooling on |
+| Daily reminders | Scheduled job on the API platform (cron, Cloud Scheduler, Fly machines) running `python scripts/send_reminders.py` once a day | Same `PDNA_*` settings as the API; safe to re-run (each reminder is sent once) |
 | Secrets | Platform secret store | Never in images or repo |
 
 ## Release steps

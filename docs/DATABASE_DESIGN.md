@@ -77,6 +77,16 @@ Comparisons are computed on request from each person's latest Big Five result an
 | --- | --- | --- | --- |
 | `share_cards` | Public cards the user chose to share: card content (profile name and description and/or bands, date) in the clear; link token hash for lookup and the token encrypted for the owner | FK user CASCADE; FK report CASCADE; unique token hash | Until the user stops sharing, deletes the report or deletes the account |
 
+## Implemented (migration 0016, growth infrastructure)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `referral_codes` | One stable invite code per account | PK user CASCADE; unique code | Until account deletion |
+| `acquisitions` | First-touch referrer and campaign tags for a new account | PK user CASCADE; referrer SET NULL | Until account deletion |
+| `notifications` | In-app notices written from fixed templates: kind, title, body, link, dedupe key, read time | FK user CASCADE; index (user, created) | 90 days, or account deletion |
+| `notification_preferences` | In-app and email switches per kind | Unique (user, kind); CASCADE | Until account deletion |
+| `product_event_counts` | Daily count per whitelisted event name; no identifiers | PK (day, name) | Not yet limited; aggregate only |
+
 ## Implemented (migration 0015, organisations)
 
 | Table | Purpose | Key constraints | Retention |

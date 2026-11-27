@@ -78,6 +78,11 @@ export type OrgMember = Schemas["OrgMemberOut"];
 export type OrgInvitation = Schemas["OrgInvitationOut"];
 export type OrgInvitationIn = Schemas["OrgInvitationIn"];
 export type OrgInvitationPreview = Schemas["OrgInvitationPreview"];
+export type AppNotification = Schemas["NotificationOut"];
+export type NotificationList = Schemas["NotificationList"];
+export type NotificationPreference = Schemas["PreferenceOut"];
+export type NotificationPreferenceIn = Schemas["PreferenceIn"];
+export type Referral = Schemas["ReferralOut"];
 export type OrgProgram = Schemas["OrgProgramOut"];
 export type OrgProgramIn = Schemas["OrgProgramIn"];
 export type ProgramCatalog = Schemas["ProgramCatalog"];
@@ -439,6 +444,14 @@ export function createApiClient({
     setOrgProgramJoined: (id: string, programId: string, joined: boolean) =>
       request<OrgProgram>(joined ? "PUT" : "DELETE", `/api/v1/orgs/${seg(id)}/programs/${seg(programId)}/participation`),
     orgAnalytics: (id: string) => request<OrgAnalytics>("GET", `/api/v1/orgs/${seg(id)}/analytics`),
+    notifications: (before?: string) =>
+      request<NotificationList>("GET", `/api/v1/notifications${before ? `?before=${seg(before)}` : ""}`),
+    readNotification: (id: string) => request<void>("POST", `/api/v1/notifications/${seg(id)}/read`),
+    readAllNotifications: () => request<void>("POST", "/api/v1/notifications/read-all"),
+    notificationPreferences: () => request<NotificationPreference[]>("GET", "/api/v1/notifications/preferences"),
+    setNotificationPreference: (body: NotificationPreferenceIn) =>
+      request<NotificationPreference[]>("PUT", "/api/v1/notifications/preferences", { body }),
+    myReferral: () => request<Referral>("GET", "/api/v1/referrals/me"),
     publicCardImageUrl: (token: string) => `${root}/api/v1/public/cards/${seg(token)}/image.svg`,
   };
 }

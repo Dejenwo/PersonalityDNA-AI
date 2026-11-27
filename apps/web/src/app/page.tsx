@@ -1,4 +1,26 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { TrackView } from "@/components/growth-tracking";
 import { ButtonLink, Card } from "@/components/ui";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+
+// Plain facts only: no ratings, reviews or user counts.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: SITE_NAME, url: SITE_URL },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      inLanguage: "en",
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    },
+  ],
+};
 
 const points = [
   {
@@ -18,6 +40,8 @@ const points = [
 export default function HomePage() {
   return (
     <>
+      <TrackView event="landing_view" />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <section className="py-10 sm:py-16">
         <p className="text-sm font-semibold uppercase tracking-wide text-accent">PersonalityDNA AI</p>
         <h1 className="mt-3 max-w-3xl text-4xl font-bold leading-tight sm:text-5xl">
@@ -45,6 +69,13 @@ export default function HomePage() {
           </Card>
         ))}
       </section>
+      <p className="mt-8 text-ink-muted">
+        New to personality research?{" "}
+        <Link href="/big-five" className="text-primary underline">
+          Read what the Big Five traits are and what they can&apos;t tell you
+        </Link>
+        .
+      </p>
     </>
   );
 }

@@ -9,8 +9,10 @@ from sqlalchemy.orm import Session
 
 from app.api.errors import ApiError
 from app.auth.passwords import DUMMY_HASH, hash_password, needs_rehash, password_problem, verify_password
+from app.auth.schemas import AttributionIn
 from app.core.config import Settings
 from app.database.models import AuditEvent, AuthToken, ConsentRecord, RefreshToken, User
+from app.marketing.service import record_acquisition
 from app.notifications.email import OutgoingEmail
 from app.organizations.service import before_account_deletion
 from app.security.consent import CURRENT_POLICY_VERSION
@@ -132,6 +134,7 @@ class AuthService:
         accepted_terms: bool,
         age_confirmed: bool,
         policy_version: str,
+        attribution: AttributionIn | None = None,
     ) -> list[OutgoingEmail]:
         if not accepted_terms:
             raise ApiError(422, "consent_required", "Please accept the terms and privacy notice.")
@@ -171,6 +174,15 @@ class AuthService:
                 age_confirmed_18_plus=True,
             )
         )
+        if attribution is not None:
+            record_acquisition(
+                db,
+                user.id,
+                attribution.referral,
+                attribution.source,
+                attribution.medium,
+                attribution.campaign,
+            )
         _audit(db, "user.registered", user.id)
         return [self.mail.verify(email, self._commit_token(db, user, "verify_email"))]
 

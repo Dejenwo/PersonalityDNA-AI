@@ -19,6 +19,8 @@ export const en = {
     goals: "Goals",
     relationships: "Relationships",
     account: "Account",
+    notifications: "Notifications",
+    notificationsUnread: "Notifications, {count} unread",
     signIn: "Sign in",
   },
   footer: {

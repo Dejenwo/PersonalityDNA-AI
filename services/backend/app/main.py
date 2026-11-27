@@ -29,7 +29,10 @@ from app.growth.routes import router as growth_router
 from app.i18n.routes import router as locales_router
 from app.journal.routes import router as journal_router
 from app.learning.routes import router as learning_router
+from app.marketing.routes import router as marketing_router
 from app.notifications.email import make_email_sender
+from app.notifications.routes import router as notifications_router
+from app.notifications.service import NotificationService
 from app.organizations.routes import router as orgs_router
 from app.relationships.routes import router as relationships_router
 from app.reports.routes import router as reports_router
@@ -75,6 +78,8 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.state.access_tokens = AccessTokenCodec(settings)
     app.state.auth = AuthService(settings)
     app.state.email = make_email_sender(settings)
+    app.state.notifications = NotificationService(settings, app.state.email)
+    app.state.events_limiter = RateLimiter(120, window_seconds=60 * 60)
     app.state.cipher = FieldCipher.from_settings(settings)
     app.state.entitlements = Entitlements(settings)
     app.state.billing = BillingService(settings, app.state.entitlements)
@@ -113,6 +118,8 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.include_router(admin_router)
     app.include_router(orgs_router)
     app.include_router(locales_router)
+    app.include_router(notifications_router)
+    app.include_router(marketing_router)
     if settings.dev_outbox_endpoint and settings.environment in ("development", "test"):
         app.include_router(dev_router)
 

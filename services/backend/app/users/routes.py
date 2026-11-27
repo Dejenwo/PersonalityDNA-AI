@@ -25,6 +25,8 @@ from app.database.models import (
     GrowthDayProgress,
     GrowthEnrollment,
     LearningActivityProgress,
+    Notification,
+    ReferralCode,
     Report,
     Subscription,
     User,
@@ -165,6 +167,20 @@ def export(request: Request, user: CurrentUser, db: Db, content: Content) -> dic
         ],
         "relationships": relationships.export_for(db, user),
         "organisations": organizations.export_for(db, user),
+        "notifications": [
+            {
+                "kind": n.kind,
+                "title": n.title,
+                "created_at": n.created_at.isoformat(),
+                "read": n.read_at is not None,
+            }
+            for n in db.scalars(select(Notification).where(Notification.user_id == user.id))
+        ],
+        "notification_preferences": {
+            k: {"in_app": v[0], "email": v[1]}
+            for k, v in request.app.state.notifications.preferences(db, user.id).items()
+        },
+        "referral_code": (rc.code if (rc := db.get(ReferralCode, user.id)) else None),
         "growth_programs": _growth_export(db, user),
         "goals_and_habits": GoalService(request.app.state.cipher).export(db, user),
         "reports": [

@@ -49,6 +49,8 @@ Browser ⇄ Web app (static/JS) ; Browser ⇄ API (JSON, `X-Session-Token`) ; AP
 | T28 | Information disclosure | Admins reading private journals, coaching or answers | No admin endpoint returns encrypted fields or content; tests assert private text never appears | Mitigated, tested |
 | T29 | Information disclosure | An organisation re-identifying a member's results from group statistics | Only opted-in members counted; organisations can't see who opted in; group minimum 10; a trait shows only when every band has 3 or more; programme counts under 3 hidden; no individual endpoint | Mitigated, tested; differencing over time is a residual risk (ADR-023) |
 | T30 | Elevation of privilege | A member or leaked join link gaining management rights or extra seats | Role checks per action (403 for members, 404 for non-members); admins can't invite admins or remove admins or owners; links hashed, limited uses and expiry, cancellable; seat limit checked under a row lock; always one owner | Mitigated, tested |
+| T31 | Information disclosure | Notifications or reminder emails exposing private content (journal, goals, habits, results) in inboxes or lock screens | Text comes from fixed templates with counts only; tested that habit titles never appear; reminder emails off by default; only active, verified accounts emailed | Mitigated, tested |
+| T32 | Information disclosure | Referral or analytics data identifying people (who joined, who pays, browsing) | Referrers see a count only, never names or billing; events carry no cookie, account or page address; whitelist, rate limit, always 204 | Mitigated, tested |
 
 ## Future flows to model
 

@@ -777,3 +777,78 @@ class OrgProgramParticipant(Base):
         index=True,
     )
     joined_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class ReferralCode(Base):
+    """A person's public referral code. It identifies the referrer only to the service, never to the people
+    who use it."""
+
+    __tablename__ = "referral_codes"
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_referral_codes_user_id_users"), primary_key=True
+    )
+    code: Mapped[str] = mapped_column(String(16), unique=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Acquisition(Base):
+    """How an account found us (first touch): a referrer and/or campaign tags from the landing link."""
+
+    __tablename__ = "acquisitions"
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_acquisitions_user_id_users"), primary_key=True
+    )
+    referrer_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_acquisitions_referrer_id_users"),
+        nullable=True,
+        index=True,
+    )
+    source: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    medium: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    campaign: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Notification(Base):
+    """An in-app notification. Text is written by the service and never quotes private content."""
+
+    __tablename__ = "notifications"
+    __table_args__ = (Index("ix_notifications_user_created", "user_id", "created_at"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_notifications_user_id_users")
+    )
+    kind: Mapped[str] = mapped_column(String(32))
+    title: Mapped[str] = mapped_column(String(200))
+    body: Mapped[str] = mapped_column(Text, default="")
+    link: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    dedupe_key: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    read_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class NotificationPreference(Base):
+    __tablename__ = "notification_preferences"
+    __table_args__ = (UniqueConstraint("user_id", "kind", name="uq_notification_preferences_user_kind"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_notification_preferences_user_id_users"),
+        index=True,
+    )
+    kind: Mapped[str] = mapped_column(String(32))
+    in_app: Mapped[bool] = mapped_column(default=True)
+    email: Mapped[bool] = mapped_column(default=False)
+
+
+class ProductEventCount(Base):
+    """Daily counts of named product events. No user id, IP address, cookie or free text is stored."""
+
+    __tablename__ = "product_event_counts"
+
+    day: Mapped[date] = mapped_column(Date, primary_key=True)
+    name: Mapped[str] = mapped_column(String(48), primary_key=True)
+    count: Mapped[int] = mapped_column(Integer, default=0)

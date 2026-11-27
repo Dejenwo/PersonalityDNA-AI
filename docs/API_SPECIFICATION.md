@@ -162,6 +162,17 @@ Signed-in, verified accounts. Non-members get 404; members without the right rol
 | PUT / DELETE | `/api/v1/orgs/{id}/programs/{program}/participation` | member | Join or leave a programme |
 | GET | `/api/v1/orgs/{id}/analytics` | manager | Members and seats; suppressed band distributions and programme counts |
 
+## Growth and notifications (implemented)
+
+| Method | Path | Auth | Purpose |
+| --- | --- | --- | --- |
+| POST | `/api/v1/auth/register` `{attribution}` | none | Optional first-touch `referral`, `source`, `medium`, `campaign` (validated; unknown codes ignored) |
+| GET | `/api/v1/referrals/me` | user | Stable code, link, count of verified accounts that joined with it, privacy note |
+| POST | `/api/v1/analytics/events` `{name}` | none | Add one to today's count for a whitelisted event; always 204 |
+| GET | `/api/v1/notifications[?before=]` | user | Newest 30 notifications, unread count, `next_before` cursor |
+| POST | `/api/v1/notifications/{id}/read`, `/read-all` | user | Mark read (404 for someone else's) |
+| GET / PUT | `/api/v1/notifications/preferences` | user | Per-kind `in_app` and `email`; 409 `required_notification` for security |
+
 ## Billing (implemented)
 
 Gated features return 403 `premium_required` with `details.feature` once `PDNA_BILLING_ENFORCE=true`.
