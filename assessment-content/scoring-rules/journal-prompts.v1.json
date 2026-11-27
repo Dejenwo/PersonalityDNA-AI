@@ -1,0 +1,80 @@
+{
+  "id": "journal-prompts",
+  "version": "1.0.0",
+  "locale": "en",
+  "note": "Your journal is private. Entries are encrypted when stored, are never shared with other people or administrators, and are never sent to the AI coach.",
+  "support_note": "If writing brings up something heavy, please talk to someone you trust or a professional. If you are in danger, contact local emergency services. In the US you can call or text 988; elsewhere, findahelpline.com lists free support.",
+  "mood_scale": [
+    "Very low",
+    "Low",
+    "Okay",
+    "Good",
+    "Very good"
+  ],
+  "kinds": {
+    "daily": {
+      "label": "Daily reflection",
+      "description": "A few lines about your day.",
+      "prompts": [
+        "What stood out about today?",
+        "What went well, and what would you do differently?",
+        "What took most of your energy today?",
+        "What is one thing you want to remember from today?",
+        "What would make tomorrow a good day?"
+      ]
+    },
+    "gratitude": {
+      "label": "Gratitude",
+      "description": "Notice what you appreciate.",
+      "prompts": [
+        "Write down three things you are grateful for today, however small.",
+        "Who made a positive difference to your week, and how?",
+        "What is something you usually take for granted that you appreciated today?",
+        "What did you enjoy today that cost nothing?",
+        "What is a recent moment you would happily live again?"
+      ]
+    },
+    "goal": {
+      "label": "Goal reflection",
+      "description": "Think about progress towards a goal.",
+      "prompts": [
+        "What progress did you make towards your goal, and what helped?",
+        "What got in the way, and what could you try next time?",
+        "Is your goal still the right one? What would you adjust?",
+        "What is the smallest next step you could take?",
+        "How will you know when you have reached this goal?"
+      ]
+    },
+    "development": {
+      "label": "Personal development",
+      "description": "Notes on what you are learning about yourself.",
+      "prompts": [
+        "What did you learn about yourself this week?",
+        "Which strength did you use recently, and how?",
+        "What is a habit you would like to build or let go of?",
+        "What feedback have you received lately, and what do you make of it?",
+        "What would you like to be better at in a year, and why?"
+      ]
+    },
+    "communication": {
+      "label": "Communication reflection",
+      "description": "Look back on a conversation.",
+      "prompts": [
+        "Think of a recent conversation that went well. What did you do that helped?",
+        "Think of a conversation that was hard. What did you want the other person to understand?",
+        "When did you listen well recently, and how could you tell?",
+        "Is there something you would like to say to someone but haven't yet? What is holding you back?",
+        "How would the other person describe your last disagreement?"
+      ]
+    },
+    "free": {
+      "label": "Free writing",
+      "description": "Write about anything.",
+      "prompts": [
+        "What is on your mind right now?",
+        "Write for five minutes without stopping, then read it back.",
+        "What would you like to think through today?"
+      ]
+    }
+  }
+}

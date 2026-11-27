@@ -5,12 +5,13 @@ docs/DATABASE_DESIGN.md and will be added with their own migrations.
 """
 
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
 from sqlalchemy import (
     JSON,
     CheckConstraint,
+    Date,
     DateTime,
     Float,
     ForeignKey,
@@ -463,4 +464,34 @@ class GrowthCheckIn(Base):
     )
     week: Mapped[int] = mapped_column(Integer)
     rating: Mapped[int] = mapped_column(Integer)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class JournalEntry(Base):
+    """A private journal entry. Title, text and tags are encrypted with the row id as associated data.
+
+    Only the kind, the optional 1 to 5 mood, the entry date and timestamps are stored in the clear.
+    """
+
+    __tablename__ = "journal_entries"
+    __table_args__ = (
+        CheckConstraint(
+            "kind in ('daily','gratitude','goal','development','communication','free')",
+            name="ck_journal_entry_kind",
+        ),
+        CheckConstraint("mood is null or mood between 1 and 5", name="ck_journal_entry_mood"),
+        Index("ix_journal_entries_user_date", "user_id", "entry_date"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_journal_entries_user_id_users")
+    )
+    kind: Mapped[str] = mapped_column(String(16))
+    entry_date: Mapped[date] = mapped_column(Date)
+    mood: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    title_encrypted: Mapped[str | None] = mapped_column(Text, nullable=True)
+    body_encrypted: Mapped[str] = mapped_column(Text)
+    tags_encrypted: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

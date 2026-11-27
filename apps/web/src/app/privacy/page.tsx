@@ -39,6 +39,14 @@ export default function PrivacyPage() {
         suggests you may be in danger, the app shows crisis support information instead of sending it to the AI, and
         records only that this happened. While the coach runs in demo mode, nothing is sent to an AI provider.
       </p>
+      <h2 className="pt-4 text-xl font-semibold">Your journal</h2>
+      <p>
+        Journal entries need an account. The title, text and tags are encrypted when stored; the date, kind of entry
+        and optional mood are not. Only you can read your journal: it is never shared with other people, never shown to
+        our staff and never sent to the AI coach or any AI provider. Search runs on our server after decryption and the
+        words you search for are not logged. You can download your journal as Markdown or JSON, and delete single
+        entries or all of them at any time.
+      </p>
       <h2 className="pt-4 text-xl font-semibold">Comparing with someone you know</h2>
       <p>
         Comparisons are optional and need both people to agree. If you invite someone or accept an invitation, the other

@@ -335,6 +335,31 @@ class GrowthAcademy(_Frozen):
         return next(w for w in self.weeks if w.id == week_id)
 
 
+JournalKind = Literal["daily", "gratitude", "goal", "development", "communication", "free"]
+
+
+class JournalKindContent(_Frozen):
+    label: str
+    description: str
+    prompts: tuple[str, ...] = Field(min_length=1)
+
+
+class JournalPrompts(_Frozen):
+    id: str
+    version: str
+    locale: str
+    note: str
+    support_note: str
+    mood_scale: tuple[str, str, str, str, str]
+    kinds: dict[JournalKind, JournalKindContent]
+
+    @model_validator(mode="after")
+    def _check(self) -> "JournalPrompts":
+        if set(self.kinds) != {"daily", "gratitude", "goal", "development", "communication", "free"}:
+            raise ValueError("journal prompts must cover every entry kind")
+        return self
+
+
 class LoadedFile[T: BaseModel](BaseModel):
     model_config = ConfigDict(frozen=True)
     data: T
@@ -352,6 +377,7 @@ class ContentBundle(BaseModel):
     leadership: LoadedFile[LeadershipProgram]
     emotional_awareness: LoadedFile[LearningTrack]
     growth: LoadedFile[GrowthAcademy]
+    journal: LoadedFile[JournalPrompts]
 
     def track(self, track_id: str) -> LearningTrack | None:
         """Learning tracks by their public id; None for unknown ids."""
@@ -407,6 +433,8 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
     emotional_awareness = LearningTrack.model_validate(ea_data)
     growth_data, growth_sha = _read(content_dir / "scoring-rules" / "growth-academy.v1.json")
     growth = GrowthAcademy.model_validate(growth_data)
+    journal_data, journal_sha = _read(content_dir / "scoring-rules" / "journal-prompts.v1.json")
+    journal = JournalPrompts.model_validate(journal_data)
 
     trait_ids = set(archetypes.traits)
     for inst_file in instruments.values():
@@ -449,4 +477,5 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
             data=emotional_awareness, sha256=ea_sha, path="emotional-awareness.v1.json"
         ),
         growth=LoadedFile[GrowthAcademy](data=growth, sha256=growth_sha, path="growth-academy.v1.json"),
+        journal=LoadedFile[JournalPrompts](data=journal, sha256=journal_sha, path="journal-prompts.v1.json"),
     )

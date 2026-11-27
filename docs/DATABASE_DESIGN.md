@@ -56,6 +56,12 @@ Comparisons are computed on request from each person's latest Big Five result an
 | --- | --- | --- | --- |
 | `learning_activity_progress` | Which learning activities a user marked done: track (`leadership`, `emotional-awareness`), module and activity ids and time, no free text | FK user CASCADE; unique (user, track, module, activity) | Until unmarked or account deletion |
 
+## Implemented (migration 0009, journal)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `journal_entries` | Private entries: kind, entry date, optional mood (1–5) in the clear; title, text and tags encrypted (AES-256-GCM, row id and field as associated data) | FK user CASCADE; index (user, entry date); kind and mood checks | Until the user deletes the entry, the journal or the account |
+
 ## Implemented (migration 0008, growth programmes)
 
 | Table | Purpose | Key constraints | Retention |
