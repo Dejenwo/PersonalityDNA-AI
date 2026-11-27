@@ -407,3 +407,60 @@ class LearningActivityProgress(Base):
     module_id: Mapped[str] = mapped_column(String(64))
     activity_id: Mapped[str] = mapped_column(String(64))
     completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class GrowthEnrollment(Base):
+    """A user following a growth programme. Restarting resets the start time and progress."""
+
+    __tablename__ = "growth_enrollments"
+    __table_args__ = (UniqueConstraint("user_id", "program_id", name="uq_growth_enrollment"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_growth_enrollments_user_id_users"), index=True
+    )
+    program_id: Mapped[str] = mapped_column(String(64))
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class GrowthDayProgress(Base):
+    """A programme day marked done. Day numbers only, no free text."""
+
+    __tablename__ = "growth_day_progress"
+    __table_args__ = (UniqueConstraint("enrollment_id", "day", name="uq_growth_day_progress"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    enrollment_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey(
+            "growth_enrollments.id",
+            ondelete="CASCADE",
+            name="fk_growth_day_progress_enrollment_id_growth_enrollments",
+        ),
+        index=True,
+    )
+    day: Mapped[int] = mapped_column(Integer)
+    completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class GrowthCheckIn(Base):
+    """A weekly self-evaluation on a 1 to 5 scale. For the user's own reflection; never compared or ranked."""
+
+    __tablename__ = "growth_check_ins"
+    __table_args__ = (
+        UniqueConstraint("enrollment_id", "week", name="uq_growth_check_in"),
+        CheckConstraint("rating between 1 and 5", name="ck_growth_check_in_rating"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    enrollment_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey(
+            "growth_enrollments.id",
+            ondelete="CASCADE",
+            name="fk_growth_check_ins_enrollment_id_growth_enrollments",
+        ),
+        index=True,
+    )
+    week: Mapped[int] = mapped_column(Integer)
+    rating: Mapped[int] = mapped_column(Integer)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

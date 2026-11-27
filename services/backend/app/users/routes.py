@@ -20,7 +20,11 @@ from app.database.models import (
     AssessmentSession,
     CoachConversation,
     ConsentRecord,
+    GrowthCheckIn,
+    GrowthDayProgress,
+    GrowthEnrollment,
     LearningActivityProgress,
+    User,
 )
 from app.relationships import service as relationships
 
@@ -148,6 +152,7 @@ def export(request: Request, user: CurrentUser, db: Db, content: Content) -> dic
             for c in conversations
         ],
         "relationships": relationships.export_for(db, user),
+        "growth_programs": _growth_export(db, user),
         "learning_activities": [
             {
                 "track": p.track,
@@ -160,6 +165,23 @@ def export(request: Request, user: CurrentUser, db: Db, content: Content) -> dic
             )
         ],
     }
+
+
+def _growth_export(db: Session, user: User) -> list[dict[str, Any]]:
+    out = []
+    for e in db.scalars(select(GrowthEnrollment).where(GrowthEnrollment.user_id == user.id)):
+        days = db.scalars(select(GrowthDayProgress).where(GrowthDayProgress.enrollment_id == e.id))
+        checks = db.scalars(select(GrowthCheckIn).where(GrowthCheckIn.enrollment_id == e.id))
+        out.append(
+            {
+                "program": e.program_id,
+                "started_at": e.started_at.isoformat(),
+                "completed_at": e.completed_at.isoformat() if e.completed_at else None,
+                "days_done": [{"day": d.day, "completed_at": d.completed_at.isoformat()} for d in days],
+                "self_evaluations": [{"week": c.week, "rating": c.rating} for c in checks],
+            }
+        )
+    return out
 
 
 @router.delete(

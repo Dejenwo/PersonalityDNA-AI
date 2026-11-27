@@ -5,6 +5,11 @@ export const metadata: Metadata = { title: "Learn" };
 
 const TRACKS = [
   {
+    href: "/growth",
+    title: "Growth programmes",
+    text: "Seven-day challenges and 30, 60 and 90-day programmes with a short exercise each day, weekly milestones and self-checks.",
+  },
+  {
     href: "/emotional-awareness",
     title: "Emotional awareness",
     text: "Notice and name feelings, pause before you respond, listen to understand and say what you need. Seven modules.",
@@ -22,8 +27,8 @@ export default function LearnPage() {
       <header>
         <h1 className="text-3xl font-bold">Learn</h1>
         <p className="mt-2 max-w-2xl text-ink-muted">
-          Short modules with two ideas to read, small activities to try in everyday life and a question to reflect on.
-          Sign in to keep track of the activities you finish.
+          Day-by-day programmes, and short modules with ideas to read, small activities to try in everyday life and
+          questions to reflect on. Sign in to keep track of what you finish.
         </p>
       </header>
       <ul className="grid gap-4 sm:grid-cols-2">
