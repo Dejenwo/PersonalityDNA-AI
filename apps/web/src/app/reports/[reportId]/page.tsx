@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { type ReactNode, useState } from "react";
 import { FormMessage } from "@/components/form";
+import { ShareCards } from "@/components/share-cards";
 import { Button, ButtonLink, Card, ErrorState, LoadingState } from "@/components/ui";
 import { api } from "@/lib/api";
 import { downloadBlob } from "@/lib/download";
@@ -228,6 +229,8 @@ function ReportView({ report }: { report: Report }) {
           </ol>
         </Section>
       )}
+
+      <ShareCards reportId={report.id} hasProfile={Boolean(b.profile)} />
 
       <Section id="methodology" title="Methodology">
         {b.methodology.map((m) => (

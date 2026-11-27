@@ -31,6 +31,7 @@ from app.goals.service import GoalService
 from app.journal.service import JournalService
 from app.relationships import service as relationships
 from app.reports.service import ReportService
+from app.sharing.service import ShareService
 
 router = APIRouter(prefix="/api/v1", tags=["account"], responses={401: {"model": ErrorResponse}})
 Db = Annotated[Session, Depends(get_db)]
@@ -161,6 +162,9 @@ def export(request: Request, user: CurrentUser, db: Db, content: Content) -> dic
         "reports": [
             ReportService(request.app.state.cipher).out(r).model_dump(mode="json")
             for r in db.scalars(select(Report).where(Report.user_id == user.id))
+        ],
+        "share_cards": [
+            c.model_dump(mode="json") for c in ShareService(request.app.state.cipher).list(db, user).cards
         ],
         "journal_entries": [
             e.model_dump(mode="json") for e in JournalService(request.app.state.cipher).all_entries(db, user)

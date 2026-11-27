@@ -117,6 +117,18 @@ Signed-in users only; other users' reports return 404. A report is a snapshot an
 | GET / DELETE | `/api/v1/reports/{id}` | Read the full report body with its SHA-256, or delete it |
 | GET | `/api/v1/reports/{id}/pdf` | The report as a PDF (attachment, `no-store`) |
 
+## Share cards (implemented)
+
+Creating, listing and stopping a share needs an account; reading a card needs only its link token. Unknown, revoked and malformed tokens all return 404.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/share-cards` | The user's shared cards with their link tokens |
+| POST | `/api/v1/share-cards` | Share a card from a report (`report_id`, `include_archetype`, `include_traits`); 422 `empty_card`, 409 `too_many_cards` past 10 |
+| DELETE | `/api/v1/share-cards/{id}` | Stop sharing (the link stops working at once) |
+| GET | `/api/v1/public/cards/{token}` | The card: profile name and description and/or trait bands, report date, note. `no-store`, `noindex` |
+| GET | `/api/v1/public/cards/{token}/image.svg` | The card as a 1200 x 630 SVG with a text alternative |
+
 ## Goals and habits (implemented)
 
 Signed-in users only; other users' goals and habits return 404. Habit endpoints take `?today=YYYY-MM-DD` (the person's local date, within a day of the server's).

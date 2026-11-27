@@ -582,3 +582,23 @@ class Report(Base):
     body_encrypted: Mapped[str] = mapped_column(Text)
     body_sha256: Mapped[str] = mapped_column(String(64))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class ShareCard(Base):
+    """A public, revocable card made from one of the user's reports. The card text is stored in the clear
+    because the user chose to publish it; it holds no name or scores. Only the link token's hash is used
+    for lookup; the token itself is kept encrypted so the owner can copy the link again."""
+
+    __tablename__ = "share_cards"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_share_cards_user_id_users"), index=True
+    )
+    report_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("reports.id", ondelete="CASCADE", name="fk_share_cards_report_id_reports"), index=True
+    )
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    token_encrypted: Mapped[str] = mapped_column(Text)
+    card: Mapped[dict[str, Any]] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

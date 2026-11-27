@@ -14,7 +14,7 @@ Last updated: 2026-11-26.
 | 4 | Design system | In Progress | Tokens with contrast tests and web components. No icon, mobile components or `packages/ui` yet. |
 | 5 | Authentication | Tested | Email/password accounts, verification, reset, rotating sessions, claim, history, export, deletion (ADR-010). No social login or MFA yet. |
 | 6 | Assessment engine | Tested | Instruments, sessions, autosave, resume, deterministic scoring, versioning, audit. History is device-local until accounts exist. |
-| 7 | Personality intelligence | In Progress | Big Five results, archetypes, trait explanations, strengths and growth. No shareable card or comparison yet. |
+| 7 | Personality intelligence | In Progress | Big Five results, archetypes, trait explanations, strengths and growth. Shareable cards in Phase 15; comparison in Phase 10. |
 | 8 | AI coaching | Tested | Provider interface (stand-in + Anthropic), consented context from scores only, versioned prompt, crisis routing, input flags, streaming output guard, grounding check, encrypted messages, daily limits, usage records, evaluation suite, web chat (ADR-011). Live model not yet run: needs the owner's API key and spending cap. |
 | 9 | Career intelligence | Tested | O*NET Interest Profiler Short Form (60 activities) as a **draft** instrument, count-based RIASEC scoring (engine 1.1.0), interest code with tie reporting, interest results page, career exploration page joining interests and Big Five working style, interests in coach context (ADR-012). Draft is hidden in production until the wording is checked against the official PDF and a lawyer confirms the CC BY-ND reading. |
 | 10 | Relationship intelligence | Tested | One-time invitation links, consent from both people, one link per pair, comparison of Big Five bands with original similarity, difference, misunderstanding and prompt text, exercises and shared goals, revoke by either person, export and deletion (ADR-013). No compatibility score or prediction. |
@@ -22,7 +22,7 @@ Last updated: 2026-11-26.
 | 12 | Emotional awareness | Tested | Original learning track: 7 modules (self-awareness, reflective communication, active listening, empathy, stress reflection, interpersonal understanding, constructive expression) with lessons, activities, reflection and a support note; no score or test; shared learning-track API and progress (migration 0007); "Emotions and communication" coach topic; Learn page (ADR-015). Needs a clinical safety review of wording before launch. |
 | 13 | Personal growth academy | Tested | Original content: 12 weekly units across the 10 topics in the spec, composed into three 7-day challenges and 30, 60 and 90-day programmes with objectives, lessons, practice, daily exercises, weekly milestones, review days and weekly 1 to 5 self-checks; enrolment, day progress and self-checks for accounts (migration 0008); Learn page entry (ADR-016). Annual goals move to Phase 14 goals. |
 | 14 | Journaling, goals and habits | Tested | Journal: encrypted entries (title, text, tags), six kinds with original prompts, optional mood, tags, search after decryption (POST, not logged), Markdown and JSON export, delete one or all (ADR-017). Goals with milestones and adjustment, habits on chosen weekdays with history, neutral 7 and 30-day summaries and a four-week grid, no streaks (ADR-018). Reminders wait for the notification service. |
-| 15 | Reports | In Progress | Personality reports: a snapshot of the latest Big Five, interest and leadership results with profile, trait scores as text and bars, strengths, development, communication and relationship guidance, career interests, leadership preferences, values note, a development plan of growth programmes and leadership modules, methodology, references and limitations; stored encrypted with a body fingerprint (migration 0011); report library, report page and server-rendered PDF download (ADR-019). Shareable cards come next. |
+| 15 | Reports | Tested | Personality reports: a snapshot of the latest Big Five, interest and leadership results with profile, trait scores as text and bars, strengths, development, communication and relationship guidance, career interests, leadership preferences, values note, a development plan of growth programmes and leadership modules, methodology, references and limitations; stored encrypted with a body fingerprint (migration 0011); report library, report page and server-rendered PDF download (ADR-019). Shareable personality cards: opt-in, revocable public links with profile name and Big Five bands only, an SVG image, no name, email or scores (migration 0012, ADR-020). |
 | 16–25 | Monetization onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
 
 ## Task log
@@ -103,7 +103,8 @@ Last updated: 2026-11-26.
 | R-001 | Reports | Deterministic report builder from the latest result of each kind and versioned original content; plan grounded in existing programmes and modules; content fingerprint | P0 | Tested | `test_build_is_deterministic_and_plan_is_grounded` |
 | R-002 | Reports | Encrypted storage, library, read, PDF (attachment, `no-store`), delete, 50-report limit, owner-only access, privacy export, account deletion | P0 | Tested | `test_create_read_pdf_and_delete`, `test_reports_belong_to_their_owner`, `test_report_limit`, `test_export_and_account_deletion` |
 | R-003 | Web | Report library with create, report page with every section as text, PDF download, delete with confirmation; link from My results | P0 | Tested | e2e reports.spec.ts (desktop + mobile) + axe; vitest report helpers |
-| R-004 | Reports | Shareable personality cards (opt-in, revocable, minimal data) | P1 | Not Started | Next in Phase 15 |
+| R-004 | Sharing | Share cards from a report: choose profile and/or bands, public read and SVG image without sign-in (`no-store`, `noindex`, strict CSP on the SVG), token hashed for lookup and encrypted for the owner, stop sharing, 10-card limit, removed with the report or account, in the privacy export | P1 | Tested | tests/test_sharing.py (4 tests); e2e reports.spec.ts share steps + axe; vitest share helpers |
+| R-006 | Sharing | PNG image for social previews (needs server-side rendering of the page with Open Graph tags) | P2 | Not Started | Links carry the token in the fragment, so previews would need a different link design |
 | R-005 | Reports | Values assessment section (needs a licensed values instrument); PDF accessibility tagging (PDF/UA) | P2 | Not Started | reportlab does not produce tagged PDFs; the web report is the accessible version |
 | M-001 | Monetization | Entitlements service with plan config; Stripe and RevenueCat webhooks | P0 | Not Started | Needs accounts; live keys needed for real payments |
 
@@ -111,11 +112,11 @@ Last updated: 2026-11-26.
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest` | 184 passed |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 184 passed |
+| Backend, SQLite | `pytest` | 188 passed |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 188 passed |
 | Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
-| Web unit | `vitest run` | 35 passed |
+| Web unit | `vitest run` | 37 passed |
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
 | End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 38 passed |

@@ -56,6 +56,12 @@ Comparisons are computed on request from each person's latest Big Five result an
 | --- | --- | --- | --- |
 | `learning_activity_progress` | Which learning activities a user marked done: track (`leadership`, `emotional-awareness`), module and activity ids and time, no free text | FK user CASCADE; unique (user, track, module, activity) | Until unmarked or account deletion |
 
+## Implemented (migration 0012, share cards)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `share_cards` | Public cards the user chose to share: card content (profile name and description and/or bands, date) in the clear; link token hash for lookup and the token encrypted for the owner | FK user CASCADE; FK report CASCADE; unique token hash | Until the user stops sharing, deletes the report or deletes the account |
+
 ## Implemented (migration 0011, reports)
 
 | Table | Purpose | Key constraints | Retention |

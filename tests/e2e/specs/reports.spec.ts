@@ -1,7 +1,11 @@
 import { expect, test } from "@playwright/test";
 import { expectAccessible, registerAndVerify, signIn, takeQuickAssessment, uniqueEmail } from "./helpers";
 
-test("reports: create a report from results, read it, download the PDF and delete it", async ({ page, request }) => {
+test("reports: create a report, download the PDF, share a card, stop sharing and delete", async ({
+  page,
+  request,
+  browser,
+}) => {
   const email = uniqueEmail("reports");
   await registerAndVerify(page, request, email);
   await signIn(page, email);
@@ -32,6 +36,27 @@ test("reports: create a report from results, read it, download the PDF and delet
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download PDF" }).click();
   expect((await download).suggestedFilename()).toMatch(/^personality-report-\d{4}-\d{2}-\d{2}\.pdf$/);
+
+  // Share a card with bands only, open it signed out, then stop sharing.
+  await page.getByLabel("Profile name and description").uncheck();
+  await page.getByRole("button", { name: "Create a share link" }).click();
+  const link = await page.getByLabel("Share link").inputValue();
+  expect(link).toMatch(/\/card#token=[\w-]+$/);
+  await expectAccessible(page);
+
+  const visitor = await (await browser.newContext()).newPage();
+  await visitor.goto(link);
+  await expect(visitor.getByRole("heading", { name: "A shared personality card" })).toBeVisible();
+  await expect(visitor.getByText("Personality traits", { exact: true })).toBeVisible();
+  await expect(visitor.getByRole("list", { name: "Big Five trait bands" }).getByRole("listitem")).toHaveCount(5);
+  await expect(visitor.getByText(email)).toHaveCount(0);
+  await expectAccessible(visitor);
+
+  await page.getByRole("button", { name: "Stop sharing" }).click();
+  await expect(page.getByLabel("Share link")).toHaveCount(0);
+  await visitor.reload();
+  await expect(visitor.getByRole("heading", { name: "This card isn't available" })).toBeVisible();
+  await visitor.context().close();
 
   await page.getByRole("link", { name: "Your reports" }).click();
   await expect(page.getByRole("list", { name: "Your reports" }).getByRole("listitem")).toHaveCount(1);

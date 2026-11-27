@@ -455,6 +455,80 @@
         "title": "AuthOut",
         "type": "object"
       },
+      "Card": {
+        "description": "What a public card shows: no name, no scores, no free text written by the user.",
+        "properties": {
+          "archetype": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archetype"
+          },
+          "created_on": {
+            "title": "Created On",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "traits": {
+            "items": {
+              "$ref": "#/components/schemas/CardTrait"
+            },
+            "title": "Traits",
+            "type": "array"
+          }
+        },
+        "required": [
+          "archetype",
+          "summary",
+          "traits",
+          "created_on",
+          "note"
+        ],
+        "title": "Card",
+        "type": "object"
+      },
+      "CardTrait": {
+        "properties": {
+          "band": {
+            "enum": [
+              "lower",
+              "middle",
+              "higher"
+            ],
+            "title": "Band",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "band"
+        ],
+        "title": "CardTrait",
+        "type": "object"
+      },
       "CheckInIn": {
         "properties": {
           "rating": {
@@ -780,6 +854,29 @@
           "message_count"
         ],
         "title": "ConversationSummary",
+        "type": "object"
+      },
+      "CreateCardIn": {
+        "properties": {
+          "include_archetype": {
+            "default": true,
+            "title": "Include Archetype",
+            "type": "boolean"
+          },
+          "include_traits": {
+            "default": true,
+            "title": "Include Traits",
+            "type": "boolean"
+          },
+          "report_id": {
+            "title": "Report Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_id"
+        ],
+        "title": "CreateCardIn",
         "type": "object"
       },
       "CreateConversationIn": {
@@ -4250,6 +4347,55 @@
           "result_id"
         ],
         "title": "SessionOut",
+        "type": "object"
+      },
+      "ShareCardList": {
+        "properties": {
+          "cards": {
+            "items": {
+              "$ref": "#/components/schemas/ShareCardOut"
+            },
+            "title": "Cards",
+            "type": "array"
+          }
+        },
+        "required": [
+          "cards"
+        ],
+        "title": "ShareCardList",
+        "type": "object"
+      },
+      "ShareCardOut": {
+        "properties": {
+          "card": {
+            "$ref": "#/components/schemas/Card"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "report_id": {
+            "title": "Report Id",
+            "type": "string"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "report_id",
+          "token",
+          "created_at",
+          "card"
+        ],
+        "title": "ShareCardOut",
         "type": "object"
       },
       "TagCount": {
@@ -9416,6 +9562,106 @@
         ]
       }
     },
+    "/api/v1/public/cards/{token}": {
+      "get": {
+        "operationId": "read_card_api_v1_public_cards__token__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "title": "Token",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Card"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Card",
+        "tags": [
+          "sharing"
+        ]
+      }
+    },
+    "/api/v1/public/cards/{token}/image.svg": {
+      "get": {
+        "operationId": "card_image_api_v1_public_cards__token__image_svg_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "title": "Token",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "image/svg+xml": {}
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Card Image",
+        "tags": [
+          "sharing"
+        ]
+      }
+    },
     "/api/v1/relationships": {
       "get": {
         "operationId": "overview_api_v1_relationships_get",
@@ -10457,6 +10703,224 @@
         "summary": "Get Result",
         "tags": [
           "results"
+        ]
+      }
+    },
+    "/api/v1/share-cards": {
+      "get": {
+        "operationId": "list_cards_api_v1_share_cards_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShareCardList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Cards",
+        "tags": [
+          "sharing"
+        ]
+      },
+      "post": {
+        "description": "Publishes a card from one of your reports. Anyone with the link can see it until you stop sharing.",
+        "operationId": "create_card_api_v1_share_cards_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCardIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShareCardOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Create Card",
+        "tags": [
+          "sharing"
+        ]
+      }
+    },
+    "/api/v1/share-cards/{card_id}": {
+      "delete": {
+        "operationId": "revoke_card_api_v1_share_cards__card_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "card_id",
+            "required": true,
+            "schema": {
+              "title": "Card Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Revoke Card",
+        "tags": [
+          "sharing"
         ]
       }
     },

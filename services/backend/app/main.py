@@ -29,6 +29,8 @@ from app.reports.routes import router as reports_router
 from app.security.crypto import FieldCipher
 from app.security.headers import SecurityHeadersMiddleware
 from app.security.rate_limit import RateLimiter
+from app.sharing.routes import public_router as public_card_router
+from app.sharing.routes import router as share_router
 from app.users.routes import router as users_router
 
 
@@ -94,6 +96,8 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.include_router(journal_router)
     app.include_router(goals_router)
     app.include_router(reports_router)
+    app.include_router(share_router)
+    app.include_router(public_card_router)
     if settings.dev_outbox_endpoint and settings.environment in ("development", "test"):
         app.include_router(dev_router)
 
