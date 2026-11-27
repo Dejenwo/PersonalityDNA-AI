@@ -47,7 +47,9 @@ Browser ⇄ Web app (static/JS) ; Browser ⇄ API (JSON, `X-Session-Token`) ; AP
 | T26 | Tampering | Replayed webhook events | Event ids stored once per provider (unique constraint) | Mitigated, tested |
 | T27 | Elevation of privilege | A member or a narrow admin role reaching admin functions | Per-route permission checks; roles only by command line or superadmin; confirmed email required; 404 for missing permission; superadmin cannot remove their own role | Mitigated, tested |
 | T28 | Information disclosure | Admins reading private journals, coaching or answers | No admin endpoint returns encrypted fields or content; tests assert private text never appears | Mitigated, tested |
+| T29 | Information disclosure | An organisation re-identifying a member's results from group statistics | Only opted-in members counted; organisations can't see who opted in; group minimum 10; a trait shows only when every band has 3 or more; programme counts under 3 hidden; no individual endpoint | Mitigated, tested; differencing over time is a residual risk (ADR-023) |
+| T30 | Elevation of privilege | A member or leaked join link gaining management rights or extra seats | Role checks per action (403 for members, 404 for non-members); admins can't invite admins or remove admins or owners; links hashed, limited uses and expiry, cancellable; seat limit checked under a row lock; always one owner | Mitigated, tested |
 
 ## Future flows to model
 
-LLM providers (prompt injection, data leakage, cost abuse), payment webhooks (forgery, replay), relationship sharing (consent bypass), enterprise (re-identification from aggregates), mobile (insecure storage, certificate pinning decision).
+LLM providers (prompt injection, data leakage, cost abuse), payment webhooks (forgery, replay), relationship sharing (consent bypass), enterprise differencing over time (see T29), mobile (insecure storage, certificate pinning decision).

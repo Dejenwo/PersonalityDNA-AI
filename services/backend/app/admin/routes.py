@@ -11,10 +11,13 @@ from sqlalchemy.orm import Session
 from app.admin.roles import Permission, Role
 from app.admin.schemas import (
     AdminMe,
+    AdminOrg,
+    AdminOrgList,
     AuditList,
     ContentOverview,
     GrantIn,
     Health,
+    LicenceIn,
     Metrics,
     RoleIn,
     StatusIn,
@@ -135,6 +138,24 @@ def remove_role(
     user_id: str, role: Role, db: Db, svc: Svc, admin: Annotated[User, Depends(need("roles.manage"))]
 ) -> UserDetail:
     return svc.remove_role(db, admin, user_id, role)
+
+
+@router.get("/organisations", response_model=AdminOrgList)
+def find_orgs(
+    db: Db,
+    svc: Svc,
+    _: Annotated[User, Depends(need("orgs.read"))],
+    q: Annotated[str, Query(max_length=120)] = "",
+) -> AdminOrgList:
+    return svc.find_orgs(db, q)
+
+
+@router.put("/organisations/{org_id}/licence", response_model=AdminOrg)
+def set_licence(
+    org_id: str, body: LicenceIn, db: Db, svc: Svc, admin: Annotated[User, Depends(need("orgs.manage"))]
+) -> AdminOrg:
+    """Record a seat licence agreed with the organisation. While active, its members get Premium features."""
+    return svc.set_licence(db, admin, org_id, body.licence, body.seat_limit, body.days, body.reason)
 
 
 @router.get("/metrics", response_model=Metrics)

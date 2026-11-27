@@ -53,5 +53,17 @@
         "Billed once a year"
       ]
     }
-  ]
+  ],
+  "organisation_plan": {
+    "id": "organisation",
+    "name": "Organisation licence",
+    "price_cents": 0,
+    "interval": null,
+    "features": ["report_pdf", "growth_programs", "relationships", "expanded_coaching"],
+    "coach_daily_messages": 30,
+    "highlights": [
+      "Premium features for members while their organisation's licence is active",
+      "Priced per seat by agreement; members never pay through the app"
+    ]
+  }
 }

@@ -2,7 +2,7 @@
 
 The persistent tracker required by MASTER_PROMPT.md section 26. Statuses: Not Started, In Progress, Implemented, Tested, Verified, Blocked. "Tested" means automated tests ran and passed in this repository; "Verified" is reserved for independent human verification and is not used by agents.
 
-Last updated: 2026-11-26.
+Last updated: 2026-11-27.
 
 ## Phase overview
 
@@ -25,7 +25,8 @@ Last updated: 2026-11-26.
 | 15 | Reports | Tested | Personality reports: a snapshot of the latest Big Five, interest and leadership results with profile, trait scores as text and bars, strengths, development, communication and relationship guidance, career interests, leadership preferences, values note, a development plan of growth programmes and leadership modules, methodology, references and limitations; stored encrypted with a body fingerprint (migration 0011); report library, report page and server-rendered PDF download (ADR-019). Shareable personality cards: opt-in, revocable public links with profile name and Big Five bands only, an SVG image, no name, email or scores (migration 0012, ADR-020). |
 | 16 | Monetization | Tested | Plans and prices as validated data; entitlement service (report PDFs, programmes over 7 days, relationship invitations, coaching allowance); Stripe checkout, customer portal and signed, idempotent webhooks; RevenueCat webhooks and restore for Apple and Google; local checkout for development; pricing page and plan card on the account page (migration 0013, ADR-021). Off until the owner sets up providers (`PDNA_BILLING_ENFORCE`). |
 | 17 | Administration | Tested | Five least-privilege roles (first superadmin from the command line), account search and detail without private content, disable or enable with sign-out, complimentary Premium, role management, metrics (accounts, assessments, subscriptions, estimated revenue, AI tokens and cost, feature adoption), content and version overview, audit log, health; every change audited with a reason (migration 0014, ADR-022). |
-| 18–25 | Enterprise onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
+| 18 | Enterprise portal | Tested | Organisations with owner, admin and member roles; join links with seat limits; voluntary membership with its own consent; programmes built from growth programmes and learning modules that members choose to join; group statistics only from members who opt in, shown for 10 or more with every band at least 3; programme counts under 3 hidden; organisations never see individual results or who opted in; seat licences recorded by a superadmin give members Premium features; ownership handed over on account deletion; export (migration 0015, ADR-023). |
+| 19–25 | Internationalisation onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
 
 ## Task log
 
@@ -116,17 +117,23 @@ Last updated: 2026-11-26.
 | A-002 | Admin | Support tools with audit; no private content in responses; self-protection | P0 | Tested | `test_support_tools_are_audited_and_never_show_private_content` |
 | A-003 | Admin | Metrics, revenue and AI cost estimates, content overview, audit pagination, roles | P0 | Tested | `test_superadmin_roles_audit_metrics_and_content`, `test_revenue_and_ai_cost_estimates`; e2e admin.spec.ts + axe |
 | A-004 | Admin | Feature flags, translation management, privacy request queue, plan and content editing with review, MFA for admins, reporting store | P1 | Not Started | Needs review flows; MFA is a security phase item |
+| E-001 | Enterprise | Organisations, roles (403 for members, 404 for non-members), join links with uses and expiry, seat limit, last-owner rules, audit, consent records | P0 | Tested | `test_create_invite_join_and_roles`, `test_seat_limit_and_licence_gives_premium` |
+| E-002 | Enterprise | Voluntary programmes from versioned content; join and leave; participation removed on leaving | P0 | Tested | `test_programmes_are_voluntary` |
+| E-003 | Enterprise | Suppressed group statistics from opted-in members only; no individual data in responses | P0 | Tested | `test_suppression_rules`, `test_analytics_only_from_opted_in_members_and_large_groups` |
+| E-004 | Enterprise | Licence by superadmin (support can only look up) gives members the organisation plan; export; ownership handover on account deletion | P0 | Tested | `test_seat_limit_and_licence_gives_premium`, `test_export_and_account_deletion_hand_over_ownership` |
+| E-005 | Web | Organisations list, join link page, organisation page with programmes, sharing choice, statistics, invitations, members and settings; admin Organisations tab | P0 | Tested | e2e organisations.spec.ts (desktop + mobile) + axe; vitest org helpers |
+| E-006 | Enterprise | Self-serve organisation billing (per-seat checkout and invoices), SSO/SCIM, assigning programmes by team, member email invitations, statistics over time with differencing protection | P1 | Not Started | Needs the owner's pricing and a sales process; see ADR-023 consequences |
 | M-005 | Monetization | One-off report purchases (credit model), live provider setup, tax, final prices, terms update, mobile purchase UI | P1 | Not Started | Needs the owner's Stripe, RevenueCat, Apple and Google accounts |
 
 ## Test results (latest local run, 2026-11-27)
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest` | 201 passed |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 201 passed |
+| Backend, SQLite | `pytest` | 207 passed |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 207 passed |
 | Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
-| Web unit | `vitest run` | 42 passed |
+| Web unit | `vitest run` | 47 passed |
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
-| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 42 passed |
+| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 44 passed |

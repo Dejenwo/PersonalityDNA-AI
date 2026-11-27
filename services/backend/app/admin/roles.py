@@ -13,15 +13,18 @@ Permission = Literal[
     "audit.read",
     "health.read",
     "roles.manage",
+    "orgs.read",
+    "orgs.manage",
 ]
 
 ROLES: dict[str, frozenset[str]] = {
-    "support": frozenset({"users.read", "users.manage", "subscriptions.manage", "health.read"}),
+    "support": frozenset({"users.read", "users.manage", "subscriptions.manage", "orgs.read", "health.read"}),
     "analyst": frozenset({"metrics.read", "health.read"}),
     "content": frozenset({"content.read", "health.read"}),
     "security": frozenset({"audit.read", "users.read", "health.read"}),
 }
-ROLES["superadmin"] = frozenset().union(*ROLES.values()) | {"roles.manage"}
+# Changing roles and organisation licences (a commercial agreement) is reserved for superadmins.
+ROLES["superadmin"] = frozenset().union(*ROLES.values()) | {"roles.manage", "orgs.manage"}
 
 
 def permissions(roles: list[str]) -> set[str]:

@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from app.api.errors import ApiError
 from app.billing.plans import Feature, Plan, PlanConfig, load_plans
 from app.core.config import Settings
-from app.database.models import Subscription
+from app.database.models import Organization, OrgMember, Subscription
 
 ACTIVE = ("active", "trialing", "past_due")
 
@@ -55,9 +55,27 @@ class Entitlements:
             return False
         return True
 
+    def organisation(self, db: Session, user_id: uuid.UUID) -> Organization | None:
+        """An organisation with an active licence that this account belongs to, if any."""
+        now = datetime.now(UTC)
+        for org in db.scalars(
+            select(Organization)
+            .join(OrgMember, OrgMember.org_id == Organization.id)
+            .where(OrgMember.user_id == user_id, Organization.licence == "licensed")
+            .order_by(Organization.licensed_until.desc())
+        ):
+            if org.licensed_until is not None and _aware(org.licensed_until) > now:
+                return org
+        return None
+
     def plan(self, db: Session, user_id: uuid.UUID) -> Plan:
+        """A current personal subscription wins; otherwise an active organisation licence; otherwise Free."""
         s = self.subscription(db, user_id)
-        return self.plans.plan(s.plan_id) if s is not None and is_current(s) else self.plans.plan("free")
+        if s is not None and is_current(s):
+            return self.plans.plan(s.plan_id)
+        if self.organisation(db, user_id) is not None:
+            return self.plans.organisation_plan
+        return self.plans.plan("free")
 
     def has(self, db: Session, user_id: uuid.UUID, feature: Feature) -> bool:
         return not self.settings.billing_enforce or feature in self.plan(db, user_id).features

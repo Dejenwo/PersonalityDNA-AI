@@ -142,3 +142,30 @@ class Health(BaseModel):
     stripe_configured: bool
     revenuecat_configured: bool
     content_instruments: int
+
+
+class AdminOrg(BaseModel):
+    """Organisation metadata and licence. Never member results or programme participation by name."""
+
+    id: str
+    name: str
+    members: int
+    owners: int
+    licence: Literal["pilot", "licensed"]
+    seat_limit: int
+    licensed_until: datetime | None
+    licence_active: bool
+    created_at: datetime
+
+
+class AdminOrgList(BaseModel):
+    organisations: list[AdminOrg]
+
+
+class LicenceIn(BaseModel):
+    licence: Literal["pilot", "licensed"]
+    seat_limit: int = Field(ge=1, le=100_000)
+    days: int | None = Field(
+        default=None, ge=1, le=1096, description="Licence length; required when licensed."
+    )
+    reason: str = Field(min_length=3, max_length=500)

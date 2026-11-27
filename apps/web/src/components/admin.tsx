@@ -1,6 +1,6 @@
 "use client";
 
-import type { AdminRole, AdminUserDetail } from "@pdna/api-client";
+import type { AdminOrg, AdminRole, AdminUserDetail } from "@pdna/api-client";
 import { type FormEvent, type ReactNode, useState } from "react";
 import { FormMessage, TextField } from "@/components/form";
 import { Button, Card, EmptyState, ErrorState, LoadingState } from "@/components/ui";
@@ -501,5 +501,119 @@ export function AuditPanel() {
         }}
       </Loaded>
     </div>
+  );
+}
+
+export function Organisations({ canManage }: { canManage: boolean }) {
+  const [q, setQ] = useState("");
+  const [query, setQuery] = useState("");
+  const list = useAsync(() => api.adminOrgs(query), `admin-orgs:${query}`);
+  return (
+    <Card as="section" aria-labelledby="orgs-heading">
+      <h2 id="orgs-heading" className="text-xl font-semibold">
+        Organisations
+      </h2>
+      <p className="mt-1 text-sm text-ink-muted">
+        Name, seats and licence only. Member results and programme participation are never shown here.
+      </p>
+      <form
+        className="mt-4 flex flex-wrap items-end gap-3"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setQuery(q.trim());
+        }}
+      >
+        <TextField id="org-search" label="Name or ID" value={q} onChange={(e) => setQ(e.target.value)} />
+        <Button type="submit">Search</Button>
+      </form>
+      <Loaded state={list} label="organisations">
+        {(d) =>
+          d.organisations.length === 0 ? (
+            <EmptyState title="No organisations found" message="Try another name." />
+          ) : (
+            <ul className="mt-4 space-y-3">
+              {d.organisations.map((o) => (
+                <OrgRow key={o.id} initial={o} canManage={canManage} />
+              ))}
+            </ul>
+          )
+        }
+      </Loaded>
+    </Card>
+  );
+}
+
+function OrgRow({ initial, canManage }: { initial: AdminOrg; canManage: boolean }) {
+  // Updated in place after saving, so the confirmation stays on screen.
+  const [org, setOrg] = useState(initial);
+  const [seats, setSeats] = useState(String(initial.seat_limit));
+  const [days, setDays] = useState("365");
+  const [reason, setReason] = useState("");
+  const [message, setMessage] = useState<{ kind: "error" | "success"; text: string } | null>(null);
+
+  async function save(licence: "pilot" | "licensed") {
+    setMessage(null);
+    try {
+      const saved = await api.adminSetLicence(org.id, {
+        licence,
+        seat_limit: Number(seats) || 1,
+        days: licence === "licensed" ? Number(days) || 1 : null,
+        reason,
+      });
+      setOrg(saved);
+      setMessage({ kind: "success", text: "Licence saved." });
+    } catch (err) {
+      setMessage({ kind: "error", text: errorMessage(err) });
+    }
+  }
+
+  const status = org.licence_active
+    ? `licensed until ${when(org.licensed_until)}`
+    : org.licence === "licensed"
+      ? "licence ended"
+      : "pilot";
+  return (
+    <li className="rounded-card border border-line p-4">
+      <p className="font-semibold">{org.name}</p>
+      <p className="text-sm text-ink-muted">
+        {org.members} of {org.seat_limit} seats · {org.owners} owner{org.owners === 1 ? "" : "s"} · {status}
+      </p>
+      {canManage && (
+        <form className="mt-3 grid gap-3 sm:grid-cols-3" onSubmit={(e: FormEvent) => e.preventDefault()}>
+          <TextField
+            id={`seats-${org.id}`}
+            label="Seats"
+            type="number"
+            min={1}
+            value={seats}
+            onChange={(e) => setSeats(e.target.value)}
+          />
+          <TextField
+            id={`days-${org.id}`}
+            label="Licence days"
+            type="number"
+            min={1}
+            max={1096}
+            value={days}
+            onChange={(e) => setDays(e.target.value)}
+          />
+          <TextField
+            id={`reason-${org.id}`}
+            label="Reason (audited)"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+          />
+          <div className="flex flex-wrap gap-3 sm:col-span-3">
+            <Button type="button" onClick={() => save("licensed")}>
+              Save licence
+            </Button>
+            <Button type="button" variant="secondary" onClick={() => save("pilot")}>
+              Set to pilot
+            </Button>
+          </div>
+        </form>
+      )}
+      {message && <FormMessage kind={message.kind}>{message.text}</FormMessage>}
+    </li>
   );
 }

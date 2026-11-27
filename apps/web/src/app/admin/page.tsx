@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AuditPanel, Accounts, ContentPanel, Overview } from "@/components/admin";
+import { AuditPanel, Accounts, ContentPanel, Organisations, Overview } from "@/components/admin";
 import { ErrorState, LoadingState } from "@/components/ui";
 import { api } from "@/lib/api";
 import { type AdminTab, TAB_LABEL, tabsFor } from "@/lib/admin";
@@ -53,6 +53,7 @@ export default function AdminPage() {
       </nav>
       {current === "overview" && <Overview canMetrics={permissions.includes("metrics.read")} />}
       {current === "users" && <Accounts permissions={permissions} />}
+      {current === "orgs" && <Organisations canManage={permissions.includes("orgs.manage")} />}
       {current === "content" && <ContentPanel />}
       {current === "audit" && <AuditPanel />}
     </div>

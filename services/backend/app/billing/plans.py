@@ -33,6 +33,7 @@ class PlanConfig(BaseModel):
     free_note: str
     features: list[FeatureInfo]
     plans: list[Plan]
+    organisation_plan: Plan
 
     @model_validator(mode="after")
     def _check(self) -> "PlanConfig":
@@ -43,6 +44,8 @@ class PlanConfig(BaseModel):
             raise ValueError("the free plan has no paid features and no price")
         if {f.id for f in self.features} != {f for p in self.plans for f in p.features}:
             raise ValueError("every feature must be described and used by a plan")
+        if self.organisation_plan.id in ids or self.organisation_plan.price_cents != 0:
+            raise ValueError("the organisation plan is separate from personal plans and priced by agreement")
         return self
 
     def plan(self, plan_id: str) -> Plan:

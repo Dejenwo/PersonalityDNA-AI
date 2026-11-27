@@ -12,6 +12,7 @@ from app.auth.passwords import DUMMY_HASH, hash_password, needs_rehash, password
 from app.core.config import Settings
 from app.database.models import AuditEvent, AuthToken, ConsentRecord, RefreshToken, User
 from app.notifications.email import OutgoingEmail
+from app.organizations.service import before_account_deletion
 from app.security.consent import CURRENT_POLICY_VERSION
 from app.security.tokens import hash_token, new_token
 
@@ -294,6 +295,7 @@ class AuthService:
         if not verify_password(user.password_hash, password):
             raise ApiError(403, "invalid_credentials", "Password is incorrect.")
         user_id = user.id
+        before_account_deletion(db, user_id)
         db.execute(delete(User).where(User.id == user_id))
         _audit(db, "user.deleted", user_id)
         db.commit()

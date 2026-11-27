@@ -133,6 +133,27 @@ Needs an admin role (`scripts/grant_admin.py` creates the first superadmin). A m
 | GET | `/api/v1/admin/content` | content.read | Engine, report, prompt and plan versions; instruments and content files with SHA-256 |
 | GET | `/api/v1/admin/audit?before=&event_type=&limit=` | audit.read | Audit events, newest first |
 | GET | `/api/v1/admin/health` | health.read | Database, environment and provider configuration |
+| GET | `/api/v1/admin/organisations?q=` | orgs.read | Organisations by name or id: members, owners, seats, licence |
+| PUT | `/api/v1/admin/organisations/{id}/licence` | orgs.manage (superadmin) | Record a pilot or a licence (seats, days, reason); audited |
+
+## Organisations (implemented)
+
+Signed-in, verified accounts. Non-members get 404; members without the right role get 403. Join tokens travel in request bodies, never URLs.
+
+| Method | Path | Who | Purpose |
+| --- | --- | --- | --- |
+| GET / POST | `/api/v1/orgs` | any | List mine; create (with `organisation_membership` consent) |
+| GET | `/api/v1/orgs/catalog` | any | Growth programmes and learning modules programmes can use |
+| POST | `/api/v1/orgs/invitations/preview` and `/accept` | any | See what a join link is for; join with consent (409 `seat_limit`, `already_member`) |
+| GET / PATCH / DELETE | `/api/v1/orgs/{id}` | member / manager / owner | Detail with licence; rename; delete |
+| DELETE | `/api/v1/orgs/{id}/membership` | member | Leave (409 `last_owner`) |
+| PUT | `/api/v1/orgs/{id}/membership/sharing` | member | Opt in or out of group statistics |
+| GET | `/api/v1/orgs/{id}/members` | manager | Names, emails, roles, join dates only |
+| PUT / DELETE | `/api/v1/orgs/{id}/members/{member}[/role]` | owner / manager | Change role (owner); remove (admins remove members only) |
+| GET / POST / DELETE | `/api/v1/orgs/{id}/invitations[/{inv}]` | manager | Open links; create (role, uses 1–500, days 1–30; token shown once); cancel |
+| GET / POST / DELETE | `/api/v1/orgs/{id}/programs[/{program}]` | member / manager | List with own joined flag; create; delete |
+| PUT / DELETE | `/api/v1/orgs/{id}/programs/{program}/participation` | member | Join or leave a programme |
+| GET | `/api/v1/orgs/{id}/analytics` | manager | Members and seats; suppressed band distributions and programme counts |
 
 ## Billing (implemented)
 

@@ -38,26 +38,30 @@ export function tokenFromHash(hash: string): string | null {
  * Reads an invitation token from the address fragment and keeps it for this tab, so it survives a
  * detour through sign-in. The fragment is never sent to servers; it is removed from the address bar.
  */
-export function captureInviteToken(loc: Pick<Location, "hash" | "pathname">, store: InviteStore | null): string | null {
+export function captureInviteToken(
+  loc: Pick<Location, "hash" | "pathname">,
+  store: InviteStore | null,
+  key: string = KEY,
+): string | null {
   const fromHash = tokenFromHash(loc.hash);
   if (fromHash) {
     try {
-      store?.setItem(KEY, fromHash);
+      store?.setItem(key, fromHash);
     } catch {
       /* storage blocked: the token still works for this page view */
     }
     return fromHash;
   }
   try {
-    return store?.getItem(KEY) ?? null;
+    return store?.getItem(key) ?? null;
   } catch {
     return null;
   }
 }
 
-export function forgetInviteToken(store: InviteStore | null): void {
+export function forgetInviteToken(store: InviteStore | null, key: string = KEY): void {
   try {
-    store?.removeItem(KEY);
+    store?.removeItem(key);
   } catch {
     /* ignore */
   }

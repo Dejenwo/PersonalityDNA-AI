@@ -10,6 +10,8 @@ from sqlalchemy.orm import InstrumentedAttribute, Session
 
 from app.admin.roles import permissions
 from app.admin.schemas import (
+    AdminOrg,
+    AdminOrgList,
     AdminSubscription,
     AuditItem,
     AuditList,
@@ -38,6 +40,8 @@ from app.database.models import (
     GrowthEnrollment,
     Habit,
     JournalEntry,
+    Organization,
+    OrgMember,
     RelationshipLink,
     Report,
     ShareCard,
@@ -227,6 +231,74 @@ class AdminService:
             audit(db, admin, "admin.role_removed", str(u.id), role=role)
             db.commit()
         return self.user_detail(db, user_id)
+
+    # ---------- organisations ----------
+
+    def _org(self, db: Session, org: Organization) -> AdminOrg:
+        def count(*where: ColumnElement[bool]) -> int:
+            return (
+                db.scalar(
+                    select(func.count()).select_from(OrgMember).where(OrgMember.org_id == org.id, *where)
+                )
+                or 0
+            )
+
+        until = _aware(org.licensed_until)
+        return AdminOrg(
+            id=str(org.id),
+            name=org.name,
+            members=count(),
+            owners=count(OrgMember.role == "owner"),
+            licence=org.licence,
+            seat_limit=org.seat_limit,
+            licensed_until=until,
+            licence_active=org.licence == "licensed" and until is not None and until > _now(),
+            created_at=_aware(org.created_at) or org.created_at,
+        )
+
+    def find_orgs(self, db: Session, q: str) -> AdminOrgList:
+        stmt = select(Organization).order_by(Organization.created_at.desc()).limit(50)
+        q = q.strip()
+        if q:
+            try:
+                stmt = stmt.where(Organization.id == uuid.UUID(q))
+            except ValueError:
+                pattern = q.lower().replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+                stmt = stmt.where(func.lower(Organization.name).like(f"%{pattern}%", escape="\\"))
+        return AdminOrgList(organisations=[self._org(db, o) for o in db.scalars(stmt)])
+
+    def set_licence(
+        self,
+        db: Session,
+        admin: User,
+        org_id: str,
+        licence: str,
+        seat_limit: int,
+        days: int | None,
+        reason: str,
+    ) -> AdminOrg:
+        try:
+            org = db.get(Organization, uuid.UUID(org_id))
+        except ValueError:
+            org = None
+        if org is None:
+            raise ApiError(404, "not_found", "Organisation not found.")
+        if licence == "licensed" and days is None:
+            raise ApiError(422, "days_required", "Give the licence length in days.")
+        org.licence, org.seat_limit = licence, seat_limit
+        org.licensed_until = _now() + timedelta(days=days) if licence == "licensed" and days else None
+        audit(
+            db,
+            admin,
+            "admin.org_licence",
+            str(org.id),
+            licence=licence,
+            seat_limit=seat_limit,
+            days=days,
+            reason=reason,
+        )
+        db.commit()
+        return self._org(db, org)
 
     # ---------- metrics ----------
 
