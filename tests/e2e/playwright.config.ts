@@ -16,7 +16,8 @@ export default defineConfig({
   fullyParallel: false,
   retries: process.env.CI ? 1 : 0,
   reporter: [["list"]],
-  use: { baseURL: WEB, trace: "off" },
+  // Reduced motion turns off colour transitions, so axe never measures a colour half-way through one.
+  use: { baseURL: WEB, trace: "off", reducedMotion: "reduce" },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
     { name: "mobile", use: { ...devices["Pixel 7"] } },
