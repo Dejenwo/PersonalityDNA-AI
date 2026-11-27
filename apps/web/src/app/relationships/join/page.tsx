@@ -58,7 +58,7 @@ export default function JoinPage() {
   if (load.status === "missing" || load.status === "error") {
     const gone = load.status === "missing" || isNotFound(load.error);
     return (
-      <ErrorState
+      <ErrorState level={1}
         title={gone ? "This invitation isn't available" : "We couldn't load this invitation"}
         message={
           gone

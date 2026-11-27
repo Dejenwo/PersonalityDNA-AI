@@ -15,12 +15,24 @@ Permission = Literal[
     "roles.manage",
     "orgs.read",
     "orgs.manage",
+    "feedback.read",
+    "feedback.manage",
 ]
 
 ROLES: dict[str, frozenset[str]] = {
-    "support": frozenset({"users.read", "users.manage", "subscriptions.manage", "orgs.read", "health.read"}),
+    "support": frozenset(
+        {
+            "users.read",
+            "users.manage",
+            "subscriptions.manage",
+            "orgs.read",
+            "health.read",
+            "feedback.read",
+            "feedback.manage",
+        }
+    ),
     "analyst": frozenset({"metrics.read", "health.read"}),
-    "content": frozenset({"content.read", "health.read"}),
+    "content": frozenset({"content.read", "health.read", "feedback.read"}),
     "security": frozenset({"audit.read", "users.read", "health.read"}),
 }
 # Changing roles and organisation licences (a commercial agreement) is reserved for superadmins.

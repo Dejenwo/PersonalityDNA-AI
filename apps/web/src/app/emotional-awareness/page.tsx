@@ -19,7 +19,7 @@ export default function EmotionalAwarenessPage() {
     return <LoadingState label="Loading emotional awareness" />;
   if (modules.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="We couldn't load emotional awareness"
         message={errorMessage(modules.error)}
         action={<Button onClick={modules.reload}>Try again</Button>}

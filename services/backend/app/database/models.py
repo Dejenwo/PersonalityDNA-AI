@@ -869,3 +869,32 @@ class ProductEventCount(Base):
     day: Mapped[date] = mapped_column(Date, primary_key=True)
     name: Mapped[str] = mapped_column(String(48), primary_key=True)
     count: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class Feedback(Base):
+    """A bug report, idea or comment sent from the app. The message is encrypted with the row id as associated
+    data; only support staff with the feedback permission can read it. Anonymous when sent signed out."""
+
+    __tablename__ = "feedback"
+    __table_args__ = (
+        CheckConstraint("kind in ('bug','idea','content','accessibility','other')", name="ck_feedback_kind"),
+        CheckConstraint("status in ('new','planned','fixed','closed')", name="ck_feedback_status"),
+        Index("ix_feedback_status_created", "status", "created_at"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_feedback_user_id_users"),
+        nullable=True,
+        index=True,
+    )
+    kind: Mapped[str] = mapped_column(String(16))
+    message_encrypted: Mapped[str] = mapped_column(Text)
+    # Path of the screen it was sent from, without query string or fragment.
+    page: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    app_version: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    # Signed-in senders may agree to be contacted about it; otherwise support sees no account.
+    contact_ok: Mapped[bool] = mapped_column(default=False)
+    status: Mapped[str] = mapped_column(String(16), default="new")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

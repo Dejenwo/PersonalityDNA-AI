@@ -24,7 +24,7 @@ export default function ReportPage() {
     return <LoadingState label="Loading the report" />;
   if (data.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title={isNotFound(data.error) ? "Report not found" : "We couldn't load this report"}
         message={isNotFound(data.error) ? "It may have been deleted." : errorMessage(data.error)}
         action={<ButtonLink href="/reports">Back to your reports</ButtonLink>}

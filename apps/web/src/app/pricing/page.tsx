@@ -24,7 +24,7 @@ export default function PricingPage() {
   if (state.status === "loading" || data.status === "loading") return <LoadingState label="Loading plans" />;
   if (data.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="We couldn't load the plans"
         message={errorMessage(data.error)}
         action={<Button onClick={data.reload}>Try again</Button>}

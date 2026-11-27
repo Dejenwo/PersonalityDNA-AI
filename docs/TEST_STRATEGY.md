@@ -9,7 +9,7 @@
 | Migration | Alembic upgrade, compare with models, downgrade, data migrations | tests/test_migrations.py | Every push |
 | Outbound integrations | SMTP and payment HTTP client with the network replaced | tests/test_integrations.py, tests/test_billing.py | Every push |
 | End-to-end | Playwright (Chromium desktop and Pixel 7), production build | tests/e2e | Every push |
-| Accessibility | axe-core (WCAG 2.0, 2.1 and 2.2 A/AA) in every flow, plus a sweep of every screen in light and dark mode | tests/e2e, specs/a11y-sweep.spec.ts | Every push |
+| Accessibility and page quality | axe-core (WCAG 2.0, 2.1 and 2.2 A/AA) in every flow, plus a sweep of every screen in light and dark mode that also checks for one h1, no horizontal scrolling and no console errors | tests/e2e, specs/a11y-sweep.spec.ts | Every push |
 | Security and privacy | Whole-API sweeps (sign-in, cross-account access, no 5xx), log privacy, complete deletion, headers, production guards; ruff `S`, gitleaks, pip-audit, pnpm audit | tests/test_security.py, CI | Every push |
 | AI evaluation | Coach evaluation suite (safety, crisis, diagnosis, claims, bias, grounding, hallucination, injection, privacy) with the stand-in provider | scripts/run_coach_eval.py, docs/AI_EVALUATION.md | Every push; the live model run needs the owner's API key, spending cap and approval |
 | Performance | Query budgets and foreign-key index check (pytest); page-weight budget (Playwright); load-test script | tests/test_performance.py, specs/perf-budget.spec.ts, scripts/load_test.py | Budgets every push; load test by hand against local or staging (docs/PERFORMANCE_TESTING.md) |

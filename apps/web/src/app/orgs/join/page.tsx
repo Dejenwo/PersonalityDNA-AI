@@ -59,7 +59,7 @@ export default function JoinOrgPage() {
   if (load.status === "missing" || load.status === "error") {
     const gone = load.status === "missing" || isNotFound(load.error);
     return (
-      <ErrorState
+      <ErrorState level={1}
         title={gone ? "This join link isn't available" : "We couldn't load this join link"}
         message={
           gone

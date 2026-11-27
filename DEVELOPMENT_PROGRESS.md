@@ -31,7 +31,8 @@ Last updated: 2026-11-27.
 | 21 | Security hardening | Tested | Threat model brought up to date (T33–T35, current data flows and assets); whole-API sweeps from the OpenAPI document (sign-in required, no cross-account access by id, no 5xx); log privacy and complete-deletion checks; security notices for password changes and stolen sessions; daily retention purge; stricter API and web headers; production guards for HTTPS origins and links; dependency audit (no known vulnerabilities in project dependencies) and bandit review; security review with pre-launch actions (ADR-026). Penetration test, MFA and KMS keys remain before launch. |
 | 22 | Quality assurance | Tested | Coverage measured (backend 97% of lines) and enforced in CI at 95%; integration tests for SMTP email and the payment HTTP client; regression snapshots of the full result for every instrument; accessibility sweep of every screen in light and dark mode on desktop and mobile; AI coach evaluation runs as its own CI step; test strategy rewritten; QA report (docs/QA_REPORT_2026-11-27.md). No defects found. Manual screen-reader pass, live-provider tests and the live model evaluation remain. |
 | 23 | Performance engineering | Tested | Query budgets per list screen (goals and habits fixed from one query per row to a fixed count); an index on every foreign key (migration 0017); configurable connection pool; load-test script with a sandbox baseline (no errors at 50 users, about 330 requests a second on 3 workers); page-weight budget of 220 KB compressed JavaScript in CI (pages measure 155 to 170 KB); AI coach cost estimate; scaling and production settings in docs/PERFORMANCE_TESTING.md (ADR-027). A staging load test waits for hosting. |
-| 24–25 | Beta and launch | Not Started | See docs/PRODUCT_ROADMAP.md. |
+| 24 | Beta release | In Progress | Built: in-app feedback from every page (encrypted, contact by permission, 10 an hour), support triage with statuses the sender can see, beta notice behind `NEXT_PUBLIC_BETA` (migration 0018, ADR-028); internal test pass of every screen on phone and desktop, which found and fixed four defects (no main heading on error and not-found pages, two unstyled checkboxes, the beta label breaking the home link's accessible name); the sweep now also checks headings, page width and console errors; beta programme plan with test script, triage rules and exit criteria (docs/BETA_PROGRAM.md); scientific and legal review packets (docs/review/). Waiting on the owner: hosting, testers, reviewers and terms of service. |
+| 25 | Commercial launch | Not Started | See docs/PRODUCT_ROADMAP.md. |
 
 ## Task log
 
@@ -149,6 +150,10 @@ Last updated: 2026-11-27.
 | P-001 | Performance | Query budgets, foreign-key indexes, configurable pool, page-weight budget | P0 | Tested | tests/test_performance.py, e2e perf-budget.spec.ts |
 | P-002 | Performance | Load-test script and sandbox baseline | P1 | Tested | scripts/load_test.py, docs/PERFORMANCE_TESTING.md |
 | P-003 | Performance | Staging load test on real hosting; shared rate limiter before more than one instance | P1 | Blocked | Needs hosting (and S-004 for the shared limiter) |
+| B-001 | Beta | In-app feedback, support triage and beta notice | P0 | Tested | tests/test_feedback.py, e2e feedback.spec.ts |
+| B-002 | Beta | Internal test pass: page quality checks in the screen sweep and four defects fixed | P0 | Tested | e2e a11y-sweep.spec.ts |
+| B-003 | Beta | Run internal and external beta (docs/BETA_PROGRAM.md) | P0 | Blocked | Needs hosting and testers recruited by the owner |
+| B-004 | Beta | Scientific, legal and clinical reviews; terms of service | P0 | Blocked | Needs reviewers chosen by the owner (docs/review/) |
 | Q-004 | QA | Manual screen-reader and keyboard pass; live-provider tests (SMTP, Stripe test mode, RevenueCat sandbox); live coach evaluation | P1 | Blocked | Needs beta testers and the owner's provider accounts and API key |
 | M-005 | Monetization | One-off report purchases (credit model), live provider setup, tax, final prices, terms update, mobile purchase UI | P1 | Not Started | Needs the owner's Stripe, RevenueCat, Apple and Google accounts |
 
@@ -156,8 +161,8 @@ Last updated: 2026-11-27.
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest --cov=app` | 233 passed, 97.1% line coverage |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 233 passed |
+| Backend, SQLite | `pytest --cov=app` | 238 passed, 97.1% line coverage |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 238 passed |
 | Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
@@ -165,4 +170,4 @@ Last updated: 2026-11-27.
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
 | Dependency audit | `pip-audit .`, `pnpm audit --prod` | no known vulnerabilities |
 | Static analysis | `bandit -r app` | no high findings (review in docs/security/SECURITY_REVIEW_2026-11-27.md) |
-| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7, preview build) | 61 passed, 7 skipped (page-weight checks run on desktop only) |
+| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7, preview build) | 63 passed, 7 skipped (page-weight checks run on desktop only) |

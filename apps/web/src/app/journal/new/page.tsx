@@ -17,7 +17,7 @@ export default function NewJournalEntryPage() {
   if (auth.status !== "signed-in" || prompts.status === "loading") return <LoadingState label="Loading" />;
   if (prompts.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="We couldn't load the journal"
         message={errorMessage(prompts.error)}
         action={<Button onClick={prompts.reload}>Try again</Button>}

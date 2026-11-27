@@ -23,7 +23,7 @@ export default function NotificationsPage() {
     return <LoadingState label="Loading your notifications" />;
   if (data.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="We couldn't load your notifications"
         message={errorMessage(data.error)}
         action={<Button onClick={data.reload}>Try again</Button>}

@@ -13,6 +13,7 @@ from app.database.models import (
     AssessmentSession,
     AuditEvent,
     AuthToken,
+    Feedback,
     Notification,
     OrgInvitation,
     RefreshToken,
@@ -26,6 +27,8 @@ ANONYMOUS_UNFINISHED_DAYS = 30
 EMAIL_TOKEN_GRACE = timedelta(days=1)
 # Security and lifecycle events (ids and event names only) are kept for a year for investigations.
 AUDIT_DAYS = 365
+# Feedback is kept a year so recurring problems can be spotted, then deleted.
+FEEDBACK_DAYS = 365
 
 
 def purge_expired(db: Session, now: datetime | None = None) -> dict[str, int]:
@@ -44,6 +47,7 @@ def purge_expired(db: Session, now: datetime | None = None) -> dict[str, int]:
         ),
         "organisation_invitations": delete(OrgInvitation).where(OrgInvitation.expires_at < now),
         "audit_events": delete(AuditEvent).where(AuditEvent.created_at < now - timedelta(days=AUDIT_DAYS)),
+        "feedback": delete(Feedback).where(Feedback.created_at < now - timedelta(days=FEEDBACK_DAYS)),
         "notifications": delete(Notification).where(
             Notification.created_at < now - timedelta(days=KEEP_DAYS)
         ),

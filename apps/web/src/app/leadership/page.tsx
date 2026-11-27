@@ -18,7 +18,7 @@ export default function LeadershipPage() {
   if (latest.status === "error" || modules.status === "error") {
     const error = latest.status === "error" ? latest.error : modules.status === "error" ? modules.error : null;
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="We couldn't load leadership development"
         message={errorMessage(error)}
         action={

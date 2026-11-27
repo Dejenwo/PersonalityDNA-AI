@@ -21,7 +21,7 @@ export default function AssessmentIntroPage() {
   if (state.status === "loading") return <LoadingState label="Loading assessment" />;
   if (state.status === "error") {
     return (
-      <ErrorState
+      <ErrorState level={1}
         title={isNotFound(state.error) ? "Assessment not found" : "We couldn't load this assessment"}
         message={isNotFound(state.error) ? "It may have been retired." : errorMessage(state.error)}
         action={<ButtonLink href="/discover">Back to Discover</ButtonLink>}

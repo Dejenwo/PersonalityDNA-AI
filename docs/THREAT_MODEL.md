@@ -54,6 +54,7 @@ Browser ⇄ Web app (static/JS) ; Browser ⇄ API (JSON, bearer access token, ht
 | T33 | Spoofing | A stolen session or password used without the owner noticing | Refresh-token reuse ends every session in the family; password changes revoke all sessions; both send a security notice by email and in the app that can't be switched off | Mitigated, tested |
 | T34 | Information disclosure | Data kept after its purpose ends (abandoned anonymous answers, old tokens, invitations, audit trail) | Daily purge job with fixed retention per kind; account deletion leaves no row referencing the person | Mitigated, tested; needs the job scheduled in deployment |
 | T35 | Elevation of privilege | A new endpoint shipped without sign-in or ownership checks | Whole-API sweeps run every operation in the OpenAPI document unauthenticated and cross-account; a new public route must be added to an explicit list | Mitigated, tested; write routes with required bodies are covered by per-domain tests (validation answers 422 first in the sweep) |
+| T36 | Information disclosure / denial of service | Feedback used to collect personal data about others, flood the team, or expose who wrote it | Messages encrypted at rest and never logged; 10 an hour per account or IP; page kept as a path without query string or fragment; support sees the sender only with their permission; only `support`, `content` and superadmins can read it; deleted after a year | Mitigated, tested |
 
 ## Future flows to model
 

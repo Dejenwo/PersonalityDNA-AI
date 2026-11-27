@@ -27,7 +27,7 @@ export default function RelationshipPage() {
     return <LoadingState label="Loading the comparison" />;
   if (data.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title={isNotFound(data.error) ? "Comparison not available" : "We couldn't load this comparison"}
         message={isNotFound(data.error) ? "It may have been ended by either of you." : errorMessage(data.error)}
         action={<ButtonLink href="/relationships">Relationships</ButtonLink>}

@@ -12,6 +12,7 @@ describe("admin helpers", () => {
       "audit",
     ]);
     expect(tabsFor(["users.read", "orgs.read"])).toEqual(["users", "orgs"]);
+    expect(tabsFor(["content.read", "feedback.read"])).toEqual(["feedback", "content"]);
     expect(tabsFor([])).toEqual([]);
   });
 

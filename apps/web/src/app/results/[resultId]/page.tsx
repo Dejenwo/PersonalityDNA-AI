@@ -84,7 +84,7 @@ export default function ResultsPage() {
   if (load.status === "error") {
     const missing = load.noToken || isNotFound(load.error);
     return (
-      <ErrorState
+      <ErrorState level={1}
         title={missing ? "These results aren't available on this device" : "We couldn't load your results"}
         message={
           missing

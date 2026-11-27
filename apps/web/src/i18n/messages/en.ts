@@ -30,7 +30,12 @@ export const en = {
     privacy: "Privacy notice",
     pricing: "Plans and pricing",
     organisations: "For organisations",
+    feedback: "Send feedback",
     language: "Language",
+  },
+  beta: {
+    label: "Beta",
+    message: "PersonalityDNA is in beta, so some things may change. <link>Tell us what you think</link>.",
   },
   language: {
     title: "Language",

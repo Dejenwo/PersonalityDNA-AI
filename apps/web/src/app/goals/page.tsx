@@ -25,7 +25,7 @@ export default function GoalsPage() {
     return <LoadingState label="Loading your goals and habits" />;
   if (data.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="We couldn't load your goals and habits"
         message={errorMessage(data.error)}
         action={<Button onClick={data.reload}>Try again</Button>}

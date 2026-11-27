@@ -1,6 +1,14 @@
 "use client";
 
-import type { AdminContent, AdminOrg, AdminRole, AdminUserDetail } from "@pdna/api-client";
+import type {
+  AdminContent,
+  AdminFeedback,
+  AdminOrg,
+  AdminRole,
+  AdminUserDetail,
+  FeedbackIn,
+  FeedbackStatus,
+} from "@pdna/api-client";
 import { type FormEvent, type ReactNode, useState } from "react";
 import { FormMessage, TextField } from "@/components/form";
 import { Button, Card, EmptyState, ErrorState, LoadingState } from "@/components/ui";
@@ -461,6 +469,145 @@ function Languages({ languages, note }: { languages: AdminContent["languages"]; 
         </tbody>
       </table>
     </Card>
+  );
+}
+
+const FEEDBACK_STATUSES: FeedbackStatus[] = ["new", "planned", "fixed", "closed"];
+const FEEDBACK_KINDS: FeedbackIn["kind"][] = ["bug", "idea", "content", "accessibility", "other"];
+
+export function FeedbackPanel({ canManage }: { canManage: boolean }) {
+  const [status, setStatus] = useState<FeedbackStatus | "">("new");
+  const [kind, setKind] = useState<FeedbackIn["kind"] | "">("");
+  const key = `${status}:${kind}`;
+  const first = useAsync(
+    () => api.adminFeedback({ status: status || undefined, kind: kind || undefined }),
+    `admin-feedback:${key}`,
+  );
+  const [extra, setExtra] = useState<{ key: string; items: AdminFeedback[]; next: string | null } | null>(null);
+  const [changed, setChanged] = useState<Record<string, FeedbackStatus>>({});
+  const [error, setError] = useState<string | null>(null);
+
+  async function move(id: string, to: FeedbackStatus) {
+    setError(null);
+    try {
+      const updated = await api.adminSetFeedbackStatus(id, to);
+      setChanged((c) => ({ ...c, [id]: updated.status }));
+    } catch (err) {
+      setError(errorMessage(err));
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-ink-muted">
+        Messages people sent from the app. The account is shown only when the person agreed to be contacted.
+        Feedback is deleted after a year.
+      </p>
+      <div className="flex flex-wrap gap-4">
+        <label className="block">
+          <span className="block font-medium">Status</span>
+          <select
+            className="mt-1 min-h-12 rounded-xl border border-line bg-surface px-3"
+            value={status}
+            onChange={(e) => setStatus(e.target.value as FeedbackStatus | "")}
+          >
+            <option value="">All</option>
+            {FEEDBACK_STATUSES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="block">
+          <span className="block font-medium">Kind</span>
+          <select
+            className="mt-1 min-h-12 rounded-xl border border-line bg-surface px-3"
+            value={kind}
+            onChange={(e) => setKind(e.target.value as FeedbackIn["kind"] | "")}
+          >
+            <option value="">All</option>
+            {FEEDBACK_KINDS.map((k) => (
+              <option key={k} value={k}>
+                {k}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      {error && <FormMessage kind="error">{error}</FormMessage>}
+      <Loaded state={first} label="feedback">
+        {(d) => {
+          const more = extra && extra.key === key ? extra : { key, items: [], next: d.next_before ?? null };
+          const items = [...d.items, ...more.items];
+          return (
+            <>
+              <p className="text-sm" aria-live="polite">
+                {FEEDBACK_STATUSES.map((s) => `${d.counts[s] ?? 0} ${s}`).join(" · ")}
+              </p>
+              {items.length === 0 ? (
+                <EmptyState title="No feedback" message="Nothing matches these filters." />
+              ) : (
+                <ul className="space-y-3" aria-label="Feedback">
+                  {items.map((f) => {
+                    const current = changed[f.id] ?? f.status;
+                    return (
+                      <li key={f.id} className="rounded-card border border-line p-4">
+                        <p className="text-sm text-ink-muted">
+                          <span className="font-semibold text-ink">{f.kind}</span> · {when(f.created_at)}
+                          {f.page && ` · ${f.page}`}
+                          {f.app_version && ` · ${f.app_version}`} ·{" "}
+                          {f.user_id ? `account ${f.user_id}` : f.signed_in ? "signed in, no contact" : "anonymous"}
+                        </p>
+                        <p className="mt-2 whitespace-pre-wrap break-words">{f.message}</p>
+                        {canManage ? (
+                          <label className="mt-3 flex items-center gap-2 text-sm">
+                            <span>Status</span>
+                            <select
+                              className="min-h-10 rounded-xl border border-line bg-surface px-3"
+                              value={current}
+                              onChange={(e) => move(f.id, e.target.value as FeedbackStatus)}
+                            >
+                              {FEEDBACK_STATUSES.map((s) => (
+                                <option key={s} value={s}>
+                                  {s}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                        ) : (
+                          <p className="mt-2 text-sm">Status: {current}</p>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+              {more.next && (
+                <Button
+                  variant="secondary"
+                  onClick={async () => {
+                    setError(null);
+                    try {
+                      const page = await api.adminFeedback({
+                        status: status || undefined,
+                        kind: kind || undefined,
+                        before: more.next,
+                      });
+                      setExtra({ key, items: [...more.items, ...page.items], next: page.next_before ?? null });
+                    } catch (err) {
+                      setError(errorMessage(err));
+                    }
+                  }}
+                >
+                  Show older
+                </Button>
+              )}
+            </>
+          );
+        }}
+      </Loaded>
+    </div>
   );
 }
 

@@ -22,7 +22,7 @@ export default function GrowthPage() {
     return <LoadingState label="Loading growth programmes" />;
   if (data.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="We couldn't load the growth programmes"
         message={errorMessage(data.error)}
         action={<Button onClick={data.reload}>Try again</Button>}

@@ -1,6 +1,6 @@
 # Release checklist
 
-Every item needs evidence (link to CI run, report or document). Nothing here is complete for a public release yet.
+Every item needs evidence (link to CI run, report or document). Nothing here is complete for a public release yet. The beta comes first: its plan and exit criteria are in docs/BETA_PROGRAM.md, and the reviewer packets are in docs/review/.
 
 ## Engineering
 - [ ] All CI jobs green on the release commit

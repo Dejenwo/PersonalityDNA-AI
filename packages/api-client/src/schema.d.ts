@@ -58,6 +58,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Triage List */
+        get: operations["triage_list_api_v1_admin_feedback_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/feedback/{feedback_id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Set Status */
+        post: operations["set_status_api_v1_admin_feedback__feedback_id__status_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/health": {
         parameters: {
             query?: never;
@@ -705,6 +739,30 @@ export interface paths {
         get: operations["coach_status_api_v1_coach_status_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Feedback
+         * @description What you've sent while signed in, with its status.
+         */
+        get: operations["my_feedback_api_v1_feedback_get"];
+        put?: never;
+        /**
+         * Send Feedback
+         * @description Works signed in or out. Please don't include passwords or other people's details.
+         */
+        post: operations["send_feedback_api_v1_feedback_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1892,6 +1950,52 @@ export interface components {
             /** Title */
             title: string;
         };
+        /** AdminFeedback */
+        AdminFeedback: {
+            /** App Version */
+            app_version: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "bug" | "idea" | "content" | "accessibility" | "other";
+            /** Message */
+            message: string;
+            /** Page */
+            page: string | null;
+            /** Signed In */
+            signed_in: boolean;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "new" | "planned" | "fixed" | "closed";
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** User Id */
+            user_id: string | null;
+        };
+        /** AdminFeedbackList */
+        AdminFeedbackList: {
+            /** Counts */
+            counts: {
+                [key: string]: number;
+            };
+            /** Items */
+            items: components["schemas"]["AdminFeedback"][];
+            /** Next Before */
+            next_before: string | null;
+        };
         /** AdminMe */
         AdminMe: {
             /** Permissions */
@@ -2659,6 +2763,62 @@ export interface components {
             id: "report_pdf" | "growth_programs" | "relationships" | "expanded_coaching";
             /** Label */
             label: string;
+        };
+        /** FeedbackIn */
+        FeedbackIn: {
+            /** App Version */
+            app_version?: string | null;
+            /**
+             * Contact Ok
+             * @default false
+             */
+            contact_ok: boolean;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "bug" | "idea" | "content" | "accessibility" | "other";
+            /** Message */
+            message: string;
+            /** Page */
+            page?: string | null;
+        };
+        /** FeedbackList */
+        FeedbackList: {
+            /** Items */
+            items: components["schemas"]["FeedbackOut"][];
+        };
+        /** FeedbackOut */
+        FeedbackOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "bug" | "idea" | "content" | "accessibility" | "other";
+            /** Message */
+            message: string;
+            /** Page */
+            page: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "new" | "planned" | "fixed" | "closed";
+        };
+        /** FeedbackStatusIn */
+        FeedbackStatusIn: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "new" | "planned" | "fixed" | "closed";
         };
         /** GoalIn */
         GoalIn: {
@@ -4704,6 +4864,115 @@ export interface operations {
             };
         };
     };
+    triage_list_api_v1_admin_feedback_get: {
+        parameters: {
+            query?: {
+                status?: ("new" | "planned" | "fixed" | "closed") | null;
+                kind?: ("bug" | "idea" | "content" | "accessibility" | "other") | null;
+                before?: string | null;
+                limit?: number;
+            };
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminFeedbackList"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_status_api_v1_admin_feedback__feedback_id__status_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                feedback_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedbackStatusIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminFeedback"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     health_api_v1_admin_health_get: {
         parameters: {
             query?: never;
@@ -6715,6 +6984,108 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_feedback_api_v1_feedback_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackList"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    send_feedback_api_v1_feedback_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedbackIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Too Many Requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };

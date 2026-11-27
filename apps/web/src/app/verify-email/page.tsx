@@ -31,7 +31,7 @@ export default function VerifyEmailPage() {
   if (state.status === "loading") return <LoadingState label="Confirming your email" />;
   if (state.status === "error") {
     return (
-      <ErrorState title="We couldn't confirm your email" message={state.message}
+      <ErrorState level={1} title="We couldn't confirm your email" message={state.message}
         action={<ButtonLink href="/login">Go to sign in</ButtonLink>} />
     );
   }

@@ -37,7 +37,7 @@ export default function ReportsPage() {
     return <LoadingState label="Loading your reports" />;
   if (list.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="We couldn't load your reports"
         message={errorMessage(list.error)}
         action={<Button onClick={list.reload}>Try again</Button>}

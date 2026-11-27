@@ -22,7 +22,7 @@ export default function OrgsPage() {
     return <LoadingState label="Loading your organisations" />;
   if (data.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="We couldn't load your organisations"
         message={errorMessage(data.error)}
         action={<Button onClick={data.reload}>Try again</Button>}
