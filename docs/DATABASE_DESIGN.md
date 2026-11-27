@@ -50,6 +50,14 @@ Coaching consent is a `consent_records` row with type `ai_coaching`. `ai_context
 
 Comparisons are computed on request from each person's latest Big Five result and are never stored. Sharing consent is a `consent_records` row with type `relationship_sharing`.
 
+## Implemented (migration 0006, leadership)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `leadership_activity_progress` | Which module activities a user marked done (content ids and time, no free text) | FK user CASCADE; unique (user, module, activity) | Until unmarked or account deletion |
+
+Leadership results reuse `assessment_results` and `personality_trait_scores`; they have neither archetypes nor an interest profile.
+
 ## Planned (by phase)
 
 | Phase | Tables |

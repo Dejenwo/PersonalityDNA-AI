@@ -29,7 +29,7 @@ class AssessmentSummary(Model):
     version: str
     name: str
     tier: Literal["quick", "comprehensive", "advanced"]
-    family: Literal["big_five", "interests"]
+    family: Literal["big_five", "interests", "leadership"]
     status: Literal["released", "draft"] = Field(description="Draft content is only served in development.")
     item_count: int
     estimated_minutes: int
@@ -187,14 +187,44 @@ class InterestsOut(Model):
     draft: bool = Field(description="The instrument is still a draft and its results are for testing only.")
 
 
+class LeadershipAreaOut(Model):
+    area: str
+    name: str
+    short: str
+    score: float = Field(
+        description="0-100 position on the response scale; compared only with your other areas."
+    )
+    text: str = Field(
+        description="What this preference may mean, or a stretch idea for less preferred areas."
+    )
+
+
+class ModuleSummaryOut(Model):
+    id: str
+    area: str
+    title: str
+    summary: str
+    reason: Literal["build", "stretch"] | None = None
+
+
+class LeadershipOut(Model):
+    areas: list[LeadershipAreaOut] = Field(description="Most to least preferred.")
+    top: list[str]
+    stretch: list[str]
+    even: bool = Field(description="True when all areas are within 10 points, so no preference stands out.")
+    recommended_modules: list[ModuleSummaryOut]
+    note: str
+
+
 class ResultOut(Model):
     id: UUID
     session_id: UUID
     created_at: datetime
-    kind: Literal["big_five", "interests"]
+    kind: Literal["big_five", "interests", "leadership"]
     traits: list[TraitResult]
     negative_emotionality: float | None
     archetypes: ArchetypesOut | None
     interests: InterestsOut | None
+    leadership: LeadershipOut | None = None
     quality_flags: list[str]
     methodology: Methodology

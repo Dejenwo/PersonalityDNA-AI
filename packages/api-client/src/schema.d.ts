@@ -349,6 +349,61 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/leadership/modules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Modules */
+        get: operations["list_modules_api_v1_leadership_modules_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/leadership/modules/{module_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Module */
+        get: operations["get_module_api_v1_leadership_modules__module_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/leadership/modules/{module_id}/activities/{activity_id}/done": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Mark Done
+         * @description Idempotent: marking an activity done twice keeps the first time.
+         */
+        put: operations["mark_done_api_v1_leadership_modules__module_id__activities__activity_id__done_put"];
+        post?: never;
+        /** Mark Not Done */
+        delete: operations["mark_not_done_api_v1_leadership_modules__module_id__activities__activity_id__done_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/me": {
         parameters: {
             query?: never;
@@ -573,6 +628,17 @@ export interface components {
             /** Token */
             token: string;
         };
+        /** ActivityOut */
+        ActivityOut: {
+            /** Completed At */
+            completed_at: string | null;
+            /** Id */
+            id: string;
+            /** Steps */
+            steps: string[];
+            /** Title */
+            title: string;
+        };
         /** AnswerIn */
         AnswerIn: {
             /** Item Id */
@@ -619,7 +685,7 @@ export interface components {
              * Family
              * @enum {string}
              */
-            family: "big_five" | "interests";
+            family: "big_five" | "interests" | "leadership";
             /** Id */
             id: string;
             /** Instructions */
@@ -684,7 +750,7 @@ export interface components {
              * Family
              * @enum {string}
              */
-            family: "big_five" | "interests";
+            family: "big_five" | "interests" | "leadership";
             /** Id */
             id: string;
             /** Item Count */
@@ -1128,6 +1194,53 @@ export interface components {
             /** Token */
             token: string;
         };
+        /** LeadershipAreaOut */
+        LeadershipAreaOut: {
+            /** Area */
+            area: string;
+            /** Name */
+            name: string;
+            /**
+             * Score
+             * @description 0-100 position on the response scale; compared only with your other areas.
+             */
+            score: number;
+            /** Short */
+            short: string;
+            /**
+             * Text
+             * @description What this preference may mean, or a stretch idea for less preferred areas.
+             */
+            text: string;
+        };
+        /** LeadershipOut */
+        LeadershipOut: {
+            /**
+             * Areas
+             * @description Most to least preferred.
+             */
+            areas: components["schemas"]["LeadershipAreaOut"][];
+            /**
+             * Even
+             * @description True when all areas are within 10 points, so no preference stands out.
+             */
+            even: boolean;
+            /** Note */
+            note: string;
+            /** Recommended Modules */
+            recommended_modules: components["schemas"]["ModuleSummaryOut"][];
+            /** Stretch */
+            stretch: string[];
+            /** Top */
+            top: string[];
+        };
+        /** LessonOut */
+        LessonOut: {
+            /** Text */
+            text: string;
+            /** Title */
+            title: string;
+        };
         /** LinkDetail */
         LinkDetail: {
             /**
@@ -1239,6 +1352,62 @@ export interface components {
             /** Scoring Summary */
             scoring_summary: string;
         };
+        /** ModuleList */
+        ModuleList: {
+            /** Modules */
+            modules: components["schemas"]["ModuleListItem"][];
+            /** Note */
+            note: string;
+        };
+        /** ModuleListItem */
+        ModuleListItem: {
+            /** Activities Done */
+            activities_done: number;
+            /** Activities Total */
+            activities_total: number;
+            /** Area */
+            area: string;
+            /** Id */
+            id: string;
+            /** Reason */
+            reason?: ("build" | "stretch") | null;
+            /** Summary */
+            summary: string;
+            /** Title */
+            title: string;
+        };
+        /** ModuleOut */
+        ModuleOut: {
+            /** Activities */
+            activities: components["schemas"]["ActivityOut"][];
+            /** Area */
+            area: string;
+            /** Id */
+            id: string;
+            /** Lessons */
+            lessons: components["schemas"]["LessonOut"][];
+            /** Reason */
+            reason?: ("build" | "stretch") | null;
+            /** Reflection */
+            reflection: string;
+            /** Summary */
+            summary: string;
+            /** Title */
+            title: string;
+        };
+        /** ModuleSummaryOut */
+        ModuleSummaryOut: {
+            /** Area */
+            area: string;
+            /** Id */
+            id: string;
+            /** Reason */
+            reason?: ("build" | "stretch") | null;
+            /** Summary */
+            summary: string;
+            /** Title */
+            title: string;
+        };
         /** Progress */
         Progress: {
             /** Answered */
@@ -1326,7 +1495,8 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "big_five" | "interests";
+            kind: "big_five" | "interests" | "leadership";
+            leadership?: components["schemas"]["LeadershipOut"] | null;
             methodology: components["schemas"]["Methodology"];
             /** Negative Emotionality */
             negative_emotionality: number | null;
@@ -2570,6 +2740,188 @@ export interface operations {
             };
             /** @description Unauthorized */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_modules_api_v1_leadership_modules_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModuleList"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_module_api_v1_leadership_modules__module_id__get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                module_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModuleOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    mark_done_api_v1_leadership_modules__module_id__activities__activity_id__done_put: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                module_id: string;
+                activity_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    mark_not_done_api_v1_leadership_modules__module_id__activities__activity_id__done_delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                module_id: string;
+                activity_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

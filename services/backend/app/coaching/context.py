@@ -5,6 +5,7 @@ from decimal import ROUND_HALF_UP, Decimal
 
 from app.assessments.content import ContentBundle
 from app.database.models import AssessmentResult
+from app.leadership.profile import leadership_profile
 
 TOPICS: dict[str, tuple[str, str]] = {
     "results": (
@@ -74,6 +75,9 @@ class CoachFacts:
     interest_code: str | None = None
     interest_areas: tuple[tuple[str, int, int], ...] = ()
     interest_ties: tuple[str, ...] = ()
+    # Leadership preferences: most and least preferred area names, highest first.
+    leadership_top: tuple[str, ...] = ()
+    leadership_stretch: tuple[str, ...] = ()
 
     @property
     def has_results(self) -> bool:
@@ -106,6 +110,22 @@ def _interest_facts(bundle: ContentBundle, result: AssessmentResult | None) -> d
     }
 
 
+def _leadership_facts(bundle: ContentBundle, result: AssessmentResult | None) -> dict[str, object]:
+    if result is None:
+        return {}
+    inst = bundle.instrument(result.instrument_id, result.instrument_version).data
+    names = {s.id: s.name for s in inst.scales}
+    profile = leadership_profile(
+        {ts.trait: ts.score for ts in result.trait_scores}, list(bundle.leadership.data.areas)
+    )
+    if not profile.ranking or profile.even:
+        return {}
+    return {
+        "leadership_top": tuple(names[a] for a in profile.top),
+        "leadership_stretch": tuple(names[a] for a in profile.stretch),
+    }
+
+
 def facts_from_result(
     bundle: ContentBundle,
     result: AssessmentResult | None,
@@ -113,8 +133,9 @@ def facts_from_result(
     *,
     crisis_support_shown: bool,
     interests: AssessmentResult | None = None,
+    leadership: AssessmentResult | None = None,
 ) -> CoachFacts:
-    extra = _interest_facts(bundle, interests)
+    extra = {**_interest_facts(bundle, interests), **_leadership_facts(bundle, leadership)}
     if result is None or result.archetypes is None:
         return CoachFacts(topic=topic, crisis_support_shown=crisis_support_shown, **extra)  # type: ignore[arg-type]
     inst = bundle.instrument(result.instrument_id, result.instrument_version).data
@@ -189,6 +210,13 @@ def render_context(facts: CoachFacts) -> str:
             f"code {facts.interest_code}; {areas}."
             + (f" Tied at third place: {', '.join(facts.interest_ties)}." if facts.interest_ties else "")
             + " Interests are preferences, not abilities, and never mean a job is or isn't suitable."
+        )
+    if facts.leadership_top:
+        lines.append(
+            "Leadership preferences (an original, unvalidated reflection questionnaire about which "
+            f"leadership activities the user enjoys): most preferred {', '.join(facts.leadership_top)}"
+            + (f"; least preferred {', '.join(facts.leadership_stretch)}" if facts.leadership_stretch else "")
+            + ". These are preferences, not abilities, and must never be used to judge fitness to lead."
         )
     lines.append("User-stated goals: none recorded yet.")
     if facts.crisis_support_shown:

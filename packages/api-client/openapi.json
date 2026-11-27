@@ -20,6 +20,45 @@
         "title": "AcceptInvitationIn",
         "type": "object"
       },
+      "ActivityOut": {
+        "properties": {
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "steps": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Steps",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "steps",
+          "completed_at"
+        ],
+        "title": "ActivityOut",
+        "type": "object"
+      },
       "AnswerIn": {
         "additionalProperties": false,
         "properties": {
@@ -143,7 +182,8 @@
           "family": {
             "enum": [
               "big_five",
-              "interests"
+              "interests",
+              "leadership"
             ],
             "title": "Family",
             "type": "string"
@@ -314,7 +354,8 @@
           "family": {
             "enum": [
               "big_five",
-              "interests"
+              "interests",
+              "leadership"
             ],
             "title": "Family",
             "type": "string"
@@ -1316,6 +1357,113 @@
         "title": "InvitationTokenIn",
         "type": "object"
       },
+      "LeadershipAreaOut": {
+        "additionalProperties": false,
+        "properties": {
+          "area": {
+            "title": "Area",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "score": {
+            "description": "0-100 position on the response scale; compared only with your other areas.",
+            "title": "Score",
+            "type": "number"
+          },
+          "short": {
+            "title": "Short",
+            "type": "string"
+          },
+          "text": {
+            "description": "What this preference may mean, or a stretch idea for less preferred areas.",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "area",
+          "name",
+          "short",
+          "score",
+          "text"
+        ],
+        "title": "LeadershipAreaOut",
+        "type": "object"
+      },
+      "LeadershipOut": {
+        "additionalProperties": false,
+        "properties": {
+          "areas": {
+            "description": "Most to least preferred.",
+            "items": {
+              "$ref": "#/components/schemas/LeadershipAreaOut"
+            },
+            "title": "Areas",
+            "type": "array"
+          },
+          "even": {
+            "description": "True when all areas are within 10 points, so no preference stands out.",
+            "title": "Even",
+            "type": "boolean"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "recommended_modules": {
+            "items": {
+              "$ref": "#/components/schemas/ModuleSummaryOut"
+            },
+            "title": "Recommended Modules",
+            "type": "array"
+          },
+          "stretch": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Stretch",
+            "type": "array"
+          },
+          "top": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Top",
+            "type": "array"
+          }
+        },
+        "required": [
+          "areas",
+          "top",
+          "stretch",
+          "even",
+          "recommended_modules",
+          "note"
+        ],
+        "title": "LeadershipOut",
+        "type": "object"
+      },
+      "LessonOut": {
+        "properties": {
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "text"
+        ],
+        "title": "LessonOut",
+        "type": "object"
+      },
       "LinkDetail": {
         "properties": {
           "created_at": {
@@ -1583,6 +1731,190 @@
         "title": "Methodology",
         "type": "object"
       },
+      "ModuleList": {
+        "properties": {
+          "modules": {
+            "items": {
+              "$ref": "#/components/schemas/ModuleListItem"
+            },
+            "title": "Modules",
+            "type": "array"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "note",
+          "modules"
+        ],
+        "title": "ModuleList",
+        "type": "object"
+      },
+      "ModuleListItem": {
+        "additionalProperties": false,
+        "properties": {
+          "activities_done": {
+            "title": "Activities Done",
+            "type": "integer"
+          },
+          "activities_total": {
+            "title": "Activities Total",
+            "type": "integer"
+          },
+          "area": {
+            "title": "Area",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "enum": [
+                  "build",
+                  "stretch"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "area",
+          "title",
+          "summary",
+          "activities_total",
+          "activities_done"
+        ],
+        "title": "ModuleListItem",
+        "type": "object"
+      },
+      "ModuleOut": {
+        "additionalProperties": false,
+        "properties": {
+          "activities": {
+            "items": {
+              "$ref": "#/components/schemas/ActivityOut"
+            },
+            "title": "Activities",
+            "type": "array"
+          },
+          "area": {
+            "title": "Area",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "lessons": {
+            "items": {
+              "$ref": "#/components/schemas/LessonOut"
+            },
+            "title": "Lessons",
+            "type": "array"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "enum": [
+                  "build",
+                  "stretch"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "reflection": {
+            "title": "Reflection",
+            "type": "string"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "area",
+          "title",
+          "summary",
+          "lessons",
+          "activities",
+          "reflection"
+        ],
+        "title": "ModuleOut",
+        "type": "object"
+      },
+      "ModuleSummaryOut": {
+        "additionalProperties": false,
+        "properties": {
+          "area": {
+            "title": "Area",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "enum": [
+                  "build",
+                  "stretch"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "area",
+          "title",
+          "summary"
+        ],
+        "title": "ModuleSummaryOut",
+        "type": "object"
+      },
       "Progress": {
         "additionalProperties": false,
         "properties": {
@@ -1804,10 +2136,21 @@
           "kind": {
             "enum": [
               "big_five",
-              "interests"
+              "interests",
+              "leadership"
             ],
             "title": "Kind",
             "type": "string"
+          },
+          "leadership": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LeadershipOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "methodology": {
             "$ref": "#/components/schemas/Methodology"
@@ -3896,6 +4239,292 @@
         "summary": "Coach Status",
         "tags": [
           "coach"
+        ]
+      }
+    },
+    "/api/v1/leadership/modules": {
+      "get": {
+        "operationId": "list_modules_api_v1_leadership_modules_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModuleList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Modules",
+        "tags": [
+          "leadership"
+        ]
+      }
+    },
+    "/api/v1/leadership/modules/{module_id}": {
+      "get": {
+        "operationId": "get_module_api_v1_leadership_modules__module_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "module_id",
+            "required": true,
+            "schema": {
+              "title": "Module Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModuleOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Module",
+        "tags": [
+          "leadership"
+        ]
+      }
+    },
+    "/api/v1/leadership/modules/{module_id}/activities/{activity_id}/done": {
+      "delete": {
+        "operationId": "mark_not_done_api_v1_leadership_modules__module_id__activities__activity_id__done_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "module_id",
+            "required": true,
+            "schema": {
+              "title": "Module Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "activity_id",
+            "required": true,
+            "schema": {
+              "title": "Activity Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Mark Not Done",
+        "tags": [
+          "leadership"
+        ]
+      },
+      "put": {
+        "description": "Idempotent: marking an activity done twice keeps the first time.",
+        "operationId": "mark_done_api_v1_leadership_modules__module_id__activities__activity_id__done_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "module_id",
+            "required": true,
+            "schema": {
+              "title": "Module Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "activity_id",
+            "required": true,
+            "schema": {
+              "title": "Activity Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Mark Done",
+        "tags": [
+          "leadership"
         ]
       }
     },

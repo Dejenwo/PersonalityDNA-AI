@@ -10,17 +10,21 @@ from app.api.schemas import (
     ExploreLinkOut,
     InterestAreaOut,
     InterestsOut,
+    LeadershipAreaOut,
+    LeadershipOut,
     Methodology,
+    ModuleSummaryOut,
     Progress,
     ResponseOption,
     ResultOut,
     SessionOut,
     TraitResult,
 )
-from app.assessments.content import ContentBundle, Instrument
+from app.assessments.content import ContentBundle, Instrument, LeadershipModule
 from app.assessments.service import answers_of, instrument_for
 from app.careers.interests import LETTER
 from app.database.models import AssessmentResult, AssessmentSession
+from app.leadership.profile import leadership_profile
 
 TRAIT_LABEL = {
     "openness": "openness",
@@ -171,10 +175,89 @@ def interests_result_out(bundle: ContentBundle, r: AssessmentResult) -> ResultOu
     )
 
 
+LEADERSHIP_LIMITATIONS = [
+    "This is an original reflection questionnaire. It has not been scientifically validated "
+    "and has no norms.",
+    "Scores show which leadership activities you enjoy most and least today, compared only with each other. "
+    "They are not abilities and they change with experience.",
+    "Leadership preferences must never be used to hire, promote, rate or select anyone.",
+]
+
+
+def leadership_out(bundle: ContentBundle, r: AssessmentResult) -> LeadershipOut:
+    program = bundle.leadership.data
+    order = list(program.areas)
+    names = {s.id: s.name for s in bundle.instrument(r.instrument_id, r.instrument_version).data.scales}
+    profile = leadership_profile({ts.trait: ts.score for ts in r.trait_scores}, order)
+    areas = [
+        LeadershipAreaOut(
+            area=a,
+            name=names[a],
+            short=program.areas[a].short,
+            score=score,
+            text=program.areas[a].stretch if a in profile.stretch else program.areas[a].preferred,
+        )
+        for a, score in profile.ranking
+    ]
+    modules = []
+    for area, reason in profile.recommended:
+        m = program.module(program.areas[area].module)
+        if m is not None:
+            modules.append(module_summary(m, reason))
+    return LeadershipOut(
+        areas=areas,
+        top=list(profile.top),
+        stretch=list(profile.stretch),
+        even=profile.even,
+        recommended_modules=modules,
+        note=program.note,
+    )
+
+
+def module_summary(m: LeadershipModule, reason: str | None = None) -> ModuleSummaryOut:
+    return ModuleSummaryOut(id=m.id, area=m.area, title=m.title, summary=m.summary, reason=reason)
+
+
+def leadership_result_out(bundle: ContentBundle, r: AssessmentResult) -> ResultOut:
+    inst = bundle.instrument(r.instrument_id, r.instrument_version).data
+    return ResultOut(
+        id=r.id,
+        session_id=r.session_id,
+        created_at=r.created_at,
+        kind="leadership",
+        traits=[],
+        negative_emotionality=None,
+        archetypes=None,
+        interests=None,
+        leadership=leadership_out(bundle, r),
+        quality_flags=r.quality_flags,
+        methodology=Methodology(
+            engine_version=r.engine_version,
+            instrument_id=r.instrument_id,
+            instrument_version=r.instrument_version,
+            instrument_name=inst.source.name,
+            content_sha256=r.content_sha256,
+            answers_sha256=r.answers_sha256,
+            scoring_summary=(
+                "Each answer is scored 1 to 5. Each area's score is the average of its three statements, "
+                "shown on a 0-100 scale where 0 means every answer was 'Not at all' and 100 means every "
+                "answer was 'Very much'. Areas are ranked against each other; ties keep a fixed order."
+            ),
+            band_note="Leadership areas are ranked against each other, not placed in bands.",
+            negative_emotionality_note=None,
+            limitations=LEADERSHIP_LIMITATIONS,
+            references=list(inst.references),
+            attribution="Original PersonalityDNA content.",
+        ),
+    )
+
+
 def result_out(bundle: ContentBundle, r: AssessmentResult) -> ResultOut:
     inst = bundle.instrument(r.instrument_id, r.instrument_version).data
     if inst.family == "interests":
         return interests_result_out(bundle, r)
+    if inst.family == "leadership":
+        return leadership_result_out(bundle, r)
     assert r.archetypes is not None and r.archetype_version is not None
     interp = bundle.interpretations.data
     arch_defs = {a.id: a for a in bundle.archetypes.data.archetypes}

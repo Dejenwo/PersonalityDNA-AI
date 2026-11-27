@@ -24,6 +24,11 @@ export function SiteHeader() {
               </Link>
             </li>
             <li>
+              <Link href="/leadership" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
+                Leadership
+              </Link>
+            </li>
+            <li>
               <Link href="/history" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
                 My results
               </Link>

@@ -28,6 +28,8 @@ def _uid(user: User | None) -> uuid.UUID | None:
     return user.id if user else None
 
 
+FAMILY_ORDER = {"big_five": 0, "interests": 1, "leadership": 2}
+
 router = APIRouter(prefix="/api/v1", responses={422: {"model": ErrorResponse}, 404: {"model": ErrorResponse}})
 
 Db = Annotated[Session, Depends(get_db)]
@@ -45,7 +47,7 @@ def list_assessments(content: Content) -> AssessmentList:
         latest[iid] = service.latest_version(content, iid).data
     items = sorted(
         (presenters.summary(i) for i in latest.values()),
-        key=lambda s: (s.family != "big_five", s.item_count, s.id),
+        key=lambda s: (FAMILY_ORDER[s.family], s.item_count, s.id),
     )
     return AssessmentList(items=items)
 

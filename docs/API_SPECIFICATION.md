@@ -72,6 +72,17 @@ Signed-in, verified users only. A link is visible only to its two people; others
 | GET | `/api/v1/relationships/{id}` | Comparison: per trait `you`/`them` band, pattern (`similar`, `some_difference`, `different`), summary, note, possible misunderstanding, prompt; plus exercises and shared goals. `missing_results` lists who has no Big Five result. No scores |
 | DELETE | `/api/v1/relationships/{id}` | Either person ends the link for both |
 
+## Leadership (implemented)
+
+Results of the `leadership-preferences-27` instrument come back from the normal result endpoints with `kind: "leadership"` and a `leadership` block (areas ranked with scores and text, top, stretch, even, recommended modules, note).
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/leadership/modules` | Module catalogue; with a signed-in user, activities done per module |
+| GET | `/api/v1/leadership/modules/{id}` | Lessons, activities (with `completed_at` for the signed-in user) and reflection |
+| PUT | `/api/v1/leadership/modules/{id}/activities/{activity}/done` | Mark done (account required, idempotent) |
+| DELETE | `/api/v1/leadership/modules/{id}/activities/{activity}/done` | Mark not done |
+
 ## Planned (from MASTER_PROMPT.md §14)
 
 Careers, growth plans and exercises, reports, subscriptions status, payment webhooks (signature-verified, idempotent), privacy export, account deletion, admin and enterprise APIs. Pagination will use opaque cursors (`?cursor=&limit=`). Idempotency keys (`Idempotency-Key` header) on payment and report-creation POSTs.

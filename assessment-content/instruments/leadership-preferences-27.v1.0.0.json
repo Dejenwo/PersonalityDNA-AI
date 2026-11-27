@@ -1,0 +1,289 @@
+{
+  "schema_version": 1,
+  "id": "leadership-preferences-27",
+  "version": "1.0.0",
+  "status": "released",
+  "family": "leadership",
+  "scoring": "likert_mean",
+  "name": "Leadership Preferences (reflection questionnaire)",
+  "tier": "quick",
+  "locale": "en",
+  "estimated_minutes": 5,
+  "instructions": "Each statement describes a leadership activity. Choose how much you enjoy or would enjoy doing it, whether or not you lead people today. This is about preferences, not skill: there are no right or wrong answers.",
+  "response_scale": {
+    "min": 1,
+    "max": 5,
+    "labels": [
+      {
+        "value": 1,
+        "label": "Not at all"
+      },
+      {
+        "value": 2,
+        "label": "A little"
+      },
+      {
+        "value": 3,
+        "label": "Somewhat"
+      },
+      {
+        "value": 4,
+        "label": "Quite a lot"
+      },
+      {
+        "value": 5,
+        "label": "Very much"
+      }
+    ]
+  },
+  "source": {
+    "name": "PersonalityDNA Leadership Preferences",
+    "url": "https://github.com/Dejenwo/PersonalityDNA-AI",
+    "authors": "PersonalityDNA AI (original reflection questionnaire, not a validated psychometric test)"
+  },
+  "license": {
+    "id": "PROPRIETARY-ORIGINAL",
+    "file": "licenses/ORIGINAL_CONTENT.md"
+  },
+  "references": [
+    "Original questionnaire written for PersonalityDNA AI. It has not been validated and has no norms."
+  ],
+  "scales": [
+    {
+      "id": "strategic",
+      "name": "Strategic thinking",
+      "min_items_answered": 2
+    },
+    {
+      "id": "collaborative",
+      "name": "Collaborating",
+      "min_items_answered": 2
+    },
+    {
+      "id": "coaching",
+      "name": "Coaching others",
+      "min_items_answered": 2
+    },
+    {
+      "id": "delegating",
+      "name": "Delegating",
+      "min_items_answered": 2
+    },
+    {
+      "id": "deciding",
+      "name": "Making decisions",
+      "min_items_answered": 2
+    },
+    {
+      "id": "communicating",
+      "name": "Communicating",
+      "min_items_answered": 2
+    },
+    {
+      "id": "conflict",
+      "name": "Handling conflict",
+      "min_items_answered": 2
+    },
+    {
+      "id": "team_development",
+      "name": "Developing the team",
+      "min_items_answered": 2
+    },
+    {
+      "id": "planning",
+      "name": "Planning and organising",
+      "min_items_answered": 2
+    }
+  ],
+  "items": [
+    {
+      "id": "lp-01",
+      "number": 1,
+      "text": "Thinking about where a team should be in two or three years",
+      "scale": "strategic",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-02",
+      "number": 2,
+      "text": "Building a plan together with the people who will carry it out",
+      "scale": "collaborative",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-03",
+      "number": 3,
+      "text": "Helping someone find their own answer instead of giving them mine",
+      "scale": "coaching",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-04",
+      "number": 4,
+      "text": "Handing over a whole piece of work, including the decisions in it",
+      "scale": "delegating",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-05",
+      "number": 5,
+      "text": "Making a clear call when information is incomplete",
+      "scale": "deciding",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-06",
+      "number": 6,
+      "text": "Keeping people informed before they have to ask",
+      "scale": "communicating",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-07",
+      "number": 7,
+      "text": "Raising a difficult issue early rather than waiting",
+      "scale": "conflict",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-08",
+      "number": 8,
+      "text": "Welcoming new team members and helping them settle in",
+      "scale": "team_development",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-09",
+      "number": 9,
+      "text": "Turning a goal into milestones, owners and dates",
+      "scale": "planning",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-10",
+      "number": 10,
+      "text": "Spotting trends that could change how we work",
+      "scale": "strategic",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-11",
+      "number": 11,
+      "text": "Asking for others' views before settling on a direction",
+      "scale": "collaborative",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-12",
+      "number": 12,
+      "text": "Having regular conversations about people's growth",
+      "scale": "coaching",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-13",
+      "number": 13,
+      "text": "Letting others do a task their own way",
+      "scale": "delegating",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-14",
+      "number": 14,
+      "text": "Weighing options against agreed criteria before choosing",
+      "scale": "deciding",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-15",
+      "number": 15,
+      "text": "Speaking to a group about where we are heading",
+      "scale": "communicating",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-16",
+      "number": 16,
+      "text": "Helping two people with different views find common ground",
+      "scale": "conflict",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-17",
+      "number": 17,
+      "text": "Agreeing how a team will work together",
+      "scale": "team_development",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-18",
+      "number": 18,
+      "text": "Tracking progress and adjusting plans when things change",
+      "scale": "planning",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-19",
+      "number": 19,
+      "text": "Linking everyday tasks to a bigger purpose",
+      "scale": "strategic",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-20",
+      "number": 20,
+      "text": "Sharing credit and decisions with the team",
+      "scale": "collaborative",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-21",
+      "number": 21,
+      "text": "Giving someone a stretch task and supporting them through it",
+      "scale": "coaching",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-22",
+      "number": 22,
+      "text": "Matching tasks to people's strengths and interests",
+      "scale": "delegating",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-23",
+      "number": 23,
+      "text": "Explaining the reasons behind a decision",
+      "scale": "deciding",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-24",
+      "number": 24,
+      "text": "Checking that my message was understood the way I meant it",
+      "scale": "communicating",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-25",
+      "number": 25,
+      "text": "Staying calm when a conversation becomes tense",
+      "scale": "conflict",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-26",
+      "number": 26,
+      "text": "Reflecting with a team on what went well and what to change",
+      "scale": "team_development",
+      "keyed": "+"
+    },
+    {
+      "id": "lp-27",
+      "number": 27,
+      "text": "Organising resources so work runs smoothly",
+      "scale": "planning",
+      "keyed": "+"
+    }
+  ]
+}

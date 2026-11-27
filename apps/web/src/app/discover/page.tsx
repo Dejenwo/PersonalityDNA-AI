@@ -20,7 +20,13 @@ const interestCopy = {
   blurb: "Choose the work activities you would like to do, then explore occupations that match your interest areas.",
 };
 
-const copyFor = (a: AssessmentSummary) => (a.family === "interests" ? interestCopy : tierCopy[a.tier]);
+const leadershipCopy = {
+  label: "Leadership Preferences",
+  blurb: "See which parts of leading you enjoy most and least, then pick development modules to practise.",
+};
+
+const copyFor = (a: AssessmentSummary) =>
+  a.family === "interests" ? interestCopy : a.family === "leadership" ? leadershipCopy : tierCopy[a.tier];
 
 export default function DiscoverPage() {
   const state = useAsync(() => api.listAssessments(), "assessments");

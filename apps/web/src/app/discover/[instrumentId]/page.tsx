@@ -85,6 +85,11 @@ export default function AssessmentIntroPage() {
               trademark of USDOL/ETA. PersonalityDNA is not affiliated with or endorsed by USDOL/ETA.
             </p>
           </>
+        ) : a.family === "leadership" ? (
+          <p className="mt-3 text-sm text-ink-muted">
+            This is an original reflection questionnaire, not a validated test. It shows which leadership activities you
+            enjoy most and least, not how good a leader you are, and it must never be used to select or rate anyone.
+          </p>
         ) : (
           <p className="mt-3 text-sm text-ink-muted">
             Source: {a.source.name} ({a.source.authors}). Results describe tendencies in how you see yourself. They are
