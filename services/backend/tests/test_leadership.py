@@ -115,45 +115,53 @@ def test_leadership_result(client):
 
 
 def test_modules_and_progress(client):
-    listing = client.get("/api/v1/leadership/modules").json()
+    listing = client.get("/api/v1/learning/leadership/modules").json()
     assert len(listing["modules"]) == 9 and all(m["activities_done"] == 0 for m in listing["modules"])
-    assert client.get("/api/v1/leadership/modules/nope").status_code == 404
-    module = client.get("/api/v1/leadership/modules/delegation").json()
+    assert client.get("/api/v1/learning/leadership/modules/nope").status_code == 404
+    module = client.get("/api/v1/learning/leadership/modules/delegation").json()
     assert module["area"] == "delegating" and module["lessons"] and module["reflection"]
     assert all(a["completed_at"] is None for a in module["activities"])
 
-    url = "/api/v1/leadership/modules/delegation/activities/handover/done"
+    url = "/api/v1/learning/leadership/modules/delegation/activities/handover/done"
     assert client.put(url).status_code == 401
     ada = signup(client)
     assert client.put(url, headers=ada).status_code == 204
-    first = client.get("/api/v1/leadership/modules/delegation", headers=ada).json()["activities"][0][
+    first = client.get("/api/v1/learning/leadership/modules/delegation", headers=ada).json()["activities"][0][
         "completed_at"
     ]
     assert client.put(url, headers=ada).status_code == 204  # idempotent, keeps the first time
-    again = client.get("/api/v1/leadership/modules/delegation", headers=ada).json()["activities"][0]
+    again = client.get("/api/v1/learning/leadership/modules/delegation", headers=ada).json()["activities"][0]
     assert again["completed_at"] == first
     done = {
         m["id"]: m["activities_done"]
-        for m in client.get("/api/v1/leadership/modules", headers=ada).json()["modules"]
+        for m in client.get("/api/v1/learning/leadership/modules", headers=ada).json()["modules"]
     }
     assert done["delegation"] == 1 and sum(done.values()) == 1
     # Other users and anonymous visitors see their own progress only.
     bob = signup(client, "bob@example.com")
     assert (
-        client.get("/api/v1/leadership/modules/delegation", headers=bob).json()["activities"][0][
+        client.get("/api/v1/learning/leadership/modules/delegation", headers=bob).json()["activities"][0][
             "completed_at"
         ]
         is None
     )
 
     assert (
-        client.put("/api/v1/leadership/modules/delegation/activities/nope/done", headers=ada).status_code
+        client.put(
+            "/api/v1/learning/leadership/modules/delegation/activities/nope/done", headers=ada
+        ).status_code
         == 404
     )
     export = client.get("/api/v1/privacy/export", headers=ada).json()
-    assert export["leadership_activities"][0]["activity"] == "handover"
+    assert export["learning_activities"][0] == export["learning_activities"][0] | {
+        "track": "leadership",
+        "activity": "handover",
+    }
     assert client.delete(url, headers=ada).status_code == 204
-    assert client.get("/api/v1/leadership/modules", headers=ada).json()["modules"][3]["activities_done"] == 0
+    assert (
+        client.get("/api/v1/learning/leadership/modules", headers=ada).json()["modules"][3]["activities_done"]
+        == 0
+    )
 
 
 def test_history_and_coach_context(client):

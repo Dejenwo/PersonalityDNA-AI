@@ -385,19 +385,25 @@ class RelationshipLink(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
-class LeadershipActivityProgress(Base):
-    """Which leadership development activities a user marked as done. Content ids, no free text."""
+class LearningActivityProgress(Base):
+    """Which learning activities (leadership, emotional awareness) a user marked as done.
 
-    __tablename__ = "leadership_activity_progress"
+    Content ids only, never free text.
+    """
+
+    __tablename__ = "learning_activity_progress"
     __table_args__ = (
-        UniqueConstraint("user_id", "module_id", "activity_id", name="uq_leadership_activity_progress"),
+        UniqueConstraint(
+            "user_id", "track", "module_id", "activity_id", name="uq_learning_activity_progress"
+        ),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
     user_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE", name="fk_leadership_activity_progress_user_id_users"),
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_learning_activity_progress_user_id_users"),
         index=True,
     )
+    track: Mapped[str] = mapped_column(String(32))
     module_id: Mapped[str] = mapped_column(String(64))
     activity_id: Mapped[str] = mapped_column(String(64))
     completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

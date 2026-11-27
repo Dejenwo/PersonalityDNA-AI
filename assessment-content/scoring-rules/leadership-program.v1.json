@@ -2,6 +2,7 @@
   "id": "leadership-program",
   "version": "1.0.0",
   "locale": "en",
+  "title": "Leadership development",
   "note": "These are preferences: the parts of leading you enjoy most and least today. They are not abilities, they change with experience, and they must never be used to select, promote or rate anyone.",
   "areas": {
     "strategic": {

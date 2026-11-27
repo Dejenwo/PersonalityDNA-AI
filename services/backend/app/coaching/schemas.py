@@ -6,7 +6,9 @@ from pydantic import BaseModel, Field
 
 from app.coaching.safety import MAX_MESSAGE_CHARS
 
-Topic = Literal["results", "communication", "relationships", "career", "leadership", "goals", "general"]
+Topic = Literal[
+    "results", "communication", "relationships", "career", "leadership", "emotions", "goals", "general"
+]
 
 
 class CoachConsentIn(BaseModel):

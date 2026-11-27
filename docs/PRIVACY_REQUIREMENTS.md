@@ -13,7 +13,7 @@ Not legal advice. A qualified privacy lawyer must review before launch; no compl
 | Email, password hash, display name | Account | Contract | Until account deletion |
 | Session tokens (hashed) | Keep users signed in | Contract | 30 days |
 | Relationship invitations (token hash, type) and links (two user ids, type, consent ids) | Let two people compare trait bands | Consent from both people | Invitations: until accepted, cancelled or 7 days; links: until either person ends it or deletes their account |
-| Leadership activity progress (module and activity ids, time) | Show progress through development modules | Contract | Until unmarked or account deletion |
+| Learning activity progress (track, module and activity ids, time; leadership and emotional awareness) | Show progress through learning modules | Contract | Until unmarked or account deletion |
 
 No names, emails, device identifiers, analytics or third-party trackers are collected today.
 

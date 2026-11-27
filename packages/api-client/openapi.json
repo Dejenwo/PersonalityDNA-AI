@@ -681,6 +681,7 @@
               "relationships",
               "career",
               "leadership",
+              "emotions",
               "goals",
               "general"
             ],
@@ -737,6 +738,7 @@
               "relationships",
               "career",
               "leadership",
+              "emotions",
               "goals",
               "general"
             ],
@@ -791,6 +793,7 @@
               "relationships",
               "career",
               "leadership",
+              "emotions",
               "goals",
               "general"
             ],
@@ -1743,10 +1746,32 @@
           "note": {
             "title": "Note",
             "type": "string"
+          },
+          "support_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Support Note"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "track": {
+            "title": "Track",
+            "type": "string"
           }
         },
         "required": [
+          "track",
+          "title",
           "note",
+          "support_note",
           "modules"
         ],
         "title": "ModuleList",
@@ -1854,8 +1879,27 @@
             "title": "Summary",
             "type": "string"
           },
+          "support_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Support Note"
+          },
           "title": {
             "title": "Title",
+            "type": "string"
+          },
+          "track": {
+            "title": "Track",
+            "type": "string"
+          },
+          "track_title": {
+            "title": "Track Title",
             "type": "string"
           }
         },
@@ -1864,6 +1908,9 @@
           "area",
           "title",
           "summary",
+          "track",
+          "track_title",
+          "support_note",
           "lessons",
           "activities",
           "reflection"
@@ -4242,10 +4289,19 @@
         ]
       }
     },
-    "/api/v1/leadership/modules": {
+    "/api/v1/learning/{track_id}/modules": {
       "get": {
-        "operationId": "list_modules_api_v1_leadership_modules_get",
+        "operationId": "list_modules_api_v1_learning__track_id__modules_get",
         "parameters": [
+          {
+            "in": "path",
+            "name": "track_id",
+            "required": true,
+            "schema": {
+              "title": "Track Id",
+              "type": "string"
+            }
+          },
           {
             "in": "header",
             "name": "authorization",
@@ -4297,14 +4353,23 @@
         },
         "summary": "List Modules",
         "tags": [
-          "leadership"
+          "learning"
         ]
       }
     },
-    "/api/v1/leadership/modules/{module_id}": {
+    "/api/v1/learning/{track_id}/modules/{module_id}": {
       "get": {
-        "operationId": "get_module_api_v1_leadership_modules__module_id__get",
+        "operationId": "get_module_api_v1_learning__track_id__modules__module_id__get",
         "parameters": [
+          {
+            "in": "path",
+            "name": "track_id",
+            "required": true,
+            "schema": {
+              "title": "Track Id",
+              "type": "string"
+            }
+          },
           {
             "in": "path",
             "name": "module_id",
@@ -4365,14 +4430,23 @@
         },
         "summary": "Get Module",
         "tags": [
-          "leadership"
+          "learning"
         ]
       }
     },
-    "/api/v1/leadership/modules/{module_id}/activities/{activity_id}/done": {
+    "/api/v1/learning/{track_id}/modules/{module_id}/activities/{activity_id}/done": {
       "delete": {
-        "operationId": "mark_not_done_api_v1_leadership_modules__module_id__activities__activity_id__done_delete",
+        "operationId": "mark_not_done_api_v1_learning__track_id__modules__module_id__activities__activity_id__done_delete",
         "parameters": [
+          {
+            "in": "path",
+            "name": "track_id",
+            "required": true,
+            "schema": {
+              "title": "Track Id",
+              "type": "string"
+            }
+          },
           {
             "in": "path",
             "name": "module_id",
@@ -4445,13 +4519,22 @@
         },
         "summary": "Mark Not Done",
         "tags": [
-          "leadership"
+          "learning"
         ]
       },
       "put": {
         "description": "Idempotent: marking an activity done twice keeps the first time.",
-        "operationId": "mark_done_api_v1_leadership_modules__module_id__activities__activity_id__done_put",
+        "operationId": "mark_done_api_v1_learning__track_id__modules__module_id__activities__activity_id__done_put",
         "parameters": [
+          {
+            "in": "path",
+            "name": "track_id",
+            "required": true,
+            "schema": {
+              "title": "Track Id",
+              "type": "string"
+            }
+          },
           {
             "in": "path",
             "name": "module_id",
@@ -4524,7 +4607,7 @@
         },
         "summary": "Mark Done",
         "tags": [
-          "leadership"
+          "learning"
         ]
       }
     },

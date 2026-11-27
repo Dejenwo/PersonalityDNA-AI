@@ -6,6 +6,7 @@ export const COACH_TOPICS: { id: CoachTopic; label: string; hint: string }[] = [
   { id: "relationships", label: "Relationships", hint: "Your side of everyday conversations and conflicts" },
   { id: "career", label: "Career exploration", hint: "Interests, working preferences and learning" },
   { id: "leadership", label: "Leadership", hint: "Leading, delegating and supporting others" },
+  { id: "emotions", label: "Emotions and communication", hint: "Noticing feelings, listening and speaking up" },
   { id: "goals", label: "Goals and habits", hint: "One small goal and a habit that fits you" },
   { id: "general", label: "Something else", hint: "Any everyday personal-development question" },
 ];

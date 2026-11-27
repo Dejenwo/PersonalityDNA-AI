@@ -1,0 +1,269 @@
+{
+  "id": "emotional-awareness",
+  "version": "1.0.0",
+  "locale": "en",
+  "title": "Emotional awareness",
+  "note": "These are everyday learning activities about noticing feelings, listening and expressing yourself. They are not therapy, there is no emotional intelligence score, and nothing here diagnoses anything.",
+  "support_note": "If you are struggling or feel unsafe, please talk to someone you trust or a professional. If you are in danger, contact local emergency services. In the US you can call or text 988; elsewhere, findahelpline.com lists free support.",
+  "modules": [
+    {
+      "id": "naming-feelings",
+      "area": "self-awareness",
+      "title": "Noticing and naming feelings",
+      "summary": "Build the habit of noticing what you feel and putting words to it.",
+      "lessons": [
+        {
+          "title": "Feelings carry information",
+          "text": "Feelings often point to something that matters to you: a need, a value or a worry. Noticing them early gives you more choice about what to do next."
+        },
+        {
+          "title": "More precise words help",
+          "text": "\"Fine\" and \"stressed\" cover a lot. Words like disappointed, uneasy, relieved or proud can make it easier to understand a feeling and explain it to others."
+        }
+      ],
+      "activities": [
+        {
+          "id": "three-check-ins",
+          "title": "Three check-ins a day",
+          "steps": [
+            "Pick three moments in your day, such as after waking, lunch and the evening.",
+            "Each time, name one feeling in one word and where you notice it in your body.",
+            "After a week, look for patterns."
+          ]
+        },
+        {
+          "id": "word-swap",
+          "title": "Swap a vague word",
+          "steps": [
+            "The next time you say \"fine\" or \"stressed\", pause.",
+            "Find a more precise word for what you feel.",
+            "Notice whether the new word changes what you want to do."
+          ]
+        }
+      ],
+      "reflection": "Which feeling do you find hardest to notice or name?"
+    },
+    {
+      "id": "pause-and-reflect",
+      "area": "reflective-communication",
+      "title": "Pausing before responding",
+      "summary": "Create a little space between a feeling and what you say or do.",
+      "lessons": [
+        {
+          "title": "The useful pause",
+          "text": "Strong feelings can make us reply faster than we think. A short pause, even one breath, can be enough to choose a response rather than react."
+        },
+        {
+          "title": "Reply to the question that matters",
+          "text": "Before replying in a tense moment, ask yourself what you want the other person to understand. That question often changes the words you choose."
+        }
+      ],
+      "activities": [
+        {
+          "id": "one-breath",
+          "title": "One breath before replying",
+          "steps": [
+            "Choose one conversation today where you will take one slow breath before replying.",
+            "Afterwards, note whether your reply was different from your first impulse.",
+            "Repeat for a week."
+          ]
+        },
+        {
+          "id": "draft-and-wait",
+          "title": "Draft, then wait",
+          "steps": [
+            "When a message annoys you, write a reply but don't send it.",
+            "Wait at least 20 minutes.",
+            "Reread it and ask what you want the other person to understand. Edit before sending."
+          ]
+        }
+      ],
+      "reflection": "When did a quick reply cost you something, and what would a pause have changed?"
+    },
+    {
+      "id": "listening-to-understand",
+      "area": "active-listening",
+      "title": "Listening to understand",
+      "summary": "Listen to understand the other person, not just to reply.",
+      "lessons": [
+        {
+          "title": "Listening is visible",
+          "text": "People feel heard when you show it: summarising what they said, asking a follow-up question, and not rushing to solutions."
+        },
+        {
+          "title": "Check before you fix",
+          "text": "Many people want to be understood before they want advice. Asking \"Do you want ideas, or just to talk it through?\" avoids a common misunderstanding."
+        }
+      ],
+      "activities": [
+        {
+          "id": "summarise-first",
+          "title": "Summarise before you respond",
+          "steps": [
+            "In your next important conversation, summarise what you heard before giving your view.",
+            "Ask whether you got it right.",
+            "Notice how the conversation changes."
+          ]
+        },
+        {
+          "id": "ideas-or-ear",
+          "title": "Ask: ideas or an ear?",
+          "steps": [
+            "When someone tells you about a problem, ask whether they want ideas or someone to listen.",
+            "Do what they ask for.",
+            "Afterwards, ask whether it helped."
+          ]
+        }
+      ],
+      "reflection": "Who in your life would say you listen well, and what do you do differently with them?"
+    },
+    {
+      "id": "perspective-taking",
+      "area": "empathy",
+      "title": "Seeing another point of view",
+      "summary": "Practise imagining how a situation looks and feels to someone else.",
+      "lessons": [
+        {
+          "title": "Curiosity before conclusions",
+          "text": "When someone behaves in a way we don't understand, we often fill the gap with the least generous explanation. Asking what else might be going on keeps curiosity open."
+        },
+        {
+          "title": "Understanding is not agreeing",
+          "text": "You can understand why someone feels the way they do without agreeing with them. Saying so can lower tension in a disagreement."
+        }
+      ],
+      "activities": [
+        {
+          "id": "three-explanations",
+          "title": "Three explanations",
+          "steps": [
+            "Think of something someone did recently that frustrated you.",
+            "Write three different, reasonable explanations for it.",
+            "Notice whether your feeling about it changes."
+          ]
+        },
+        {
+          "id": "their-words",
+          "title": "Say it in their words",
+          "steps": [
+            "In a disagreement, describe the other person's view so well that they would agree with your summary.",
+            "Only then share your own view.",
+            "Notice how they respond."
+          ]
+        }
+      ],
+      "reflection": "Whose point of view do you find hardest to imagine, and what would help you understand it?"
+    },
+    {
+      "id": "everyday-stress",
+      "area": "stress-reflection",
+      "title": "Reflecting on everyday stress",
+      "summary": "Notice what drains and restores you, and plan small changes.",
+      "lessons": [
+        {
+          "title": "Stress has patterns",
+          "text": "Everyday stress often follows patterns: certain tasks, times of day or situations. Noticing them is the first step to changing what you can."
+        },
+        {
+          "title": "Recovery matters too",
+          "text": "Rest, movement, time outdoors and time with people you like all help many people recover. Small, regular breaks often help more than rare big ones."
+        }
+      ],
+      "activities": [
+        {
+          "id": "drains-and-restores",
+          "title": "Drains and restores list",
+          "steps": [
+            "Draw two columns: things that drain you and things that restore you.",
+            "Add to them for a week.",
+            "Pick one small change: less of one drain, or more of one restorer."
+          ]
+        },
+        {
+          "id": "micro-break",
+          "title": "Plan micro-breaks",
+          "steps": [
+            "Schedule three five-minute breaks in a busy day.",
+            "Use each one for something restoring, such as a short walk or a stretch.",
+            "Note how your energy compares with a day without breaks."
+          ]
+        }
+      ],
+      "reflection": "What is one source of everyday stress you could change, and one you need to accept for now?"
+    },
+    {
+      "id": "reading-the-room",
+      "area": "interpersonal-understanding",
+      "title": "Understanding others' needs",
+      "summary": "Notice what others might need from a conversation, and ask rather than assume.",
+      "lessons": [
+        {
+          "title": "Different people, different needs",
+          "text": "In the same situation, one person may want reassurance, another a plan, another some space. Noticing the difference helps you respond in a way that fits."
+        },
+        {
+          "title": "Ask, don't guess",
+          "text": "Signals like tone or silence can be read many ways. A simple question such as \"How are you finding this?\" is more reliable than guessing."
+        }
+      ],
+      "activities": [
+        {
+          "id": "needs-check",
+          "title": "A quick needs check",
+          "steps": [
+            "Before a meeting or conversation, think about what each person might need from it.",
+            "During it, ask one person directly how they are finding it.",
+            "Afterwards, compare what you guessed with what you learned."
+          ]
+        },
+        {
+          "id": "notice-the-quiet",
+          "title": "Notice the quiet one",
+          "steps": [
+            "In a group conversation, notice who has said the least.",
+            "Invite their view without putting them on the spot, for example after the meeting.",
+            "Note what you learned."
+          ]
+        }
+      ],
+      "reflection": "Whose needs do you tend to overlook, and how could you check in with them?"
+    },
+    {
+      "id": "expressing-constructively",
+      "area": "constructive-expression",
+      "title": "Expressing feelings constructively",
+      "summary": "Say how you feel and what you need in a way others can hear.",
+      "lessons": [
+        {
+          "title": "Describe, don't blame",
+          "text": "\"When the plan changed at the last minute, I felt frustrated because I had prepared\" is easier to hear than \"You always change things\". Describe the situation, your feeling and why."
+        },
+        {
+          "title": "Make a clear request",
+          "text": "Feelings are easier to act on when they come with a specific, doable request, such as \"Could we agree changes a day in advance?\""
+        }
+      ],
+      "activities": [
+        {
+          "id": "situation-feeling-request",
+          "title": "Situation, feeling, request",
+          "steps": [
+            "Think of something that bothered you recently.",
+            "Write it as: when (situation), I felt (feeling) because (reason). Could we (request)?",
+            "If it feels right, use it in a real conversation."
+          ]
+        },
+        {
+          "id": "positive-too",
+          "title": "Say the good feelings too",
+          "steps": [
+            "Each day this week, tell someone one specific thing they did that you appreciated.",
+            "Say how it made you feel.",
+            "Notice how people respond."
+          ]
+        }
+      ],
+      "reflection": "Which feeling do you tend to keep to yourself, and what might change if you shared it?"
+    }
+  ]
+}

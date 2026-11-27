@@ -24,8 +24,8 @@ export function SiteHeader() {
               </Link>
             </li>
             <li>
-              <Link href="/leadership" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
-                Leadership
+              <Link href="/learn" className="rounded-full px-2 py-2 hover:bg-muted sm:px-3">
+                Learn
               </Link>
             </li>
             <li>

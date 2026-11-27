@@ -11,7 +11,10 @@ class ModuleListItem(ModuleSummaryOut):
 
 
 class ModuleList(BaseModel):
+    track: str
+    title: str
     note: str
+    support_note: str | None
     modules: list[ModuleListItem]
 
 
@@ -28,6 +31,9 @@ class ActivityOut(BaseModel):
 
 
 class ModuleOut(ModuleSummaryOut):
+    track: str
+    track_title: str
+    support_note: str | None
     lessons: list[LessonOut]
     activities: list[ActivityOut]
     reflection: str

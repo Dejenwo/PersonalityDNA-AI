@@ -38,7 +38,7 @@ test("leadership: questionnaire, results, modules and progress", async ({ page, 
   await expect(page.getByRole("button", { name: 'Mark "Map one goal" as not done' })).toBeVisible();
   await expectAccessible(page);
 
-  await page.getByRole("link", { name: "← Leadership" }).click();
+  await page.getByRole("link", { name: "← Leadership development" }).click();
   await expect(page.getByRole("heading", { name: "Suggested for you" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Plans that work.*1 of 2 activities done/ })).toBeVisible();
   await expectAccessible(page);
