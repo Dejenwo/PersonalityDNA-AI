@@ -17,7 +17,7 @@ Follows MASTER_PROMPT.md §24 (25 phases). Status is kept in DEVELOPMENT_PROGRES
 | 11 | Leadership intelligence | Done | Original unvalidated preferences questionnaire, 9 modules, progress tracking (ADR-014) |
 | 12 | Emotional awareness | Done (code); clinical safety review of wording and crisis resources per country before launch | Learning track with 7 modules, no score, support note, coach topic (ADR-015) |
 | 13 | Growth academy | Done (code); content review by a learning designer before launch | 3 seven-day challenges, 30/60/90-day programmes from 12 weekly units, enrolment, daily progress, weekly self-checks (ADR-016) |
-| 14 | Journaling and habits | Journal done (code); goals and habits in progress | Encrypted journal with prompts, mood, tags, search, export, deletion (ADR-017) |
+| 14 | Journaling and habits | Done (code); reminders wait for notifications | Encrypted journal (ADR-017); goals, milestones and habits without streaks (ADR-018) |
 | 15 | Reports | — | PDF generation server-side |
 | 16 | Monetization | Stripe account, RevenueCat, Apple/Google developer accounts | Entitlement service first, providers after |
 | 17 | Administration | — | |

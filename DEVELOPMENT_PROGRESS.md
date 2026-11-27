@@ -21,7 +21,7 @@ Last updated: 2026-11-26.
 | 11 | Leadership intelligence | Tested | Original 27-statement leadership preferences questionnaire (9 areas from the spec, labelled unvalidated), ranked results with build and stretch suggestions, 9 development modules with lessons, activities and reflection, activity progress for accounts, leadership preferences in coach context (ADR-014). Never presented as ability or used for employment decisions. |
 | 12 | Emotional awareness | Tested | Original learning track: 7 modules (self-awareness, reflective communication, active listening, empathy, stress reflection, interpersonal understanding, constructive expression) with lessons, activities, reflection and a support note; no score or test; shared learning-track API and progress (migration 0007); "Emotions and communication" coach topic; Learn page (ADR-015). Needs a clinical safety review of wording before launch. |
 | 13 | Personal growth academy | Tested | Original content: 12 weekly units across the 10 topics in the spec, composed into three 7-day challenges and 30, 60 and 90-day programmes with objectives, lessons, practice, daily exercises, weekly milestones, review days and weekly 1 to 5 self-checks; enrolment, day progress and self-checks for accounts (migration 0008); Learn page entry (ADR-016). Annual goals move to Phase 14 goals. |
-| 14 | Journaling, goals and habits | In Progress | Journal tested: encrypted entries (title, text, tags), six kinds with original prompts, optional mood, tags, search after decryption (POST, not logged), Markdown and JSON export, delete one or all, privacy export (ADR-017). Goals and habits next. |
+| 14 | Journaling, goals and habits | Tested | Journal: encrypted entries (title, text, tags), six kinds with original prompts, optional mood, tags, search after decryption (POST, not logged), Markdown and JSON export, delete one or all (ADR-017). Goals with milestones and adjustment, habits on chosen weekdays with history, neutral 7 and 30-day summaries and a four-week grid, no streaks (ADR-018). Reminders wait for the notification service. |
 | 15–25 | Reports onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
 
 ## Task log
@@ -94,17 +94,22 @@ Last updated: 2026-11-26.
 | J-003 | Privacy | Markdown and JSON export, privacy export, delete one, delete all, account deletion; text never logged | P0 | Tested | `test_export_and_deletion`, `test_journal_text_is_never_logged` |
 | J-004 | Web | Journal list with search and filters, new entry with prompts, entry view, edit and delete, downloads, delete all with confirmation; nav link | P0 | Tested | e2e journal.spec.ts (desktop + mobile) + axe; vitest journal helpers |
 | J-005 | Journal | Optional AI reflection on entries (separate consent), mood charts, attachments, KMS-held keys and rotation | P2 | Not Started | AI use needs its own consent design; keys are a deployment task |
+| H-001 | Goals | Goals with encrypted title and reason, target date, status changes, milestones (add, rename, done, remove), deletion keeps habits | P0 | Tested | `test_goal_lifecycle_and_privacy`, `test_goal_validation` |
+| H-002 | Habits | Weekday schedules, local-date checks (30-day back-fill), pause, goal link, deletion, export | P0 | Tested | `test_habit_checks_history_and_stats`, `test_habits_link_to_goals_archive_and_delete` |
+| H-003 | Habits | Pure analytics: masks, 7 and 30-day windows from the start date, extra days, four-week grid; no streaks | P0 | Tested | `test_masks`, `test_window_counts_planned_and_extra_days`, `test_grid_is_whole_weeks_ending_this_week` |
+| H-004 | Web | Goals and habits page (today's habits, history grid, pause, new habit and goal forms) and goal page (adjust, milestones, complete, archive, delete, reflection links); nav link | P0 | Tested | e2e goals.spec.ts (desktop + mobile) + axe; vitest habit helpers |
+| H-005 | Habits | Opt-in reminders with quiet hours; annual goals view; coach awareness with a sharing choice | P1 | Not Started | Reminders need the notification service |
 | M-001 | Monetization | Entitlements service with plan config; Stripe and RevenueCat webhooks | P0 | Not Started | Needs accounts; live keys needed for real payments |
 
 ## Test results (latest local run, 2026-11-27)
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest` | 171 passed |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 171 passed |
+| Backend, SQLite | `pytest` | 178 passed |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 178 passed |
 | Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
-| Web unit | `vitest run` | 29 passed |
+| Web unit | `vitest run` | 31 passed |
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
-| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 34 passed |
+| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 36 passed |

@@ -56,6 +56,15 @@ Comparisons are computed on request from each person's latest Big Five result an
 | --- | --- | --- | --- |
 | `learning_activity_progress` | Which learning activities a user marked done: track (`leadership`, `emotional-awareness`), module and activity ids and time, no free text | FK user CASCADE; unique (user, track, module, activity) | Until unmarked or account deletion |
 
+## Implemented (migration 0010, goals and habits)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `goals` | Encrypted title and reason; target date, status, timestamps | FK user CASCADE; status check | Until deleted by the user or account deletion |
+| `goal_milestones` | Encrypted title, due date, done time, position | FK goal CASCADE | As the goal |
+| `habits` | Encrypted title, weekday mask (1–127), start date, pause time, optional goal | FK user CASCADE; FK goal SET NULL; days check | Until deleted |
+| `habit_checks` | Local dates a habit was done | FK habit CASCADE; unique (habit, day) | As the habit |
+
 ## Implemented (migration 0009, journal)
 
 | Table | Purpose | Key constraints | Retention |

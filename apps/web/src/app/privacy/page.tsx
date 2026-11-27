@@ -47,6 +47,12 @@ export default function PrivacyPage() {
         words you search for are not logged. You can download your journal as Markdown or JSON, and delete single
         entries or all of them at any time.
       </p>
+      <h2 className="pt-4 text-xl font-semibold">Goals and habits</h2>
+      <p>
+        Goal names, reasons, milestones and habit names are encrypted when stored. We store the days you mark a habit as
+        done and the dates you choose, so we can show your history. Like your journal, these are only for you and are
+        included in your data download and deleted with your account.
+      </p>
       <h2 className="pt-4 text-xl font-semibold">Comparing with someone you know</h2>
       <p>
         Comparisons are optional and need both people to agree. If you invite someone or accept an invitation, the other

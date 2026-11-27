@@ -26,6 +26,7 @@ from app.database.models import (
     LearningActivityProgress,
     User,
 )
+from app.goals.service import GoalService
 from app.journal.service import JournalService
 from app.relationships import service as relationships
 
@@ -154,6 +155,7 @@ def export(request: Request, user: CurrentUser, db: Db, content: Content) -> dic
         ],
         "relationships": relationships.export_for(db, user),
         "growth_programs": _growth_export(db, user),
+        "goals_and_habits": GoalService(request.app.state.cipher).export(db, user),
         "journal_entries": [
             e.model_dump(mode="json") for e in JournalService(request.app.state.cipher).all_entries(db, user)
         ],

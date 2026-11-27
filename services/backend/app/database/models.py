@@ -495,3 +495,72 @@ class JournalEntry(Base):
     tags_encrypted: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Goal(Base):
+    """A personal goal. Title and reason are encrypted with the row id as associated data."""
+
+    __tablename__ = "goals"
+    __table_args__ = (CheckConstraint("status in ('active','completed','archived')", name="ck_goal_status"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_goals_user_id_users"), index=True
+    )
+    title_encrypted: Mapped[str] = mapped_column(Text)
+    why_encrypted: Mapped[str | None] = mapped_column(Text, nullable=True)
+    target_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    status: Mapped[str] = mapped_column(String(16), default="active")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class GoalMilestone(Base):
+    """A step towards a goal, optionally with a due date. Title encrypted."""
+
+    __tablename__ = "goal_milestones"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    goal_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("goals.id", ondelete="CASCADE", name="fk_goal_milestones_goal_id_goals"), index=True
+    )
+    title_encrypted: Mapped[str] = mapped_column(Text)
+    due_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    done_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    position: Mapped[int] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Habit(Base):
+    """A habit planned on some days of the week (bit 0 = Monday ... bit 6 = Sunday). Title encrypted."""
+
+    __tablename__ = "habits"
+    __table_args__ = (CheckConstraint("days between 1 and 127", name="ck_habit_days"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_habits_user_id_users"), index=True
+    )
+    goal_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("goals.id", ondelete="SET NULL", name="fk_habits_goal_id_goals"), nullable=True
+    )
+    title_encrypted: Mapped[str] = mapped_column(Text)
+    days: Mapped[int] = mapped_column(Integer)
+    start_date: Mapped[date] = mapped_column(Date)
+    archived_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class HabitCheck(Base):
+    """A day on which the user did a habit. Dates are the user's local dates."""
+
+    __tablename__ = "habit_checks"
+    __table_args__ = (UniqueConstraint("habit_id", "day", name="uq_habit_check"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    habit_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("habits.id", ondelete="CASCADE", name="fk_habit_checks_habit_id_habits"), index=True
+    )
+    day: Mapped[date] = mapped_column(Date)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

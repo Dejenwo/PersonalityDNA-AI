@@ -44,6 +44,13 @@ export type JournalList = Schemas["EntryList"];
 export type JournalSearch = Schemas["SearchIn"];
 export type JournalPrompts = Schemas["PromptsOut"];
 export type JournalKind = JournalEntry["kind"];
+export type Goal = Schemas["GoalOut"];
+export type GoalIn = Schemas["GoalIn"];
+export type GoalPatch = Schemas["GoalPatch"];
+export type Habit = Schemas["HabitOut"];
+export type HabitIn = Schemas["HabitIn"];
+export type HabitPatch = Schemas["HabitPatch"];
+export type HabitList = Schemas["HabitList"];
 
 /** Events streamed by POST /coach/conversations/{id}/messages (server-sent events). */
 export type CoachEvent =
@@ -293,6 +300,27 @@ export function createApiClient({
     deleteJournalEntry: (id: string) => request<void>("DELETE", `/api/v1/journal/entries/${seg(id)}`),
     deleteAllJournalEntries: () => request<void>("POST", "/api/v1/journal/delete-all", { body: { confirm: true } }),
     journalTags: () => request<Schemas["TagsOut"]>("GET", "/api/v1/journal/tags"),
+    // Goals, milestones and habits. `today` is the person's local date (YYYY-MM-DD).
+    goals: () => request<Schemas["GoalList"]>("GET", "/api/v1/goals"),
+    goal: (id: string) => request<Goal>("GET", `/api/v1/goals/${seg(id)}`),
+    createGoal: (body: GoalIn) => request<Goal>("POST", "/api/v1/goals", { body }),
+    updateGoal: (id: string, body: GoalPatch) => request<Goal>("PATCH", `/api/v1/goals/${seg(id)}`, { body }),
+    deleteGoal: (id: string) => request<void>("DELETE", `/api/v1/goals/${seg(id)}`),
+    addMilestone: (goalId: string, title: string, due_date: string | null = null) =>
+      request<Goal>("POST", `/api/v1/goals/${seg(goalId)}/milestones`, { body: { title, due_date } }),
+    updateMilestone: (goalId: string, id: string, body: Schemas["MilestonePatch"]) =>
+      request<Goal>("PATCH", `/api/v1/goals/${seg(goalId)}/milestones/${seg(id)}`, { body }),
+    deleteMilestone: (goalId: string, id: string) =>
+      request<Goal>("DELETE", `/api/v1/goals/${seg(goalId)}/milestones/${seg(id)}`),
+    habits: (today: string) => request<HabitList>("GET", `/api/v1/habits?today=${seg(today)}`),
+    createHabit: (body: HabitIn, today: string) =>
+      request<Habit>("POST", `/api/v1/habits?today=${seg(today)}`, { body }),
+    updateHabit: (id: string, body: HabitPatch, today: string) =>
+      request<Habit>("PATCH", `/api/v1/habits/${seg(id)}?today=${seg(today)}`, { body }),
+    deleteHabit: (id: string) => request<void>("DELETE", `/api/v1/habits/${seg(id)}`),
+    setHabitDone: (id: string, day: string, done: boolean, today: string) =>
+      request<Habit>(done ? "PUT" : "DELETE", `/api/v1/habits/${seg(id)}/checks/${seg(day)}?today=${seg(today)}`),
+
     exportJournal: (format: "markdown" | "json") =>
       requestText(`/api/v1/journal/export?format=${format}`, format === "json" ? "application/json" : "text/markdown"),
   };

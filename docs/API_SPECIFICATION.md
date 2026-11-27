@@ -106,6 +106,20 @@ Signed-in users only, except prompts. Entries belong to their author; other user
 | GET | `/api/v1/journal/export?format=markdown\|json` | Download every entry (attachment, `no-store`) |
 | POST | `/api/v1/journal/delete-all` | Delete every entry; body `{"confirm": true}` |
 
+## Goals and habits (implemented)
+
+Signed-in users only; other users' goals and habits return 404. Habit endpoints take `?today=YYYY-MM-DD` (the person's local date, within a day of the server's).
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET / POST | `/api/v1/goals` | List (active first) or create (title, why, target date, up to 20 milestones) |
+| GET / PATCH / DELETE | `/api/v1/goals/{id}` | Read, adjust (only sent fields; status active, completed or archived), delete (linked habits are kept) |
+| POST | `/api/v1/goals/{id}/milestones` | Add a milestone |
+| PATCH / DELETE | `/api/v1/goals/{id}/milestones/{mid}` | Rename, set due date, mark done or not done; remove |
+| GET / POST | `/api/v1/habits` | Habits with today's state, last 7 and 30 days (planned, done on planned, extra) and a four-week grid; create (title, weekdays 0–6, optional goal) |
+| PATCH / DELETE | `/api/v1/habits/{id}` | Rename, change days or goal, pause or resume; delete |
+| PUT / DELETE | `/api/v1/habits/{id}/checks/{day}` | Record or remove a done day (today or up to 30 days back) |
+
 ## Growth programmes (implemented)
 
 Programmes are public to read; everything else needs an account. Progress calls on a programme the user has not started return 409 `not_enrolled`. Day and week numbers outside the programme return 404.
