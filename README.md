@@ -4,25 +4,29 @@
 
 An AI-assisted personality intelligence and personal development platform for iOS, Android and the web. The governing specification is [MASTER_PROMPT.md](MASTER_PROMPT.md); live status is in [DEVELOPMENT_PROGRESS.md](DEVELOPMENT_PROGRESS.md).
 
-> **Status: early development, not production ready.** Working end to end: assessments with autosave and resume, deterministic Big Five scores, archetypes, results reports, and accounts (sign-up, verification, password reset, history, export, deletion). AI coaching, payments, mobile and the admin and enterprise portals are not built yet. See [docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md).
+> **Status: ready for a web beta, not yet launched.** The web app and API cover the features of the 25 phases in
+> MASTER_PROMPT.md, apart from these open items: the Expo mobile app, shared UI and mobile design components, a live AI model run,
+> real payment and email providers, deployment, external reviews (scientific, legal, clinical) and the beta itself.
+> See [DEVELOPMENT_PROGRESS.md](DEVELOPMENT_PROGRESS.md) and [docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md).
 
 ## What works today
 
 | Area | State |
 | --- | --- |
-| Big Five instruments | IPIP 50-item (comprehensive) and Mini-IPIP 20-item (quick), public domain, licence verified |
-| Scoring | Deterministic, versioned, audited (content hash + answers hash stored with every result) |
-| Archetypes | 16 original descriptive archetypes, deterministic primary/secondary mapping |
-| Backend API | FastAPI, versioned REST, consent + 18+ gate, per-session resume tokens, rate limiting |
-| Database | SQLAlchemy models + Alembic migration, tested on SQLite and PostgreSQL 16 |
-| Web app | Next.js 16: marketplace, consent, one-statement-at-a-time questionnaire with autosave/offline retry/resume, results report, history |
-| Accounts | Email/password sign-up with verification, sign-in, password reset, rotating sessions, claim device assessments, history, data export, account deletion |
-| Quality | 69 backend tests (SQLite and PostgreSQL), 11 web/package unit tests, 18 Playwright end-to-end runs (desktop + mobile) including axe WCAG 2.2 AA scans |
+| Assessments | Big Five (IPIP 50-item and Mini-IPIP 20-item), career interests (O*NET short form, draft), leadership preferences; autosave and resume |
+| Results | Deterministic, versioned scoring; bands, archetypes, strengths and growth areas; no percentiles without norms |
+| Personal growth | Growth programmes, emotional awareness and leadership modules, journal, goals and habits |
+| Relationships and sharing | Two-person consented comparisons, reports with PDF download, revocable share cards |
+| AI coach | Guarded coach with crisis routing and output checks; a labelled stand-in runs without any API key |
+| Accounts and privacy | Sign-up with email confirmation, sessions, export, complete deletion, encrypted private text |
+| Business | Plans and entitlements, Stripe and app-store billing (off until accounts exist), organisations, admin portal, feedback triage |
+| Operations | Request ids and privacy-safe logs, readiness checks, smoke test, retention purge, reminders |
+| Quality | 240+ backend tests on SQLite and PostgreSQL (97% coverage), web unit tests, Playwright end-to-end with axe on every screen, coach evaluation suite |
 
 ## Repository layout
 
 ```
-apps/web                 Next.js web app (mobile, admin, enterprise apps: planned)
+apps/web                 Next.js web app, including the admin and organisation portals (mobile app: planned)
 services/backend         FastAPI modular monolith (app/, tests/, alembic/)
 packages/api-client      Typed API client generated from the backend OpenAPI document
 packages/design-tokens   Colour, type and spacing tokens with WCAG contrast tests
@@ -42,6 +46,7 @@ cd services/backend
 python -m venv .venv && . .venv/bin/activate
 pip install -e ".[dev]"
 export PDNA_DATABASE_URL=sqlite:///./pdna-local.db   # or a postgresql+psycopg:// URL
+export PDNA_DEV_OUTBOX_ENDPOINT=true                 # emails appear at http://localhost:8000/api/v1/dev/outbox
 alembic upgrade head
 uvicorn app.main:app_factory --factory --reload      # http://localhost:8000/docs
 
@@ -50,7 +55,15 @@ pnpm install
 NEXT_PUBLIC_API_URL=http://localhost:8000 pnpm dev:web   # http://localhost:3000
 ```
 
-Or with Docker: `cp .env.example .env`, set `POSTGRES_PASSWORD`, then `docker compose up --build`.
+Locally no real email is sent: open the outbox link above to confirm an account. Payments are off, so every
+feature is free, and the coach runs as a labelled stand-in. To open the admin portal, sign up, confirm the email,
+then run `python scripts/grant_admin.py you@example.com superadmin` in `services/backend`.
+
+Or with Docker (not yet tested end to end): `cp .env.example .env`, set `POSTGRES_PASSWORD`, then
+`docker compose up --build`.
+
+Deployment, operations and launch: [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md),
+[docs/BETA_PROGRAM.md](docs/BETA_PROGRAM.md), [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md).
 
 ## Tests
 
