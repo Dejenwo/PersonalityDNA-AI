@@ -4,7 +4,7 @@ from tests.conftest import CONSENT, start
 
 def test_health_and_security_headers(client):
     r = client.get("/health")
-    assert r.json() == {"status": "ok"}
+    assert r.json() == {"status": "ok", "release": "dev"}
     assert r.headers["x-content-type-options"] == "nosniff"
     assert client.get("/api/v1/assessments").headers["cache-control"] == "no-store"
 

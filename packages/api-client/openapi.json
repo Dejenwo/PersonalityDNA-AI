@@ -18145,6 +18145,7 @@
     },
     "/health": {
       "get": {
+        "description": "Liveness: the process is up. Cheap; doesn't touch the database.",
         "operationId": "health_health_get",
         "responses": {
           "200": {
@@ -18163,6 +18164,42 @@
           }
         },
         "summary": "Health",
+        "tags": [
+          "ops"
+        ]
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "description": "Readiness: the database answers. Load balancers send traffic only while this is 200.",
+        "operationId": "ready_health_ready_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Ready Health Ready Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Ready",
         "tags": [
           "ops"
         ]

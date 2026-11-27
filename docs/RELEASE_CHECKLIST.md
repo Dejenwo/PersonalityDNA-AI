@@ -30,5 +30,20 @@ Every item needs evidence (link to CI run, report or document). Nothing here is 
 - [ ] Payment sandbox tests for every purchase path
 - [ ] Owner authorization recorded for deployment / publication
 
+## Operations (docs/DEPLOYMENT_GUIDE.md)
+- [ ] Production settings reviewed against the deployment guide; `PDNA_RELEASE` and `PDNA_LOG_FORMAT=json` set
+- [ ] Data-encryption key backed up offline and tested in a restore drill
+- [ ] Uptime checks on `/health/ready` and the web home page, alerting the on-call person
+- [ ] Daily jobs scheduled (`send_reminders.py`, `purge_expired.py`) and their first runs checked
+- [ ] Incident contacts filled in (docs/INCIDENT_RESPONSE.md)
+- [ ] Support email set (`NEXT_PUBLIC_SUPPORT_EMAIL`) and someone assigned to answer it (docs/CUSTOMER_SUPPORT.md)
+- [ ] `scripts/smoke_test.py` passes against production
+
+## Launch day
+- [ ] Beta exit criteria met (docs/BETA_PROGRAM.md)
+- [ ] Owner's go decision recorded, with the release commit
+- [ ] Release steps followed and the smoke-test output saved
+- [ ] Someone watching errors, latency and feedback for the first 24 hours
+
 ## Quality review board (MASTER_PROMPT.md §28)
 - [ ] Evidence-based score ≥ 90/100 with no unresolved critical issues

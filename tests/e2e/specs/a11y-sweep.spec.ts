@@ -26,6 +26,7 @@ const PUBLIC = [
   "/relationships/join",
   "/orgs/join",
   "/feedback",
+  "/help",
   "/this-page-does-not-exist",
 ];
 

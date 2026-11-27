@@ -103,6 +103,10 @@ export function SiteFooter() {
             {t("footer.organisations")}
           </Link>{" "}
           ·{" "}
+          <Link className="underline" href="/help">
+            {t("footer.help")}
+          </Link>{" "}
+          ·{" "}
           <Link className="underline" href={feedbackHref(pathname)}>
             {t("footer.feedback")}
           </Link>

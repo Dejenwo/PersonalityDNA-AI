@@ -38,7 +38,7 @@ No device identifiers or third-party trackers are collected. Product analytics a
 7. Enterprise: employers never see individual results without that individual's explicit, revocable consent; aggregates need a minimum group size.
 8. Cross-border transfers: document provider regions (Supabase, LLM providers) before launch.
 9. Children: block under-18; no knowingly collected children's data.
-10. Logs: no answers, journals or coaching text in logs (enforced by code review; add a log-scrubbing test with structured logging).
+10. Logs: no answers, journals, coaching or feedback text in logs. Access logs record only the method, route template, status, duration and request id: no full paths, query strings, bodies or IP addresses (`app/ops/observability.py`, tested in `tests/test_ops.py` and `tests/test_security.py`).
 
 ## Administrative access (ADR-022)
 
