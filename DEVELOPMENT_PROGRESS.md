@@ -29,7 +29,8 @@ Last updated: 2026-11-27.
 | 19 | Internationalisation | Tested | One language registry for API and web (the ten languages in the spec; English released, others planned); message catalogues with plurals, links and English fallback; device and profile language choice limited to released languages; locale-aware formatting; right-to-left support through `dir` and logical CSS; pseudo-locales in preview builds; translated instruments need an approved adaptation record before release; Languages section in the admin portal; adaptation workflow in docs/LOCALIZATION.md (ADR-024). Chrome and settings use messages; other screens move over screen by screen (I-003). No translations are released. |
 | 20 | Growth infrastructure | Tested | Referral links with join counts only (never who joined or who pays); first-touch referral and campaign tags sent once at sign-up; anonymous daily event counts from a whitelist, no trackers, honouring GPC and Do Not Track; in-app and email notifications with per-kind preferences (security always on, news opt-in), generic text that never quotes private content; daily reminders for unfinished assessments, programme days and planned habits, sent once and deleted after 90 days; admin metrics for events, referrals and sources; SEO metadata, sitemap, robots rules, structured data and a cited Big Five article (migration 0016, ADR-025). Referral rewards need an owner decision. |
 | 21 | Security hardening | Tested | Threat model brought up to date (T33–T35, current data flows and assets); whole-API sweeps from the OpenAPI document (sign-in required, no cross-account access by id, no 5xx); log privacy and complete-deletion checks; security notices for password changes and stolen sessions; daily retention purge; stricter API and web headers; production guards for HTTPS origins and links; dependency audit (no known vulnerabilities in project dependencies) and bandit review; security review with pre-launch actions (ADR-026). Penetration test, MFA and KMS keys remain before launch. |
-| 22–25 | Quality assurance onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
+| 22 | Quality assurance | Tested | Coverage measured (backend 97% of lines) and enforced in CI at 95%; integration tests for SMTP email and the payment HTTP client; regression snapshots of the full result for every instrument; accessibility sweep of every screen in light and dark mode on desktop and mobile; AI coach evaluation runs as its own CI step; test strategy rewritten; QA report (docs/QA_REPORT_2026-11-27.md). No defects found. Manual screen-reader pass, live-provider tests and the live model evaluation remain. |
+| 23–25 | Performance engineering onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
 
 ## Task log
 
@@ -141,14 +142,18 @@ Last updated: 2026-11-27.
 | S-002 | Privacy | Log privacy, complete deletion across every table, retention purge | P0 | Tested | `test_private_content_never_reaches_logs`, `test_every_table_with_personal_data_is_removed_with_the_account`, `test_retention_purges_only_what_has_expired` |
 | S-003 | Security | Security notices; API and web headers; HTTPS production guards; raw HTML guard | P0 | Tested | `test_security_notices_for_password_change_and_stolen_sessions`, `test_api_security_headers`, `test_production_needs_https_origins_and_links`; vitest security |
 | S-004 | Security | Independent penetration test, MFA (required for admins), KMS keys with rotation, shared rate limiting, WAF, alerting | P0 | Blocked | Needs hosting, a security vendor and the owner's budget (docs/security/SECURITY_REVIEW_2026-11-27.md) |
+| Q-001 | QA | Coverage gate (95% of backend lines) and AI coach evaluation in CI | P0 | Tested | CI backend job; `run_coach_eval.py` |
+| Q-002 | QA | Regression snapshots of results for every instrument; SMTP and payment client integration tests | P0 | Tested | tests/test_golden.py, tests/test_integrations.py |
+| Q-003 | Accessibility | Every screen, light and dark, desktop and mobile, with axe | P0 | Tested | e2e a11y-sweep.spec.ts |
+| Q-004 | QA | Manual screen-reader and keyboard pass; live-provider tests (SMTP, Stripe test mode, RevenueCat sandbox); live coach evaluation | P1 | Blocked | Needs beta testers and the owner's provider accounts and API key |
 | M-005 | Monetization | One-off report purchases (credit model), live provider setup, tax, final prices, terms update, mobile purchase UI | P1 | Not Started | Needs the owner's Stripe, RevenueCat, Apple and Google accounts |
 
 ## Test results (latest local run, 2026-11-27)
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest` | 223 passed |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 223 passed |
+| Backend, SQLite | `pytest --cov=app` | 230 passed, 97.1% line coverage |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 230 passed |
 | Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
@@ -156,4 +161,4 @@ Last updated: 2026-11-27.
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
 | Dependency audit | `pip-audit .`, `pnpm audit --prod` | no known vulnerabilities |
 | Static analysis | `bandit -r app` | no high findings (review in docs/security/SECURITY_REVIEW_2026-11-27.md) |
-| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7, preview build) | 50 passed |
+| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7, preview build) | 54 passed |
