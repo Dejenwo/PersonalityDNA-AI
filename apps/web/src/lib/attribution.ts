@@ -3,7 +3,7 @@ import type { Schemas } from "@pdna/api-client";
 /** First-touch attribution from the landing link, kept on this device for 30 days and sent once at sign-up. */
 export type Attribution = Schemas["AttributionIn"];
 
-const KEY = "pdna.attribution.v1";
+const STORAGE_ITEM = "pdna.attribution.v1";
 const TTL_MS = 30 * 86_400_000;
 const TAG = /^[a-z0-9][a-z0-9_.-]{0,63}$/;
 const CODE = /^[a-z0-9]{4,16}$/;
@@ -35,7 +35,7 @@ export function captureAttribution(search: string, store: KeyValueStore | null, 
   const found = parseAttribution(search);
   if (!found || !store) return found;
   try {
-    if (!storedAttribution(store, now)) store.setItem(KEY, JSON.stringify({ at: now, ...found }));
+    if (!storedAttribution(store, now)) store.setItem(STORAGE_ITEM, JSON.stringify({ at: now, ...found }));
   } catch {
     /* storage blocked */
   }
@@ -44,11 +44,11 @@ export function captureAttribution(search: string, store: KeyValueStore | null, 
 
 export function storedAttribution(store: KeyValueStore | null, now = Date.now()): Attribution | null {
   try {
-    const raw = store?.getItem(KEY);
+    const raw = store?.getItem(STORAGE_ITEM);
     if (!raw) return null;
     const { at, ...a } = JSON.parse(raw) as Attribution & { at: number };
     if (typeof at !== "number" || now - at > TTL_MS) {
-      store?.removeItem(KEY);
+      store?.removeItem(STORAGE_ITEM);
       return null;
     }
     return a;
@@ -59,7 +59,7 @@ export function storedAttribution(store: KeyValueStore | null, now = Date.now())
 
 export function clearAttribution(store: KeyValueStore | null): void {
   try {
-    store?.removeItem(KEY);
+    store?.removeItem(STORAGE_ITEM);
   } catch {
     /* ignore */
   }
