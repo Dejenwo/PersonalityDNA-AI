@@ -4,6 +4,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.admin.routes import router as admin_router
+from app.admin.service import AdminService
 from app.api.errors import install_error_handlers
 from app.api.v1.routes import router as v1
 from app.assessments.content import load_content
@@ -74,6 +76,7 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.state.cipher = FieldCipher.from_settings(settings)
     app.state.entitlements = Entitlements(settings)
     app.state.billing = BillingService(settings, app.state.entitlements)
+    app.state.admin = AdminService(settings, app.state.entitlements)
     app.state.coach = CoachService(
         settings,
         make_provider(settings),
@@ -105,6 +108,7 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.include_router(share_router)
     app.include_router(public_card_router)
     app.include_router(billing_router)
+    app.include_router(admin_router)
     if settings.dev_outbox_endpoint and settings.environment in ("development", "test"):
         app.include_router(dev_router)
 

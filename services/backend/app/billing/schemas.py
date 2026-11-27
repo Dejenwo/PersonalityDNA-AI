@@ -16,7 +16,7 @@ class PlansOut(BaseModel):
 
 
 class SubscriptionOut(BaseModel):
-    provider: Literal["stripe", "revenuecat", "dev"]
+    provider: Literal["stripe", "revenuecat", "dev", "manual"]
     plan_id: str
     status: str
     current_period_end: datetime | None

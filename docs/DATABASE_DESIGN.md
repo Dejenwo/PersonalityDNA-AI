@@ -56,6 +56,14 @@ Comparisons are computed on request from each person's latest Big Five result an
 | --- | --- | --- | --- |
 | `learning_activity_progress` | Which learning activities a user marked done: track (`leadership`, `emotional-awareness`), module and activity ids and time, no free text | FK user CASCADE; unique (user, track, module, activity) | Until unmarked or account deletion |
 
+## Implemented (migration 0014, admin roles)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `admin_roles` | Admin role per account (support, analyst, content, security, superadmin) and who granted it | FK user CASCADE; FK granted_by SET NULL; unique (user, role); role check | Until removed or account deletion |
+
+`subscriptions.provider` also accepts `manual` (complimentary access granted by support).
+
 ## Implemented (migration 0013, billing)
 
 | Table | Purpose | Key constraints | Retention |

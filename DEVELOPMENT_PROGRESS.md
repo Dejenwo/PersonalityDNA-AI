@@ -24,7 +24,8 @@ Last updated: 2026-11-26.
 | 14 | Journaling, goals and habits | Tested | Journal: encrypted entries (title, text, tags), six kinds with original prompts, optional mood, tags, search after decryption (POST, not logged), Markdown and JSON export, delete one or all (ADR-017). Goals with milestones and adjustment, habits on chosen weekdays with history, neutral 7 and 30-day summaries and a four-week grid, no streaks (ADR-018). Reminders wait for the notification service. |
 | 15 | Reports | Tested | Personality reports: a snapshot of the latest Big Five, interest and leadership results with profile, trait scores as text and bars, strengths, development, communication and relationship guidance, career interests, leadership preferences, values note, a development plan of growth programmes and leadership modules, methodology, references and limitations; stored encrypted with a body fingerprint (migration 0011); report library, report page and server-rendered PDF download (ADR-019). Shareable personality cards: opt-in, revocable public links with profile name and Big Five bands only, an SVG image, no name, email or scores (migration 0012, ADR-020). |
 | 16 | Monetization | Tested | Plans and prices as validated data; entitlement service (report PDFs, programmes over 7 days, relationship invitations, coaching allowance); Stripe checkout, customer portal and signed, idempotent webhooks; RevenueCat webhooks and restore for Apple and Google; local checkout for development; pricing page and plan card on the account page (migration 0013, ADR-021). Off until the owner sets up providers (`PDNA_BILLING_ENFORCE`). |
-| 17–25 | Administration onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
+| 17 | Administration | Tested | Five least-privilege roles (first superadmin from the command line), account search and detail without private content, disable or enable with sign-out, complimentary Premium, role management, metrics (accounts, assessments, subscriptions, estimated revenue, AI tokens and cost, feature adoption), content and version overview, audit log, health; every change audited with a reason (migration 0014, ADR-022). |
+| 18–25 | Enterprise onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
 
 ## Task log
 
@@ -111,17 +112,21 @@ Last updated: 2026-11-26.
 | M-002 | Monetization | Stripe checkout and portal (fake HTTP), webhook signatures, idempotency, status mapping, customer reuse | P0 | Tested | `test_stripe_signature_verification`, `test_stripe_checkout_webhooks_and_portal` |
 | M-003 | Monetization | RevenueCat webhooks (auth, purchase, cancellation, expiry, unknown products) and restore | P0 | Tested | `test_revenuecat_webhooks_and_restore` |
 | M-004 | Web | Pricing page, plan card with manage or cancel, export and account deletion | P0 | Tested | e2e pricing.spec.ts (desktop + mobile) + axe; vitest billing helpers; `test_export_ownership_and_account_deletion` |
+| A-001 | Admin | Roles and permissions, 404 for non-admins, command-line grant | P0 | Tested | `test_role_permissions_are_least_privilege`, `test_non_admins_see_nothing`, `test_grant_admin_command_line` |
+| A-002 | Admin | Support tools with audit; no private content in responses; self-protection | P0 | Tested | `test_support_tools_are_audited_and_never_show_private_content` |
+| A-003 | Admin | Metrics, revenue and AI cost estimates, content overview, audit pagination, roles | P0 | Tested | `test_superadmin_roles_audit_metrics_and_content`, `test_revenue_and_ai_cost_estimates`; e2e admin.spec.ts + axe |
+| A-004 | Admin | Feature flags, translation management, privacy request queue, plan and content editing with review, MFA for admins, reporting store | P1 | Not Started | Needs review flows; MFA is a security phase item |
 | M-005 | Monetization | One-off report purchases (credit model), live provider setup, tax, final prices, terms update, mobile purchase UI | P1 | Not Started | Needs the owner's Stripe, RevenueCat, Apple and Google accounts |
 
 ## Test results (latest local run, 2026-11-27)
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest` | 195 passed |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 195 passed |
+| Backend, SQLite | `pytest` | 201 passed |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 201 passed |
 | Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
-| Web unit | `vitest run` | 40 passed |
+| Web unit | `vitest run` | 42 passed |
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
-| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 40 passed |
+| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 42 passed |

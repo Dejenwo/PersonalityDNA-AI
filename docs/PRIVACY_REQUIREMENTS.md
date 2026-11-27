@@ -35,3 +35,7 @@ No names, emails, device identifiers, analytics or third-party trackers are coll
 8. Cross-border transfers: document provider regions (Supabase, LLM providers) before launch.
 9. Children: block under-18; no knowingly collected children's data.
 10. Logs: no answers, journals or coaching text in logs (enforced by code review; add a log-scrubbing test with structured logging).
+
+## Administrative access (ADR-022)
+
+Admin roles see account metadata (email, dates, status, plan, counts) and aggregates only. No admin endpoint returns journal text, coaching messages, assessment answers or report contents. Every admin change is audited with the admin's id and a reason.

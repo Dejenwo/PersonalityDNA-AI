@@ -75,6 +75,11 @@ class Settings(BaseSettings):
     # Local checkout that grants Premium without payment. Refused in staging/production.
     billing_dev_checkout: bool = False
 
+    # --- Admin metrics ---
+    # The owner's AI prices in US dollars per million tokens, from their provider invoice. Unset: no estimate.
+    ai_cost_input_usd_per_mtok: float | None = Field(default=None, ge=0)
+    ai_cost_output_usd_per_mtok: float | None = Field(default=None, ge=0)
+
     # --- AI coach ---
     coach_enabled: bool = True
     # "mock" is a deterministic stand-in used in development, tests and demos. It calls no AI service.

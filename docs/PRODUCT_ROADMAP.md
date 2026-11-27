@@ -20,7 +20,7 @@ Follows MASTER_PROMPT.md §24 (25 phases). Status is kept in DEVELOPMENT_PROGRES
 | 14 | Journaling and habits | Done (code); reminders wait for notifications | Encrypted journal (ADR-017); goals, milestones and habits without streaks (ADR-018) |
 | 15 | Reports | Done (code) | Encrypted report snapshots with a reportlab PDF (ADR-019); opt-in, revocable share cards (ADR-020) |
 | 16 | Monetization | Done (code), off by default; needs Stripe, RevenueCat, Apple and Google accounts to switch on | Plans as data, entitlement service, Stripe checkout and portal, RevenueCat webhooks and restore, pricing page (ADR-021) |
-| 17 | Administration | — | |
+| 17 | Administration | Done (code); feature flags, translation and privacy-request tools later | Least-privilege roles, support tools, metrics with revenue and AI cost estimates, content versions, audit log, health (ADR-022) |
 | 18 | Enterprise portal | Legal review of employer use | |
 | 19 | Internationalization | Professional translators + psychometric review | |
 | 20 | Growth infrastructure | Analytics vendor decision | |

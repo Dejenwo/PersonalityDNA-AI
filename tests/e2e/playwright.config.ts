@@ -8,7 +8,8 @@ import { defineConfig, devices } from "@playwright/test";
 const API = "http://127.0.0.1:8000";
 const WEB = "http://127.0.0.1:3000";
 const external = process.env.E2E_EXTERNAL === "1";
-const dbFile = `${process.env.E2E_TMP ?? "/tmp"}/pdna-e2e-${Date.now()}.db`;
+// Set once in the main process; workers inherit it, so specs can reach the same database (for admin roles).
+const dbFile = (process.env.PDNA_E2E_DB ??= `${process.env.E2E_TMP ?? "/tmp"}/pdna-e2e-${Date.now()}.db`);
 
 export default defineConfig({
   testDir: "./specs",

@@ -117,6 +117,23 @@ Signed-in users only; other users' reports return 404. A report is a snapshot an
 | GET / DELETE | `/api/v1/reports/{id}` | Read the full report body with its SHA-256, or delete it |
 | GET | `/api/v1/reports/{id}/pdf` | The report as a PDF (attachment, `no-store`) |
 
+## Administration (implemented)
+
+Needs an admin role (`scripts/grant_admin.py` creates the first superadmin). A missing role or permission returns 404. Changes need a reason and are audited.
+
+| Method | Path | Permission | Purpose |
+| --- | --- | --- | --- |
+| GET | `/api/v1/admin/me` | any role | Roles and permissions |
+| GET | `/api/v1/admin/users?q=` | users.read | Find accounts by email text or id (25 max) |
+| GET | `/api/v1/admin/users/{id}` | users.read | Account metadata, counts, subscriptions, roles. Never private content |
+| POST | `/api/v1/admin/users/{id}/status` | users.manage | Disable (signs out everywhere) or enable, with a reason |
+| POST / DELETE | `/api/v1/admin/users/{id}/grants[/{sub}]` | subscriptions.manage | Complimentary Premium for 1–366 days, or remove it |
+| POST / DELETE | `/api/v1/admin/users/{id}/roles[/{role}]` | roles.manage | Grant or remove admin roles |
+| GET | `/api/v1/admin/metrics` | metrics.read | Accounts, assessments, subscriptions, estimated revenue, AI usage and cost, feature adoption (aggregates) |
+| GET | `/api/v1/admin/content` | content.read | Engine, report, prompt and plan versions; instruments and content files with SHA-256 |
+| GET | `/api/v1/admin/audit?before=&event_type=&limit=` | audit.read | Audit events, newest first |
+| GET | `/api/v1/admin/health` | health.read | Database, environment and provider configuration |
+
 ## Billing (implemented)
 
 Gated features return 403 `premium_required` with `details.feature` once `PDNA_BILLING_ENFORCE=true`.

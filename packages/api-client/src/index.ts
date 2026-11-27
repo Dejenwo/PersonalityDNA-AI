@@ -61,6 +61,14 @@ export type CreateCardIn = Schemas["CreateCardIn"];
 export type Plans = Schemas["PlansOut"];
 export type Plan = Schemas["Plan"];
 export type Billing = Schemas["BillingOut"];
+export type AdminMe = Schemas["AdminMe"];
+export type AdminUser = Schemas["UserSummary"];
+export type AdminUserDetail = Schemas["UserDetail"];
+export type AdminMetrics = Schemas["Metrics"];
+export type AdminContent = Schemas["ContentOverview"];
+export type AdminAudit = Schemas["AuditList"];
+export type AdminHealth = Schemas["Health"];
+export type AdminRole = Schemas["RoleIn"]["role"];
 
 /** Events streamed by POST /coach/conversations/{id}/messages (server-sent events). */
 export type CoachEvent =
@@ -354,6 +362,28 @@ export function createApiClient({
     checkout: (planId: string) =>
       request<{ url: string }>("POST", "/api/v1/billing/checkout", { body: { plan_id: planId } }),
     manageSubscription: () => request<{ url: string }>("POST", "/api/v1/billing/manage"),
+    adminMe: () => request<AdminMe>("GET", "/api/v1/admin/me"),
+    adminUsers: (q: string) => request<{ users: AdminUser[] }>("GET", `/api/v1/admin/users?q=${seg(q)}`),
+    adminUser: (id: string) => request<AdminUserDetail>("GET", `/api/v1/admin/users/${seg(id)}`),
+    adminSetStatus: (id: string, status: "active" | "disabled", reason: string) =>
+      request<AdminUserDetail>("POST", `/api/v1/admin/users/${seg(id)}/status`, { body: { status, reason } }),
+    adminGrant: (id: string, plan_id: string, days: number, reason: string) =>
+      request<AdminUserDetail>("POST", `/api/v1/admin/users/${seg(id)}/grants`, { body: { plan_id, days, reason } }),
+    adminRevokeGrant: (id: string, subscriptionId: string) =>
+      request<AdminUserDetail>("DELETE", `/api/v1/admin/users/${seg(id)}/grants/${seg(subscriptionId)}`),
+    adminAddRole: (id: string, role: AdminRole) =>
+      request<AdminUserDetail>("POST", `/api/v1/admin/users/${seg(id)}/roles`, { body: { role } }),
+    adminRemoveRole: (id: string, role: AdminRole) =>
+      request<AdminUserDetail>("DELETE", `/api/v1/admin/users/${seg(id)}/roles/${seg(role)}`),
+    adminMetrics: () => request<AdminMetrics>("GET", "/api/v1/admin/metrics"),
+    adminContent: () => request<AdminContent>("GET", "/api/v1/admin/content"),
+    adminAudit: (before?: string | null, eventType?: string) => {
+      const p = new URLSearchParams();
+      if (before) p.set("before", before);
+      if (eventType) p.set("event_type", eventType);
+      return request<AdminAudit>("GET", `/api/v1/admin/audit?${p.toString()}`);
+    },
+    adminHealth: () => request<AdminHealth>("GET", "/api/v1/admin/health"),
     publicCardImageUrl: (token: string) => `${root}/api/v1/public/cards/${seg(token)}/image.svg`,
   };
 }

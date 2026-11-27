@@ -45,6 +45,8 @@ Browser ⇄ Web app (static/JS) ; Browser ⇄ API (JSON, `X-Session-Token`) ; AP
 | T24 | Tampering | Script injection through card text in the SVG image | All text escaped; SVG served with `default-src 'none'`; card text comes only from versioned content | Mitigated, tested |
 | T25 | Spoofing | Forged payment webhooks granting Premium | Stripe signature (HMAC-SHA256, 5-minute tolerance); RevenueCat shared secret compared in constant time; webhooks refuse to run unconfigured; plan must be a known paid plan | Mitigated, tested |
 | T26 | Tampering | Replayed webhook events | Event ids stored once per provider (unique constraint) | Mitigated, tested |
+| T27 | Elevation of privilege | A member or a narrow admin role reaching admin functions | Per-route permission checks; roles only by command line or superadmin; confirmed email required; 404 for missing permission; superadmin cannot remove their own role | Mitigated, tested |
+| T28 | Information disclosure | Admins reading private journals, coaching or answers | No admin endpoint returns encrypted fields or content; tests assert private text never appears | Mitigated, tested |
 
 ## Future flows to model
 

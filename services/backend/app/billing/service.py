@@ -139,6 +139,8 @@ class BillingService:
         base = self.settings.web_base_url.rstrip("/")
         if s is None or not is_current(s):
             raise ApiError(404, "no_subscription", "You don't have an active subscription.")
+        if s.provider == "manual":
+            raise ApiError(409, "manual_grant", "This Premium access was given by support and doesn't renew.")
         if s.provider == "revenuecat":
             raise ApiError(
                 409,

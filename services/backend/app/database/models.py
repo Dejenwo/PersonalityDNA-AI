@@ -611,7 +611,9 @@ class Subscription(Base):
     __tablename__ = "subscriptions"
     __table_args__ = (
         UniqueConstraint("provider", "provider_subscription_id", name="uq_subscriptions_provider_ref"),
-        CheckConstraint("provider in ('stripe','revenuecat','dev')", name="ck_subscriptions_provider"),
+        CheckConstraint(
+            "provider in ('stripe','revenuecat','dev','manual')", name="ck_subscriptions_provider"
+        ),
         CheckConstraint(
             "status in ('active','trialing','past_due','incomplete','canceled','expired')",
             name="ck_subscriptions_status",
@@ -647,3 +649,26 @@ class BillingEvent(Base):
         ForeignKey("users.id", ondelete="SET NULL", name="fk_billing_events_user_id_users"), nullable=True
     )
     received_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class AdminRole(Base):
+    """An administrative role held by an account. Granted from the command line or by a superadmin;
+    never self-service. Roles give access to account metadata and aggregates, never to private content."""
+
+    __tablename__ = "admin_roles"
+    __table_args__ = (
+        UniqueConstraint("user_id", "role", name="uq_admin_roles_user_role"),
+        CheckConstraint(
+            "role in ('support','analyst','content','security','superadmin')", name="ck_admin_roles_role"
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_admin_roles_user_id_users"), index=True
+    )
+    role: Mapped[str] = mapped_column(String(16))
+    granted_by: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL", name="fk_admin_roles_granted_by_users"), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
