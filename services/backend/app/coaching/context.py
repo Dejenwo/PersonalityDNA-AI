@@ -31,6 +31,12 @@ TOPICS: dict[str, tuple[str, str]] = {
         "Leadership",
         "Help the user reflect on how they lead, delegate, give feedback and support others.",
     ),
+    "emotions": (
+        "Emotions and communication",
+        "Help the user notice and name feelings, pause before responding, listen and express themselves "
+        "constructively. This is everyday learning, not therapy: never diagnose, never rate their emotional "
+        "intelligence, and encourage professional support if they describe serious or lasting distress.",
+    ),
     "goals": (
         "Goals and habits",
         "Help the user set one small, specific goal and a habit that fits their tendencies.",

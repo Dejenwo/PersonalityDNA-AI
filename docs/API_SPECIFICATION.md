@@ -76,12 +76,20 @@ Signed-in, verified users only. A link is visible only to its two people; others
 
 Results of the `leadership-preferences-27` instrument come back from the normal result endpoints with `kind: "leadership"` and a `leadership` block (areas ranked with scores and text, top, stretch, even, recommended modules, note).
 
+Development modules are served by the learning endpoints below with `{track}` = `leadership`.
+
+## Learning tracks (implemented)
+
+Tracks: `leadership` and `emotional-awareness` (no score, ADR-015). Unknown tracks, modules and activities return 404.
+
 | Method | Path | Purpose |
 | --- | --- | --- |
-| GET | `/api/v1/leadership/modules` | Module catalogue; with a signed-in user, activities done per module |
-| GET | `/api/v1/leadership/modules/{id}` | Lessons, activities (with `completed_at` for the signed-in user) and reflection |
-| PUT | `/api/v1/leadership/modules/{id}/activities/{activity}/done` | Mark done (account required, idempotent) |
-| DELETE | `/api/v1/leadership/modules/{id}/activities/{activity}/done` | Mark not done |
+| GET | `/api/v1/learning/{track}/modules` | Track title, note, optional support note and module catalogue; with a signed-in user, activities done per module |
+| GET | `/api/v1/learning/{track}/modules/{id}` | Lessons, activities (with `completed_at` for the signed-in user), reflection and support note |
+| PUT | `/api/v1/learning/{track}/modules/{id}/activities/{activity}/done` | Mark done (account required, idempotent) |
+| DELETE | `/api/v1/learning/{track}/modules/{id}/activities/{activity}/done` | Mark not done |
+
+The coach accepts the topic `emotions` ("Emotions and communication").
 
 ## Planned (from MASTER_PROMPT.md §14)
 

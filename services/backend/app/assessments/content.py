@@ -222,7 +222,7 @@ class Activity(_Frozen):
     steps: tuple[str, ...]
 
 
-class LeadershipModule(_Frozen):
+class LearningModule(_Frozen):
     id: str = Field(pattern=r"^[a-z0-9-]+$")
     area: str
     title: str
@@ -232,32 +232,45 @@ class LeadershipModule(_Frozen):
     reflection: str
 
 
-class LeadershipProgram(_Frozen):
-    id: str
+class LearningTrack(_Frozen):
+    """A set of learning modules with lessons, activities and a reflection question."""
+
+    id: str = Field(pattern=r"^[a-z0-9-]+$")
     version: str
     locale: str
+    title: str
     note: str
-    areas: dict[str, LeadershipArea]
-    modules: tuple[LeadershipModule, ...]
+    support_note: str | None = None
+    modules: tuple[LearningModule, ...]
 
     @model_validator(mode="after")
-    def _check(self) -> "LeadershipProgram":
+    def _check_modules(self) -> "LearningTrack":
         ids = [m.id for m in self.modules]
-        if len(set(ids)) != len(ids):
-            raise ValueError("duplicate module ids")
+        if not ids or len(set(ids)) != len(ids):
+            raise ValueError("a track needs modules with unique ids")
+        for m in self.modules:
+            acts = [a.id for a in m.activities]
+            if not acts or len(set(acts)) != len(acts):
+                raise ValueError(f"module {m.id} needs activities with unique ids")
+        return self
+
+    def module(self, module_id: str) -> LearningModule | None:
+        return next((m for m in self.modules if m.id == module_id), None)
+
+
+class LeadershipProgram(LearningTrack):
+    areas: dict[str, LeadershipArea]
+
+    @model_validator(mode="after")
+    def _check_areas(self) -> "LeadershipProgram":
+        ids = {m.id for m in self.modules}
         for m in self.modules:
             if m.area not in self.areas:
                 raise ValueError(f"module {m.id} references unknown area {m.area}")
-            acts = [a.id for a in m.activities]
-            if len(set(acts)) != len(acts):
-                raise ValueError(f"module {m.id} has duplicate activity ids")
         for area_id, area in self.areas.items():
             if area.module not in ids:
                 raise ValueError(f"area {area_id} references unknown module {area.module}")
         return self
-
-    def module(self, module_id: str) -> LeadershipModule | None:
-        return next((m for m in self.modules if m.id == module_id), None)
 
 
 class LoadedFile[T: BaseModel](BaseModel):
@@ -275,6 +288,15 @@ class ContentBundle(BaseModel):
     interests: LoadedFile[InterestInterpretations]
     relationships: LoadedFile[RelationshipInsights]
     leadership: LoadedFile[LeadershipProgram]
+    emotional_awareness: LoadedFile[LearningTrack]
+
+    def track(self, track_id: str) -> LearningTrack | None:
+        """Learning tracks by their public id; None for unknown ids."""
+        tracks: dict[str, LearningTrack] = {
+            "leadership": self.leadership.data,
+            "emotional-awareness": self.emotional_awareness.data,
+        }
+        return tracks.get(track_id)
 
     def instrument(self, instrument_id: str, version: str) -> LoadedFile[Instrument]:
         try:
@@ -318,6 +340,8 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
     relationships = RelationshipInsights.model_validate(rel_data)
     lead_data, lead_sha = _read(content_dir / "scoring-rules" / "leadership-program.v1.json")
     leadership = LeadershipProgram.model_validate(lead_data)
+    ea_data, ea_sha = _read(content_dir / "scoring-rules" / "emotional-awareness.v1.json")
+    emotional_awareness = LearningTrack.model_validate(ea_data)
 
     trait_ids = set(archetypes.traits)
     for inst_file in instruments.values():
@@ -355,5 +379,8 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
         ),
         leadership=LoadedFile[LeadershipProgram](
             data=leadership, sha256=lead_sha, path="leadership-program.v1.json"
+        ),
+        emotional_awareness=LoadedFile[LearningTrack](
+            data=emotional_awareness, sha256=ea_sha, path="emotional-awareness.v1.json"
         ),
     )

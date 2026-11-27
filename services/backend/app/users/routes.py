@@ -20,7 +20,7 @@ from app.database.models import (
     AssessmentSession,
     CoachConversation,
     ConsentRecord,
-    LeadershipActivityProgress,
+    LearningActivityProgress,
 )
 from app.relationships import service as relationships
 
@@ -148,10 +148,15 @@ def export(request: Request, user: CurrentUser, db: Db, content: Content) -> dic
             for c in conversations
         ],
         "relationships": relationships.export_for(db, user),
-        "leadership_activities": [
-            {"module": p.module_id, "activity": p.activity_id, "completed_at": p.completed_at.isoformat()}
+        "learning_activities": [
+            {
+                "track": p.track,
+                "module": p.module_id,
+                "activity": p.activity_id,
+                "completed_at": p.completed_at.isoformat(),
+            }
             for p in db.scalars(
-                select(LeadershipActivityProgress).where(LeadershipActivityProgress.user_id == user.id)
+                select(LearningActivityProgress).where(LearningActivityProgress.user_id == user.id)
             )
         ],
     }

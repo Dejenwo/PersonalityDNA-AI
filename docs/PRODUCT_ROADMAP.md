@@ -15,7 +15,7 @@ Follows MASTER_PROMPT.md §24 (25 phases). Status is kept in DEVELOPMENT_PROGRES
 | 9 | Career intelligence | O*NET Interest Profiler Short Form under CC BY-ND 4.0 (recorded); wording check and legal review before release | |
 | 10 | Relationship intelligence | Done (PR #1) | Invitations, two-sided consent, band comparison, prompts and exercises, revoke |
 | 11 | Leadership intelligence | Done | Original unvalidated preferences questionnaire, 9 modules, progress tracking (ADR-014) |
-| 12 | Emotional awareness | Clinical safety review of wording; crisis resources per country | |
+| 12 | Emotional awareness | Done (code); clinical safety review of wording and crisis resources per country before launch | Learning track with 7 modules, no score, support note, coach topic (ADR-015) |
 | 13 | Growth academy | Content writing | |
 | 14 | Journaling and habits | — | Field-level encryption |
 | 15 | Reports | — | PDF generation server-side |

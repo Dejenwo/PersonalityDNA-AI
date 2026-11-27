@@ -20,7 +20,7 @@ from app.api.schemas import (
     SessionOut,
     TraitResult,
 )
-from app.assessments.content import ContentBundle, Instrument, LeadershipModule
+from app.assessments.content import ContentBundle, Instrument, LearningModule
 from app.assessments.service import answers_of, instrument_for
 from app.careers.interests import LETTER
 from app.database.models import AssessmentResult, AssessmentSession
@@ -214,7 +214,7 @@ def leadership_out(bundle: ContentBundle, r: AssessmentResult) -> LeadershipOut:
     )
 
 
-def module_summary(m: LeadershipModule, reason: str | None = None) -> ModuleSummaryOut:
+def module_summary(m: LearningModule, reason: str | None = None) -> ModuleSummaryOut:
     return ModuleSummaryOut(id=m.id, area=m.area, title=m.title, summary=m.summary, reason=reason)
 
 

@@ -349,7 +349,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/leadership/modules": {
+    "/api/v1/learning/{track_id}/modules": {
         parameters: {
             query?: never;
             header?: never;
@@ -357,7 +357,7 @@ export interface paths {
             cookie?: never;
         };
         /** List Modules */
-        get: operations["list_modules_api_v1_leadership_modules_get"];
+        get: operations["list_modules_api_v1_learning__track_id__modules_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -366,7 +366,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/leadership/modules/{module_id}": {
+    "/api/v1/learning/{track_id}/modules/{module_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -374,7 +374,7 @@ export interface paths {
             cookie?: never;
         };
         /** Get Module */
-        get: operations["get_module_api_v1_leadership_modules__module_id__get"];
+        get: operations["get_module_api_v1_learning__track_id__modules__module_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -383,7 +383,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/leadership/modules/{module_id}/activities/{activity_id}/done": {
+    "/api/v1/learning/{track_id}/modules/{module_id}/activities/{activity_id}/done": {
         parameters: {
             query?: never;
             header?: never;
@@ -395,10 +395,10 @@ export interface paths {
          * Mark Done
          * @description Idempotent: marking an activity done twice keeps the first time.
          */
-        put: operations["mark_done_api_v1_leadership_modules__module_id__activities__activity_id__done_put"];
+        put: operations["mark_done_api_v1_learning__track_id__modules__module_id__activities__activity_id__done_put"];
         post?: never;
         /** Mark Not Done */
-        delete: operations["mark_not_done_api_v1_leadership_modules__module_id__activities__activity_id__done_delete"];
+        delete: operations["mark_not_done_api_v1_learning__track_id__modules__module_id__activities__activity_id__done_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -907,7 +907,7 @@ export interface components {
              * Topic
              * @enum {string}
              */
-            topic: "results" | "communication" | "relationships" | "career" | "leadership" | "goals" | "general";
+            topic: "results" | "communication" | "relationships" | "career" | "leadership" | "emotions" | "goals" | "general";
             /**
              * Updated At
              * Format: date-time
@@ -936,7 +936,7 @@ export interface components {
              * Topic
              * @enum {string}
              */
-            topic: "results" | "communication" | "relationships" | "career" | "leadership" | "goals" | "general";
+            topic: "results" | "communication" | "relationships" | "career" | "leadership" | "emotions" | "goals" | "general";
             /**
              * Updated At
              * Format: date-time
@@ -958,7 +958,7 @@ export interface components {
              * @default results
              * @enum {string}
              */
-            topic: "results" | "communication" | "relationships" | "career" | "leadership" | "goals" | "general";
+            topic: "results" | "communication" | "relationships" | "career" | "leadership" | "emotions" | "goals" | "general";
             /**
              * Use Results
              * @description Let the coach use assessment results.
@@ -1358,6 +1358,12 @@ export interface components {
             modules: components["schemas"]["ModuleListItem"][];
             /** Note */
             note: string;
+            /** Support Note */
+            support_note: string | null;
+            /** Title */
+            title: string;
+            /** Track */
+            track: string;
         };
         /** ModuleListItem */
         ModuleListItem: {
@@ -1392,8 +1398,14 @@ export interface components {
             reflection: string;
             /** Summary */
             summary: string;
+            /** Support Note */
+            support_note: string | null;
             /** Title */
             title: string;
+            /** Track */
+            track: string;
+            /** Track Title */
+            track_title: string;
         };
         /** ModuleSummaryOut */
         ModuleSummaryOut: {
@@ -2758,13 +2770,15 @@ export interface operations {
             };
         };
     };
-    list_modules_api_v1_leadership_modules_get: {
+    list_modules_api_v1_learning__track_id__modules_get: {
         parameters: {
             query?: never;
             header?: {
                 authorization?: string | null;
             };
-            path?: never;
+            path: {
+                track_id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -2798,13 +2812,14 @@ export interface operations {
             };
         };
     };
-    get_module_api_v1_leadership_modules__module_id__get: {
+    get_module_api_v1_learning__track_id__modules__module_id__get: {
         parameters: {
             query?: never;
             header?: {
                 authorization?: string | null;
             };
             path: {
+                track_id: string;
                 module_id: string;
             };
             cookie?: never;
@@ -2840,13 +2855,14 @@ export interface operations {
             };
         };
     };
-    mark_done_api_v1_leadership_modules__module_id__activities__activity_id__done_put: {
+    mark_done_api_v1_learning__track_id__modules__module_id__activities__activity_id__done_put: {
         parameters: {
             query?: never;
             header?: {
                 authorization?: string | null;
             };
             path: {
+                track_id: string;
                 module_id: string;
                 activity_id: string;
             };
@@ -2890,13 +2906,14 @@ export interface operations {
             };
         };
     };
-    mark_not_done_api_v1_leadership_modules__module_id__activities__activity_id__done_delete: {
+    mark_not_done_api_v1_learning__track_id__modules__module_id__activities__activity_id__done_delete: {
         parameters: {
             query?: never;
             header?: {
                 authorization?: string | null;
             };
             path: {
+                track_id: string;
                 module_id: string;
                 activity_id: string;
             };

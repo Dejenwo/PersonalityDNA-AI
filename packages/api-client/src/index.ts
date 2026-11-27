@@ -32,7 +32,8 @@ export type TraitComparison = Schemas["TraitComparisonOut"];
 export type InvitationPreview = Schemas["InvitationPreview"];
 export type LeadershipOut = Schemas["LeadershipOut"];
 export type ModuleList = Schemas["ModuleList"];
-export type LeadershipModule = Schemas["ModuleOut"];
+export type LearningModule = Schemas["ModuleOut"];
+export type LearningTrack = "leadership" | "emotional-awareness";
 
 /** Events streamed by POST /coach/conversations/{id}/messages (server-sent events). */
 export type CoachEvent =
@@ -244,11 +245,15 @@ export function createApiClient({
     getRelationship: (id: string) => request<LinkDetail>("GET", `/api/v1/relationships/${seg(id)}`),
     revokeRelationship: (id: string) => request<void>("DELETE", `/api/v1/relationships/${seg(id)}`),
 
-    // Leadership development
-    leadershipModules: () => request<ModuleList>("GET", "/api/v1/leadership/modules"),
-    leadershipModule: (id: string) => request<LeadershipModule>("GET", `/api/v1/leadership/modules/${seg(id)}`),
-    setActivityDone: (moduleId: string, activityId: string, done: boolean) =>
-      request<void>(done ? "PUT" : "DELETE", `/api/v1/leadership/modules/${seg(moduleId)}/activities/${seg(activityId)}/done`),
+    // Learning tracks (leadership development, emotional awareness)
+    learningModules: (track: LearningTrack) => request<ModuleList>("GET", `/api/v1/learning/${seg(track)}/modules`),
+    learningModule: (track: LearningTrack, id: string) =>
+      request<LearningModule>("GET", `/api/v1/learning/${seg(track)}/modules/${seg(id)}`),
+    setActivityDone: (track: LearningTrack, moduleId: string, activityId: string, done: boolean) =>
+      request<void>(
+        done ? "PUT" : "DELETE",
+        `/api/v1/learning/${seg(track)}/modules/${seg(moduleId)}/activities/${seg(activityId)}/done`,
+      ),
   };
 }
 

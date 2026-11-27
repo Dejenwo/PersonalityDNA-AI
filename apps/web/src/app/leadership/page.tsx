@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ModuleGrid } from "@/components/learning-module";
 import { LeadershipAreas, RecommendedModules } from "@/components/result-sections";
 import { Button, ButtonLink, Card, ErrorState, LoadingState } from "@/components/ui";
 import { api } from "@/lib/api";
@@ -11,7 +12,7 @@ import { useAsync } from "@/lib/use-async";
 export default function LeadershipPage() {
   const latest = useLatestResults(["leadership"]);
   const signedIn = latest.status === "ready" && latest.signedIn;
-  const modules = useAsync(() => api.leadershipModules(), `modules:${signedIn}`);
+  const modules = useAsync(() => api.learningModules("leadership"), `modules:${signedIn}`);
 
   if (latest.status === "loading" || modules.status === "loading") return <LoadingState label="Loading leadership" />;
   if (latest.status === "error" || modules.status === "error") {
@@ -80,37 +81,7 @@ export default function LeadershipPage() {
         </Card>
       )}
 
-      <section aria-labelledby="all-heading">
-        <h2 id="all-heading" className="text-2xl font-bold">
-          All modules
-        </h2>
-        {!signedIn && (
-          <p className="mt-1 text-sm text-ink-muted">
-            <Link href="/login?next=%2Fleadership" className="text-primary underline">
-              Sign in
-            </Link>{" "}
-            to keep track of the activities you finish.
-          </p>
-        )}
-        <ul className="mt-4 grid gap-4 sm:grid-cols-2">
-          {list.modules.map((m) => (
-            <li key={m.id}>
-              <Link
-                href={`/leadership/${m.id}`}
-                className="block h-full rounded-card border border-line bg-surface p-5 hover:bg-muted"
-              >
-                <span className="block text-lg font-semibold">{m.title}</span>
-                <span className="mt-1 block text-sm text-ink-muted">{m.summary}</span>
-                {signedIn && (
-                  <span className="mt-2 block text-sm">
-                    {m.activities_done} of {m.activities_total} activities done
-                  </span>
-                )}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <ModuleGrid track="leadership" list={list} signedIn={signedIn} />
 
       <Card>
         <h2 className="text-lg font-semibold">Talk it through</h2>

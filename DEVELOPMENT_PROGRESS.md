@@ -19,7 +19,8 @@ Last updated: 2026-11-26.
 | 9 | Career intelligence | Tested | O*NET Interest Profiler Short Form (60 activities) as a **draft** instrument, count-based RIASEC scoring (engine 1.1.0), interest code with tie reporting, interest results page, career exploration page joining interests and Big Five working style, interests in coach context (ADR-012). Draft is hidden in production until the wording is checked against the official PDF and a lawyer confirms the CC BY-ND reading. |
 | 10 | Relationship intelligence | Tested | One-time invitation links, consent from both people, one link per pair, comparison of Big Five bands with original similarity, difference, misunderstanding and prompt text, exercises and shared goals, revoke by either person, export and deletion (ADR-013). No compatibility score or prediction. |
 | 11 | Leadership intelligence | Tested | Original 27-statement leadership preferences questionnaire (9 areas from the spec, labelled unvalidated), ranked results with build and stretch suggestions, 9 development modules with lessons, activities and reflection, activity progress for accounts, leadership preferences in coach context (ADR-014). Never presented as ability or used for employment decisions. |
-| 12–25 | Emotional awareness onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
+| 12 | Emotional awareness | Tested | Original learning track: 7 modules (self-awareness, reflective communication, active listening, empathy, stress reflection, interpersonal understanding, constructive expression) with lessons, activities, reflection and a support note; no score or test; shared learning-track API and progress (migration 0007); "Emotions and communication" coach topic; Learn page (ADR-015). Needs a clinical safety review of wording before launch. |
+| 13–25 | Growth academy onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
 
 ## Task log
 
@@ -72,21 +73,26 @@ Last updated: 2026-11-26.
 | L-005 | Relationships | Email invitations, per-scope sharing (interests, goals), coach use of shared comparison | P2 | Not Started | Only with explicit consent design; coach must never see the other person's data without it |
 | D-001 | Assessment | Leadership preferences questionnaire (original, 27 items, interleaved, likert_mean, no bands) | P0 | Tested | `test_instrument_and_program` |
 | D-002 | Leadership | Deterministic profile: ranking with content-order ties, top three, two stretch areas, even-profile rule, module recommendations | P0 | Tested | `test_profile_*`, `test_leadership_result` |
-| D-003 | Leadership | Module catalogue and detail (public), activity progress (accounts, idempotent), export, migration 0006 | P0 | Tested | `test_modules_and_progress` |
+| D-003 | Leadership | Module catalogue and detail (public), activity progress (accounts, idempotent), export, migration 0006 (now learning tracks, E-002) | P0 | Tested | `test_modules_and_progress` |
 | D-004 | Coaching | Leadership preferences in coach context when results are shared | P0 | Tested | `test_history_and_coach_context` |
 | D-005 | Web | Leadership results, leadership hub (suggested modules, all modules with progress), module pages with done toggles; shared latest-results hook | P0 | Tested | e2e leadership.spec.ts (desktop + mobile) + axe |
 | D-006 | Leadership | Validation study, team or 360 views, manager programmes | P2 | Not Started | Needs a psychometrics reviewer; 360 views need a separate consent design and must never feed employment decisions |
+| E-001 | Content | Emotional awareness track: 7 original modules, note (not therapy, no score) and support note | P0 | Tested | `test_emotional_awareness_content` |
+| E-002 | Learning | Leadership and emotional awareness served as learning tracks; progress per track and user; export `learning_activities`; migration 0007 copies leadership progress | P0 | Tested | tests/test_learning.py, `test_0007_moves_leadership_progress_into_learning_tracks` (SQLite and PostgreSQL) |
+| E-003 | Coaching | "Emotions and communication" topic with not-therapy, no-diagnosis, no-rating instructions | P0 | Tested | `test_emotions_coach_topic`; coach evaluation at threshold |
+| E-004 | Web | Learn page, emotional awareness hub and module pages with support note, shared module components, coach topic | P0 | Tested | e2e emotional-awareness.spec.ts and leadership.spec.ts (desktop + mobile) + axe |
+| E-005 | Emotional awareness | Clinical safety review of wording; crisis resources per country; optional private reflection notes (with Phase 14 journal encryption) | P1 | Not Started | Needs a qualified reviewer; reflection notes wait for field-level encryption |
 | M-001 | Monetization | Entitlements service with plan config; Stripe and RevenueCat webhooks | P0 | Not Started | Needs accounts; live keys needed for real payments |
 
-## Test results (latest local run, 2026-11-26)
+## Test results (latest local run, 2026-11-27)
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest` | 152 passed |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 152 passed |
+| Backend, SQLite | `pytest` | 157 passed |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 157 passed |
 | Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
 | Web unit | `vitest run` | 21 passed |
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
-| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 28 passed |
+| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 30 passed |

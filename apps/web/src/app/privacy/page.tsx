@@ -19,7 +19,8 @@ export default function PrivacyPage() {
       <p>
         Your answers to assessment statements, the time you started and finished, and your confirmation that you are 18
         or older and agree to this notice. You don&apos;t need an account to take an assessment. If you create one, we
-        also store your email, an optional name and a securely hashed password.
+        also store your email, an optional name and a securely hashed password. If you mark learning activities as done
+        (leadership or emotional awareness), we store which activity and when, never anything you write about it.
       </p>
       <h2 className="pt-4 text-xl font-semibold">Why</h2>
       <p>To calculate and show you your results. Scores are calculated by a fixed formula, not by AI.</p>
