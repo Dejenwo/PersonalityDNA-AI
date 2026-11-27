@@ -24,7 +24,7 @@ export default function RelationshipsPage() {
     return <LoadingState label="Loading your relationships" />;
   if (data.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="We couldn't load your relationships"
         message={errorMessage(data.error)}
         action={<Button onClick={data.reload}>Try again</Button>}

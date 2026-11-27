@@ -180,6 +180,9 @@ def export(request: Request, user: CurrentUser, db: Db, content: Content) -> dic
             k: {"in_app": v[0], "email": v[1]}
             for k, v in request.app.state.notifications.preferences(db, user.id).items()
         },
+        "feedback": [
+            f.model_dump(mode="json") for f in request.app.state.feedback.mine(db, user, limit=None)
+        ],
         "referral_code": (rc.code if (rc := db.get(ReferralCode, user.id)) else None),
         "growth_programs": _growth_export(db, user),
         "goals_and_habits": GoalService(request.app.state.cipher).export(db, user),

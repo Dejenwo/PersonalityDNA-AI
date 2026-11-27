@@ -82,6 +82,11 @@ export type AppNotification = Schemas["NotificationOut"];
 export type NotificationList = Schemas["NotificationList"];
 export type NotificationPreference = Schemas["PreferenceOut"];
 export type NotificationPreferenceIn = Schemas["PreferenceIn"];
+export type FeedbackIn = Schemas["FeedbackIn"];
+export type Feedback = Schemas["FeedbackOut"];
+export type AdminFeedback = Schemas["AdminFeedback"];
+export type AdminFeedbackList = Schemas["AdminFeedbackList"];
+export type FeedbackStatus = Schemas["FeedbackStatusIn"]["status"];
 export type Referral = Schemas["ReferralOut"];
 export type OrgProgram = Schemas["OrgProgramOut"];
 export type OrgProgramIn = Schemas["OrgProgramIn"];
@@ -452,6 +457,17 @@ export function createApiClient({
     setNotificationPreference: (body: NotificationPreferenceIn) =>
       request<NotificationPreference[]>("PUT", "/api/v1/notifications/preferences", { body }),
     myReferral: () => request<Referral>("GET", "/api/v1/referrals/me"),
+    sendFeedback: (body: FeedbackIn) => request<Feedback>("POST", "/api/v1/feedback", { body }),
+    myFeedback: () => request<{ items: Feedback[] }>("GET", "/api/v1/feedback"),
+    adminFeedback: (filters: { status?: FeedbackStatus; kind?: FeedbackIn["kind"]; before?: string | null }) => {
+      const p = new URLSearchParams();
+      if (filters.status) p.set("status", filters.status);
+      if (filters.kind) p.set("kind", filters.kind);
+      if (filters.before) p.set("before", filters.before);
+      return request<AdminFeedbackList>("GET", `/api/v1/admin/feedback?${p.toString()}`);
+    },
+    adminSetFeedbackStatus: (id: string, status: FeedbackStatus) =>
+      request<AdminFeedback>("POST", `/api/v1/admin/feedback/${seg(id)}/status`, { body: { status } }),
     publicCardImageUrl: (token: string) => `${root}/api/v1/public/cards/${seg(token)}/image.svg`,
   };
 }

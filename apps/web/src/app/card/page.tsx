@@ -36,14 +36,14 @@ export default function SharedCardPage() {
   if (load.status === "loading") return <LoadingState label="Loading the card" />;
   if (load.status === "missing" || (load.status === "error" && isNotFound(load.error)))
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="This card isn't available"
         message="The link may be incomplete, or the person who shared it has stopped sharing."
         action={<ButtonLink href="/discover">Discover your own personality</ButtonLink>}
       />
     );
   if (load.status === "error")
-    return <ErrorState title="We couldn't load this card" message={errorMessage(load.error)} />;
+    return <ErrorState level={1} title="We couldn't load this card" message={errorMessage(load.error)} />;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">

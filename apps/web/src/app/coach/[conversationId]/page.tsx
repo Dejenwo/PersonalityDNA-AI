@@ -27,7 +27,7 @@ export default function ConversationPage() {
     return <LoadingState label="Loading the conversation" />;
   if (conv.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title={isNotFound(conv.error) ? "Conversation not found" : "We couldn't load this conversation"}
         message={isNotFound(conv.error) ? "It may have been deleted." : errorMessage(conv.error)}
         action={<ButtonLink href="/coach">All conversations</ButtonLink>}

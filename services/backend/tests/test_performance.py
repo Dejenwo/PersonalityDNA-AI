@@ -17,6 +17,7 @@ LISTS = [
     "/api/v1/relationships",
     "/api/v1/coach/conversations",
     "/api/v1/orgs",
+    "/api/v1/feedback",
     "/api/v1/growth/programs",
 ]
 

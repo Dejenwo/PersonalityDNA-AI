@@ -40,6 +40,7 @@ PUBLIC = {
     ("GET", "/api/v1/public/cards/{token}"),
     ("GET", "/api/v1/public/cards/{token}/image.svg"),
     ("POST", "/api/v1/analytics/events"),
+    ("POST", "/api/v1/feedback"),
     # Anonymous assessments are protected by the per-session resume token instead.
     ("POST", "/api/v1/assessment-sessions"),
     ("GET", "/api/v1/assessment-sessions/{session_id}"),
@@ -90,6 +91,7 @@ def _populate(client, h):
         ("POST", "/api/v1/habits", {"title": f"{MARKER} habit"}),
         ("POST", "/api/v1/growth/programs/focus-7/enrollment", None),
         ("PUT", "/api/v1/notifications/preferences", {"kind": "news", "in_app": True, "email": False}),
+        ("POST", "/api/v1/feedback", {"kind": "bug", "message": f"{MARKER} feedback", "contact_ok": True}),
     ]
     for method, path, body in calls:
         r = client.request(method, path, json=body, headers=h)

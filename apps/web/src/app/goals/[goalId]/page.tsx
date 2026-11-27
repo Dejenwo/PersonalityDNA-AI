@@ -21,7 +21,7 @@ export default function GoalPage() {
     return <LoadingState label="Loading the goal" />;
   if (data.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title={isNotFound(data.error) ? "Goal not found" : "We couldn't load this goal"}
         message={isNotFound(data.error) ? "It may have been deleted." : errorMessage(data.error)}
         action={<ButtonLink href="/goals">All goals</ButtonLink>}

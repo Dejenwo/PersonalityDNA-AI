@@ -29,7 +29,7 @@ export default function CoachPage() {
     return <LoadingState label="Loading the coach" />;
   if (data.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="We couldn't load the coach"
         message={errorMessage(data.error)}
         action={<Button onClick={data.reload}>Try again</Button>}
@@ -37,10 +37,10 @@ export default function CoachPage() {
     );
   const { status, list } = data.data!;
   if (!status.enabled)
-    return <ErrorState title="The coach is unavailable" message="The coach is switched off right now. Please try again later." />;
+    return <ErrorState level={1} title="The coach is unavailable" message="The coach is switched off right now. Please try again later." />;
   if (!status.email_verified)
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="Verify your email to use the coach"
         message="We sent a link to your email address when you signed up. Open it, then come back here."
       />
@@ -180,7 +180,7 @@ function StartConversation({ status }: { status: CoachStatus }) {
               type="checkbox"
               checked={useResults}
               onChange={(e) => setUseResults(e.target.checked)}
-              className="mt-1"
+              className="mt-1 h-5 w-5 accent-[var(--pdna-primary)]"
             />
             <span>
               Let the coach use my latest results
@@ -213,7 +213,7 @@ function StartConversation({ status }: { status: CoachStatus }) {
             <li>If you are in danger or crisis, contact local emergency services or a crisis line.</li>
           </ul>
           <label className="mt-3 flex gap-3 font-medium">
-            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-1" />
+            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-1 h-5 w-5 accent-[var(--pdna-primary)]" />
             I understand and want to use the coach
           </label>
         </div>

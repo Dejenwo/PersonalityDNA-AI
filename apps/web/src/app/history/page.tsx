@@ -44,7 +44,7 @@ function AccountHistory() {
 
   if (state.error) {
     return (
-      <ErrorState title="We couldn't load your history" message={errorMessage(state.error)}
+      <ErrorState level={1} title="We couldn't load your history" message={errorMessage(state.error)}
         action={<Button onClick={() => setState((s) => ({ n: s.n + 1 }))}>Try again</Button>} />
     );
   }

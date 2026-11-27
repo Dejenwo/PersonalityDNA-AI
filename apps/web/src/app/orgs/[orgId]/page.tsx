@@ -23,7 +23,7 @@ export default function OrgPage() {
     return <LoadingState label="Loading the organisation" />;
   if (org.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title={isNotFound(org.error) ? "Organisation not available" : "We couldn't load this organisation"}
         message={isNotFound(org.error) ? "You may have left it, or it may have been deleted." : errorMessage(org.error)}
         action={<ButtonLink href="/orgs">Organisations</ButtonLink>}

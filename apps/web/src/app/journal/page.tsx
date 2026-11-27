@@ -45,7 +45,7 @@ export default function JournalPage() {
     return <LoadingState label="Loading your journal" />;
   if (base.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title="We couldn't load your journal"
         message={errorMessage(base.error)}
         action={<Button onClick={base.reload}>Try again</Button>}

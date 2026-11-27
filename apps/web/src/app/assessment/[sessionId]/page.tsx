@@ -144,7 +144,7 @@ export default function AssessmentPage() {
   if (load.status === "error") {
     const missing = load.noToken || isNotFound(load.error);
     return (
-      <ErrorState
+      <ErrorState level={1}
         title={missing ? "We can't find this assessment on this device" : "We couldn't load your assessment"}
         message={
           missing

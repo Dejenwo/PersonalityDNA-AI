@@ -24,6 +24,8 @@ from app.coaching.service import CoachService
 from app.core.config import Settings, get_settings
 from app.database.base import Base
 from app.database.session import Database
+from app.feedback.routes import router as feedback_router
+from app.feedback.service import FeedbackService
 from app.goals.routes import router as goals_router
 from app.growth.routes import router as growth_router
 from app.i18n.routes import router as locales_router
@@ -86,6 +88,9 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.state.auth = AuthService(settings, app.state.notifications)
     app.state.events_limiter = RateLimiter(120, window_seconds=60 * 60)
     app.state.cipher = FieldCipher.from_settings(settings)
+    app.state.feedback = FeedbackService(app.state.cipher)
+    # Ten messages an hour per account or, signed out, per IP address.
+    app.state.feedback_limiter = RateLimiter(10, window_seconds=60 * 60)
     app.state.entitlements = Entitlements(settings)
     app.state.billing = BillingService(settings, app.state.entitlements)
     app.state.admin = AdminService(settings, app.state.entitlements)
@@ -124,6 +129,7 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.include_router(orgs_router)
     app.include_router(locales_router)
     app.include_router(notifications_router)
+    app.include_router(feedback_router)
     app.include_router(marketing_router)
     if settings.dev_outbox_endpoint and settings.environment in ("development", "test"):
         app.include_router(dev_router)

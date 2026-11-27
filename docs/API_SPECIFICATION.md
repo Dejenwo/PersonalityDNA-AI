@@ -173,6 +173,15 @@ Signed-in, verified accounts. Non-members get 404; members without the right rol
 | POST | `/api/v1/notifications/{id}/read`, `/read-all` | user | Mark read (404 for someone else's) |
 | GET / PUT | `/api/v1/notifications/preferences` | user | Per-kind `in_app` and `email`; 409 `required_notification` for security |
 
+## Feedback (implemented)
+
+| Method | Path | Auth | Purpose |
+| --- | --- | --- | --- |
+| POST | `/api/v1/feedback` `{kind, message, page?, app_version?, contact_ok}` | none or user | Send a problem, idea, wording, accessibility or other note (10 to 2,000 characters). The page is kept as a path only. 10 an hour per account or IP, then 429 |
+| GET | `/api/v1/feedback` | user | Your own feedback (newest 50) with its status |
+| GET | `/api/v1/admin/feedback[?status=&kind=&before=&limit=]` | `feedback.read` | Triage list with counts by status; the account id only when the sender agreed to be contacted |
+| POST | `/api/v1/admin/feedback/{id}/status` `{status}` | `feedback.manage` | new, planned, fixed or closed; audited |
+
 ## Billing (implemented)
 
 Gated features return 403 `premium_required` with `details.feature` once `PDNA_BILLING_ENFORCE=true`.

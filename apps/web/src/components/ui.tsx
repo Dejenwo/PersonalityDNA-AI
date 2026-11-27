@@ -60,20 +60,43 @@ export function LoadingState({ label = "Loading" }: { label?: string }) {
   );
 }
 
-export function ErrorState({ title, message, action }: { title: string; message: string; action?: ReactNode }) {
+/** Use level 1 when the error replaces the whole page, so the page still has its one main heading. */
+export function ErrorState({
+  title,
+  message,
+  action,
+  level = 2,
+}: {
+  title: string;
+  message: string;
+  action?: ReactNode;
+  level?: 1 | 2;
+}) {
+  const Heading = level === 1 ? "h1" : "h2";
   return (
     <Card className="my-8" role="alert">
-      <h2 className="text-xl font-semibold">{title}</h2>
+      <Heading className="text-xl font-semibold">{title}</Heading>
       <p className="mt-2 text-ink-muted">{message}</p>
       {action ? <div className="mt-4 flex flex-wrap gap-3">{action}</div> : null}
     </Card>
   );
 }
 
-export function EmptyState({ title, message, action }: { title: string; message: string; action?: ReactNode }) {
+export function EmptyState({
+  title,
+  message,
+  action,
+  level = 2,
+}: {
+  title: string;
+  message: string;
+  action?: ReactNode;
+  level?: 1 | 2;
+}) {
+  const Heading = level === 1 ? "h1" : "h2";
   return (
     <Card className="my-8 text-center">
-      <h2 className="text-xl font-semibold">{title}</h2>
+      <Heading className="text-xl font-semibold">{title}</Heading>
       <p className="mt-2 text-ink-muted">{message}</p>
       {action ? <div className="mt-4 flex justify-center">{action}</div> : null}
     </Card>

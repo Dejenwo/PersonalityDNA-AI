@@ -22,6 +22,7 @@ Not legal advice. A qualified privacy lawyer must review before launch; no compl
 | Growth programme progress (programme, start and finish time, days done, weekly self-check ratings 1 to 5) | Show progress through programmes; ratings are for the user's own reflection and are not sent to AI providers | Contract | Until the user leaves or restarts the programme, or deletes the account |
 | Referral code and acquisition tags (referrer, source, medium, campaign) | Show people how many joined with their link; count sign-ups by campaign | Legitimate interest (to review) | Until account deletion |
 | Notifications and preferences (fixed-template text, never private content) | In-app notices, reminders and email choices | Contract; news by consent (opt-in) | Notifications 90 days; preferences until account deletion |
+| Feedback (message encrypted; kind, page path, app version, status and time in the clear; account only if signed in) | Fix problems and improve the product | Legitimate interest | 365 days, or until account deletion. Support sees the account only if the person agreed to be contacted |
 | Daily event counts (event name, day, count) | Understand which public pages are used | Not personal data | Aggregate only |
 
 No device identifiers or third-party trackers are collected. Product analytics are daily counts with no identifier, and browsers sending Global Privacy Control or Do Not Track are not counted. First-touch campaign tags are kept in device storage for up to 30 days and sent only with registration; a lawyer should confirm this is strictly necessary, or it moves behind consent, before an EU launch (ADR-025).
@@ -41,4 +42,4 @@ No device identifiers or third-party trackers are collected. Product analytics a
 
 ## Administrative access (ADR-022)
 
-Admin roles see account metadata (email, dates, status, plan, counts) and aggregates only. No admin endpoint returns journal text, coaching messages, assessment answers or report contents. Every admin change is audited with the admin's id and a reason.
+Admin roles see account metadata (email, dates, status, plan, counts) and aggregates only. No admin endpoint returns journal text, coaching messages, assessment answers or report contents. The one free text staff can read is feedback that people deliberately send to the team (ADR-028). Every admin change is audited with the admin's id and a reason.

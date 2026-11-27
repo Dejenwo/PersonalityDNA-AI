@@ -28,7 +28,7 @@ export default function ProgramPage() {
     return <LoadingState label="Loading the programme" />;
   if (data.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title={isNotFound(data.error) ? "Programme not found" : "We couldn't load this programme"}
         message={isNotFound(data.error) ? "It may have been renamed." : errorMessage(data.error)}
         action={<ButtonLink href="/growth">All programmes</ButtonLink>}

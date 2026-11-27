@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AuditPanel, Accounts, ContentPanel, Organisations, Overview } from "@/components/admin";
+import { AuditPanel, Accounts, ContentPanel, FeedbackPanel, Organisations, Overview } from "@/components/admin";
 import { ErrorState, LoadingState } from "@/components/ui";
 import { api } from "@/lib/api";
 import { type AdminTab, TAB_LABEL, tabsFor } from "@/lib/admin";
@@ -20,9 +20,9 @@ export default function AdminPage() {
     return <LoadingState label="Loading" />;
   if (me.status === "error")
     return isNotFound(me.error) ? (
-      <ErrorState title="Page not found" message="This page doesn't exist or you don't have access to it." />
+      <ErrorState level={1} title="Page not found" message="This page doesn't exist or you don't have access to it." />
     ) : (
-      <ErrorState title="We couldn't load this page" message={errorMessage(me.error)} />
+      <ErrorState level={1} title="We couldn't load this page" message={errorMessage(me.error)} />
     );
 
   const permissions = me.data!.permissions;
@@ -54,6 +54,7 @@ export default function AdminPage() {
       {current === "overview" && <Overview canMetrics={permissions.includes("metrics.read")} />}
       {current === "users" && <Accounts permissions={permissions} />}
       {current === "orgs" && <Organisations canManage={permissions.includes("orgs.manage")} />}
+      {current === "feedback" && <FeedbackPanel canManage={permissions.includes("feedback.manage")} />}
       {current === "content" && <ContentPanel />}
       {current === "audit" && <AuditPanel />}
     </div>

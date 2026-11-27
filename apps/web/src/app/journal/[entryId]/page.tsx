@@ -28,7 +28,7 @@ export default function JournalEntryPage() {
     return <LoadingState label="Loading the entry" />;
   if (data.status === "error")
     return (
-      <ErrorState
+      <ErrorState level={1}
         title={isNotFound(data.error) ? "Entry not found" : "We couldn't load this entry"}
         message={isNotFound(data.error) ? "It may have been deleted." : errorMessage(data.error)}
         action={<ButtonLink href="/journal">Back to the journal</ButtonLink>}
