@@ -19,6 +19,7 @@ from app.coaching.service import CoachService
 from app.core.config import Settings, get_settings
 from app.database.base import Base
 from app.database.session import Database
+from app.growth.routes import router as growth_router
 from app.learning.routes import router as learning_router
 from app.notifications.email import make_email_sender
 from app.relationships.routes import router as relationships_router
@@ -86,6 +87,7 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.include_router(coach_router)
     app.include_router(relationships_router)
     app.include_router(learning_router)
+    app.include_router(growth_router)
     if settings.dev_outbox_endpoint and settings.environment in ("development", "test"):
         app.include_router(dev_router)
 

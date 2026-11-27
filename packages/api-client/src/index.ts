@@ -34,6 +34,9 @@ export type LeadershipOut = Schemas["LeadershipOut"];
 export type ModuleList = Schemas["ModuleList"];
 export type LearningModule = Schemas["ModuleOut"];
 export type LearningTrack = "leadership" | "emotional-awareness";
+export type ProgramList = Schemas["ProgramList"];
+export type ProgramSummary = Schemas["ProgramSummary"];
+export type GrowthProgram = Schemas["ProgramOut"];
 
 /** Events streamed by POST /coach/conversations/{id}/messages (server-sent events). */
 export type CoachEvent =
@@ -254,6 +257,16 @@ export function createApiClient({
         done ? "PUT" : "DELETE",
         `/api/v1/learning/${seg(track)}/modules/${seg(moduleId)}/activities/${seg(activityId)}/done`,
       ),
+
+    // Personal growth academy
+    growthPrograms: () => request<ProgramList>("GET", "/api/v1/growth/programs"),
+    growthProgram: (id: string) => request<GrowthProgram>("GET", `/api/v1/growth/programs/${seg(id)}`),
+    startProgram: (id: string) => request<GrowthProgram>("POST", `/api/v1/growth/programs/${seg(id)}/enrollment`),
+    leaveProgram: (id: string) => request<void>("DELETE", `/api/v1/growth/programs/${seg(id)}/enrollment`),
+    setDayDone: (id: string, day: number, done: boolean) =>
+      request<void>(done ? "PUT" : "DELETE", `/api/v1/growth/programs/${seg(id)}/days/${day}/done`),
+    setCheckIn: (id: string, week: number, rating: number) =>
+      request<void>("PUT", `/api/v1/growth/programs/${seg(id)}/weeks/${week}/check-in`, { body: { rating } }),
   };
 }
 

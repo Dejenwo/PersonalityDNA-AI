@@ -91,6 +91,19 @@ Tracks: `leadership` and `emotional-awareness` (no score, ADR-015). Unknown trac
 
 The coach accepts the topic `emotions` ("Emotions and communication").
 
+## Growth programmes (implemented)
+
+Programmes are public to read; everything else needs an account. Progress calls on a programme the user has not started return 409 `not_enrolled`. Day and week numbers outside the programme return 404.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/growth/programs` | Programmes (kind `challenge` for 7 days, otherwise `program`), topics, objectives; with a signed-in user, enrolment summary (days done, next day, finished time) |
+| GET | `/api/v1/growth/programs/{id}` | Weeks with objective, lesson, practice, self-check question, reflection, the user's rating and numbered days; review days |
+| POST | `/api/v1/growth/programs/{id}/enrollment` | Start, or start again from day 1 (clears days and self-checks); returns the programme |
+| DELETE | `/api/v1/growth/programs/{id}/enrollment` | Leave and delete progress |
+| PUT / DELETE | `/api/v1/growth/programs/{id}/days/{day}/done` | Mark a day done (idempotent) or not done; finishing every day sets `completed_at` |
+| PUT / DELETE | `/api/v1/growth/programs/{id}/weeks/{week}/check-in` | Save (`{"rating": 1..5}`) or clear a week's self-check |
+
 ## Planned (from MASTER_PROMPT.md §14)
 
 Careers, growth plans and exercises, reports, subscriptions status, payment webhooks (signature-verified, idempotent), privacy export, account deletion, admin and enterprise APIs. Pagination will use opaque cursors (`?cursor=&limit=`). Idempotency keys (`Idempotency-Key` header) on payment and report-creation POSTs.

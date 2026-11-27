@@ -56,6 +56,14 @@ Comparisons are computed on request from each person's latest Big Five result an
 | --- | --- | --- | --- |
 | `learning_activity_progress` | Which learning activities a user marked done: track (`leadership`, `emotional-awareness`), module and activity ids and time, no free text | FK user CASCADE; unique (user, track, module, activity) | Until unmarked or account deletion |
 
+## Implemented (migration 0008, growth programmes)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `growth_enrollments` | A user following a programme (programme id, start and finish time) | FK user CASCADE; unique (user, programme) | Until the user leaves or restarts the programme, or deletes the account |
+| `growth_day_progress` | Days marked done (day number and time, no free text) | FK enrolment CASCADE; unique (enrolment, day) | As the enrolment |
+| `growth_check_ins` | Weekly self-checks (week number, rating 1 to 5) | FK enrolment CASCADE; unique (enrolment, week); rating between 1 and 5 | As the enrolment |
+
 Migration 0006 created `leadership_activity_progress`; 0007 replaced it with `learning_activity_progress` and copied existing rows with track `leadership` (the downgrade copies leadership rows back and drops other tracks).
 
 Leadership results reuse `assessment_results` and `personality_trait_scores`; they have neither archetypes nor an interest profile.

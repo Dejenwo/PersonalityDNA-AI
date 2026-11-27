@@ -1,0 +1,485 @@
+{
+  "id": "growth-academy",
+  "version": "1.0.0",
+  "locale": "en",
+  "note": "These programmes are everyday learning and practice. They are not therapy or professional advice, and your self-evaluations are for you: they are not scores and are not compared with anyone.",
+  "self_evaluation_scale": [
+    "Not at all",
+    "A little",
+    "Somewhat",
+    "Quite a lot",
+    "Very much"
+  ],
+  "review_days": [
+    "Look back at your notes and milestones. Which week made the biggest difference?",
+    "Choose two habits from this programme that you want to keep, and plan when you will practise them.",
+    "Repeat one daily exercise that you found useful.",
+    "Catch up on any day you missed, or repeat one that felt difficult.",
+    "Write a short note to yourself about what you have learned.",
+    "Plan your next step: another programme, a goal, or a conversation with the coach."
+  ],
+  "weeks": [
+    {
+      "id": "know-what-matters",
+      "topic": "self-awareness",
+      "title": "Know what matters to you",
+      "objective": "Name three values that matter most to you and notice where they show up in a normal week.",
+      "lesson": {
+        "title": "Values guide choices",
+        "text": "Values are the things you care about, such as fairness, learning, family or independence. When a choice feels hard, it often helps to ask which of your values each option serves."
+      },
+      "practice": {
+        "title": "Values in a week",
+        "steps": [
+          "Write down ten things you care about.",
+          "Circle the three that feel most important right now.",
+          "For each, write one recent moment when you acted on it."
+        ]
+      },
+      "daily": [
+        "Notice one moment today when you felt satisfied. Which value did it serve?",
+        "Notice one moment today when you felt uneasy. Was a value being ignored?",
+        "Do one small thing today that serves one of your three values.",
+        "Ask someone who knows you well what they think you care about most.",
+        "Look at how you spent today. Which hours matched your values, and which did not?"
+      ],
+      "milestone": "You have written your three values and one example of acting on each.",
+      "self_evaluation": "How clearly can you now name what matters most to you?",
+      "reflection": "Where does the way you spend your time already match your values, and where would you like it to match better?"
+    },
+    {
+      "id": "set-one-goal",
+      "topic": "goal-setting",
+      "title": "Set one clear goal",
+      "objective": "Turn one wish into a specific goal with a first step and a date.",
+      "lesson": {
+        "title": "Specific beats big",
+        "text": "\"Get fit\" is hard to act on. \"Walk for 20 minutes on Monday, Wednesday and Friday this month\" tells you exactly what to do. Specific goals with a time frame are easier to start and to check."
+      },
+      "practice": {
+        "title": "Shape one goal",
+        "steps": [
+          "Pick one thing you would like to change in the next three months.",
+          "Rewrite it so that someone else could tell whether you did it.",
+          "Write the very first step and when you will take it."
+        ]
+      },
+      "daily": [
+        "Take the first step of your goal, however small.",
+        "Write down one thing that could get in the way, and what you will do if it happens.",
+        "Tell one person about your goal, or write it somewhere you will see it daily.",
+        "Do the next small step and note how long it took.",
+        "Check your goal again. Is it still specific and still yours? Adjust it if needed."
+      ],
+      "milestone": "You have one written, specific goal and have taken at least two steps towards it.",
+      "self_evaluation": "How confident are you that you can keep making progress on your goal?",
+      "reflection": "What made it easier or harder to act on your goal this week?"
+    },
+    {
+      "id": "organise-your-week",
+      "topic": "organization",
+      "title": "Organise your week",
+      "objective": "Plan a week in advance and review how the plan held up.",
+      "lesson": {
+        "title": "Plan the week, not just the day",
+        "text": "A short weekly plan helps you see what matters before the week fills up. Many people find it useful to place their most important tasks first and leave space for the unexpected."
+      },
+      "practice": {
+        "title": "A 15-minute weekly plan",
+        "steps": [
+          "List what must happen this week and what you would like to happen.",
+          "Pick the three most important items and give each a time slot.",
+          "Leave at least one gap a day for things you did not expect."
+        ]
+      },
+      "daily": [
+        "Start the day by checking your weekly plan and choosing today's most important task.",
+        "Clear one small backlog: an inbox, a drawer or a to-do list.",
+        "Group similar small tasks, such as calls or messages, into one block.",
+        "Notice what interrupted your plan today and whether it could be avoided.",
+        "Write down tomorrow's first task before you finish today."
+      ],
+      "milestone": "You planned your week and checked the plan on at least four days.",
+      "self_evaluation": "How well did planning help you this week?",
+      "reflection": "Which part of your plan held up, and which part needs a different approach?"
+    },
+    {
+      "id": "protect-your-focus",
+      "topic": "productivity",
+      "title": "Protect your focus",
+      "objective": "Create regular blocks of focused time and notice what helps you concentrate.",
+      "lesson": {
+        "title": "Focus needs protecting",
+        "text": "Switching between tasks and notifications costs time and energy. Short, planned blocks of single-task work with breaks in between help many people get more done with less strain."
+      },
+      "practice": {
+        "title": "Focus blocks",
+        "steps": [
+          "Choose a task that needs concentration.",
+          "Silence notifications and work on only that task for 25 to 50 minutes.",
+          "Take a short break, then note what helped or distracted you."
+        ]
+      },
+      "daily": [
+        "Do one focus block today on your most important task.",
+        "Turn off one notification that interrupts you often.",
+        "Do two focus blocks with a real break in between.",
+        "Notice the time of day when focusing feels easiest, and plan tomorrow's block for then.",
+        "Finish one task you have been putting off, using a focus block."
+      ],
+      "milestone": "You have completed at least five focus blocks this week.",
+      "self_evaluation": "How much did focus blocks help you get important work done?",
+      "reflection": "What distracts you most, and what is one change that would protect your focus?"
+    },
+    {
+      "id": "small-brave-steps",
+      "topic": "confidence",
+      "title": "Small brave steps",
+      "objective": "Build confidence by taking small, planned steps outside your comfort zone.",
+      "lesson": {
+        "title": "Confidence follows action",
+        "text": "Confidence often grows after we act, not before. Taking small steps that feel slightly uncomfortable, and noticing that we coped, gives our confidence something real to build on."
+      },
+      "practice": {
+        "title": "A ladder of steps",
+        "steps": [
+          "Think of something you would like to feel more confident about.",
+          "Write five steps from slightly uncomfortable to quite challenging.",
+          "Plan when you will try the first step."
+        ]
+      },
+      "daily": [
+        "Try the first step on your ladder. Afterwards, note what actually happened.",
+        "Write down three things you did well this week, however small.",
+        "Try the next step on your ladder.",
+        "Notice one unhelpful thought about yourself and write a fairer version of it.",
+        "Try one more step, or repeat one that still feels uncomfortable."
+      ],
+      "milestone": "You have tried at least three steps on your ladder.",
+      "self_evaluation": "How much more confident do you feel about the area you chose?",
+      "reflection": "What did you learn about yourself from taking these steps?"
+    },
+    {
+      "id": "say-it-clearly",
+      "topic": "communication",
+      "title": "Say it clearly",
+      "objective": "Practise saying what you mean briefly and clearly, in speaking and in writing.",
+      "lesson": {
+        "title": "Lead with the point",
+        "text": "People understand us faster when we start with the main point and then give the reasons. A short message with one clear request is easier to act on than a long one."
+      },
+      "practice": {
+        "title": "Point first",
+        "steps": [
+          "Before an important message or conversation, write your main point in one sentence.",
+          "Start with that sentence.",
+          "End with a clear request or next step."
+        ]
+      },
+      "daily": [
+        "Rewrite one message today so that the main point comes first.",
+        "In one conversation, say your point in one sentence before explaining it.",
+        "End one message or meeting with a clear next step: who does what by when.",
+        "Ask someone to repeat back what they understood from you. Did it match?",
+        "Cut one long message in half without losing its meaning."
+      ],
+      "milestone": "You have used point-first messages at least four times.",
+      "self_evaluation": "How clear do you think your messages were this week?",
+      "reflection": "When do you find it hardest to be clear, and what helps you?"
+    },
+    {
+      "id": "listen-and-connect",
+      "topic": "relationship-communication",
+      "title": "Listen and connect",
+      "objective": "Strengthen your relationships by listening carefully and showing interest.",
+      "lesson": {
+        "title": "Small moments matter",
+        "text": "Relationships are built in everyday moments: noticing, asking a follow-up question, remembering what mattered to someone. Responding to these small bids for attention often matters more than big gestures."
+      },
+      "practice": {
+        "title": "Full attention",
+        "steps": [
+          "Choose one conversation each day to give your full attention.",
+          "Put your phone away and ask at least one follow-up question.",
+          "Afterwards, note one thing you learned about the other person."
+        ]
+      },
+      "daily": [
+        "Ask someone a follow-up question about something they mentioned earlier.",
+        "Summarise what someone told you before giving your view.",
+        "Send a short message to someone you have not been in touch with for a while.",
+        "Thank someone for something specific they did.",
+        "Ask someone close to you what helps them feel listened to."
+      ],
+      "milestone": "You have had at least four conversations with full attention.",
+      "self_evaluation": "How connected did you feel to the people around you this week?",
+      "reflection": "Which relationship would you like to invest more in, and what is one small step?"
+    },
+    {
+      "id": "decide-with-less-stress",
+      "topic": "decision-making",
+      "title": "Decide with less stress",
+      "objective": "Use simple steps to make decisions more calmly and learn from them.",
+      "lesson": {
+        "title": "Match effort to the decision",
+        "text": "Not every decision deserves the same effort. Small, reversible choices can be made quickly. Bigger ones benefit from writing down the options, what matters most and what you would need to know."
+      },
+      "practice": {
+        "title": "A decision sheet",
+        "steps": [
+          "Write the decision and the date you need to make it by.",
+          "List the options, including one you had not considered.",
+          "For each, note how it fits what matters to you and what you still need to find out."
+        ]
+      },
+      "daily": [
+        "Make one small decision today quickly, and notice that it was fine.",
+        "Use the decision sheet for one decision you have been putting off.",
+        "Ask one person for a view on that decision, then decide what weight to give it.",
+        "Imagine it is a year from now. Which option would you be glad you chose?",
+        "Look back at a past decision. What did you learn that you could use now?"
+      ],
+      "milestone": "You have used the decision sheet on at least one real decision.",
+      "self_evaluation": "How calm and clear did you feel when making decisions this week?",
+      "reflection": "What helps you decide, and what tends to hold you back?"
+    },
+    {
+      "id": "explore-work-interests",
+      "topic": "career-exploration",
+      "title": "Explore your work interests",
+      "objective": "Explore what kinds of work activities interest you, through research and conversation.",
+      "lesson": {
+        "title": "Interests are clues, not answers",
+        "text": "Noticing which activities absorb you can point to work worth exploring. Interests describe preferences, not abilities, and they can change, so treat them as clues to explore rather than a final answer."
+      },
+      "practice": {
+        "title": "Activity notes",
+        "steps": [
+          "Each day, note one activity that you enjoyed and one that drained you.",
+          "Look for patterns at the end of the week.",
+          "Pick two kinds of work that involve more of what you enjoyed."
+        ]
+      },
+      "daily": [
+        "Read about what a day looks like in one job that interests you.",
+        "Write down three skills you enjoy using, with an example of each.",
+        "Find one person who does work that interests you and think of three questions to ask them.",
+        "Look for a short course, volunteer role or project where you could try something new.",
+        "Ask someone what they think you seem to enjoy most at work or study."
+      ],
+      "milestone": "You have explored at least two kinds of work and noted what appeals to you.",
+      "self_evaluation": "How much clearer are you about the work activities you enjoy?",
+      "reflection": "What would you like more of in your work, and what is one way to try it?"
+    },
+    {
+      "id": "lead-from-where-you-are",
+      "topic": "leadership",
+      "title": "Lead from where you are",
+      "objective": "Practise everyday leadership habits, whether or not you manage anyone.",
+      "lesson": {
+        "title": "Leadership is a set of habits",
+        "text": "Leading is not only a job title. Setting direction, helping others do their best and following through are habits anyone can practise in a team, a project, a family or a club."
+      },
+      "practice": {
+        "title": "One leadership habit",
+        "steps": [
+          "Choose one habit: making the goal clear, asking for others' views, or following up on commitments.",
+          "Practise it in at least one situation each day.",
+          "Note how people responded."
+        ]
+      },
+      "daily": [
+        "Explain why a task matters, not just what needs doing.",
+        "Ask the quietest person in a group for their view.",
+        "Follow up on something you said you would do.",
+        "Give someone specific credit for their contribution.",
+        "Ask one person what would help them do their best work."
+      ],
+      "milestone": "You have practised your chosen habit on at least four days.",
+      "self_evaluation": "How well did you practise your leadership habit this week?",
+      "reflection": "What kind of leader would you like to be, and what did this week teach you?"
+    },
+    {
+      "id": "give-and-receive-feedback",
+      "topic": "communication",
+      "title": "Give and receive feedback",
+      "objective": "Give specific, useful feedback and ask for feedback yourself.",
+      "lesson": {
+        "title": "Specific and kind",
+        "text": "Feedback is most useful when it describes what someone did and its effect, rather than judging the person. Asking for feedback also shows others that you are open to learning."
+      },
+      "practice": {
+        "title": "Ask and give",
+        "steps": [
+          "Ask one person a specific question, such as \"What is one thing I could do differently in our meetings?\"",
+          "Thank them, without arguing or explaining.",
+          "Give one person specific feedback on something they did well."
+        ]
+      },
+      "daily": [
+        "Give someone specific positive feedback: what they did and why it helped.",
+        "Ask one person for one suggestion about how you could improve something.",
+        "When you receive feedback today, say thank you before anything else.",
+        "Prepare one piece of constructive feedback using situation, behaviour and effect.",
+        "Act on one piece of feedback you received this week."
+      ],
+      "milestone": "You have asked for feedback at least twice and given specific feedback at least twice.",
+      "self_evaluation": "How comfortable did you feel giving and receiving feedback this week?",
+      "reflection": "Which feedback was most useful to you, and why?"
+    },
+    {
+      "id": "review-and-plan",
+      "topic": "goal-setting",
+      "title": "Review and plan ahead",
+      "objective": "Look back at your progress and plan what to keep, change or start next.",
+      "lesson": {
+        "title": "Reviews turn experience into learning",
+        "text": "A regular review helps you notice what worked, what didn't and why. Planning the next step while the lessons are fresh makes it more likely that the changes last."
+      },
+      "practice": {
+        "title": "Keep, change, start",
+        "steps": [
+          "Look back over the past weeks.",
+          "Write what you want to keep doing, what you want to change and what you want to start.",
+          "Choose one item from each list and plan when you will act on it."
+        ]
+      },
+      "daily": [
+        "Write down three things you are proud of from recent weeks.",
+        "Notice which new habit has been easiest to keep, and why.",
+        "Notice which habit has been hardest to keep, and what would make it easier.",
+        "Set one goal for the next month using what you learned.",
+        "Tell someone about one thing you have learned about yourself."
+      ],
+      "milestone": "You have a keep, change and start list and one goal for the next month.",
+      "self_evaluation": "How satisfied are you with your progress overall?",
+      "reflection": "What will you take with you from this programme?"
+    }
+  ],
+  "programs": [
+    {
+      "id": "confidence-7",
+      "title": "Seven days of small brave steps",
+      "days": 7,
+      "weeks": [
+        "small-brave-steps"
+      ],
+      "summary": "A one-week challenge to build confidence through small, planned steps.",
+      "objectives": [
+        "Plan a ladder of small steps outside your comfort zone",
+        "Notice and reword one unhelpful thought about yourself"
+      ]
+    },
+    {
+      "id": "focus-7",
+      "title": "Seven days of better focus",
+      "days": 7,
+      "weeks": [
+        "protect-your-focus"
+      ],
+      "summary": "A one-week challenge to protect time for your most important work.",
+      "objectives": [
+        "Work in focused blocks with real breaks",
+        "Find the time of day when you focus best"
+      ]
+    },
+    {
+      "id": "clear-communication-7",
+      "title": "Seven days of clearer communication",
+      "days": 7,
+      "weeks": [
+        "say-it-clearly"
+      ],
+      "summary": "A one-week challenge to say what you mean briefly and clearly.",
+      "objectives": [
+        "Lead with your main point",
+        "End messages and meetings with a clear next step"
+      ]
+    },
+    {
+      "id": "foundations-30",
+      "title": "Know yourself, set a direction",
+      "days": 30,
+      "weeks": [
+        "know-what-matters",
+        "set-one-goal",
+        "organise-your-week",
+        "review-and-plan"
+      ],
+      "summary": "Thirty days to clarify what matters to you, set one goal and organise your weeks around it.",
+      "objectives": [
+        "Name your three most important values",
+        "Set one specific goal and take regular steps towards it",
+        "Plan your weeks around what matters most",
+        "Review what worked and plan your next month"
+      ]
+    },
+    {
+      "id": "communication-30",
+      "title": "Communicate with confidence",
+      "days": 30,
+      "weeks": [
+        "say-it-clearly",
+        "listen-and-connect",
+        "small-brave-steps",
+        "give-and-receive-feedback"
+      ],
+      "summary": "Thirty days to speak clearly, listen well, speak up and handle feedback.",
+      "objectives": [
+        "Say what you mean briefly and clearly",
+        "Listen with full attention",
+        "Take small steps to speak up",
+        "Give and ask for specific feedback"
+      ]
+    },
+    {
+      "id": "work-and-career-60",
+      "title": "Work, career and leadership",
+      "days": 60,
+      "weeks": [
+        "know-what-matters",
+        "explore-work-interests",
+        "decide-with-less-stress",
+        "protect-your-focus",
+        "organise-your-week",
+        "lead-from-where-you-are",
+        "give-and-receive-feedback",
+        "review-and-plan"
+      ],
+      "summary": "Sixty days to explore what you want from work, decide more calmly and practise everyday leadership.",
+      "objectives": [
+        "Explore which work activities interest you",
+        "Make decisions with a simple, calm process",
+        "Protect your focus and organise your weeks",
+        "Practise everyday leadership and feedback habits"
+      ]
+    },
+    {
+      "id": "personal-growth-90",
+      "title": "Ninety days of personal growth",
+      "days": 90,
+      "weeks": [
+        "know-what-matters",
+        "set-one-goal",
+        "organise-your-week",
+        "protect-your-focus",
+        "small-brave-steps",
+        "say-it-clearly",
+        "listen-and-connect",
+        "decide-with-less-stress",
+        "explore-work-interests",
+        "lead-from-where-you-are",
+        "give-and-receive-feedback",
+        "review-and-plan"
+      ],
+      "summary": "A twelve-week programme through values, goals, organisation, focus, confidence, communication, relationships, decisions, career, leadership and feedback.",
+      "objectives": [
+        "Clarify your values and set a meaningful goal",
+        "Build habits for organisation and focus",
+        "Grow confidence and communicate clearly",
+        "Strengthen relationships, decisions and leadership",
+        "Review your progress and plan the next stage"
+      ]
+    }
+  ]
+}

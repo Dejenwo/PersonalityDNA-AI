@@ -273,6 +273,68 @@ class LeadershipProgram(LearningTrack):
         return self
 
 
+class GrowthPractice(_Frozen):
+    title: str
+    steps: tuple[str, ...]
+
+
+class GrowthWeek(_Frozen):
+    id: str = Field(pattern=r"^[a-z0-9-]+$")
+    topic: str
+    title: str
+    objective: str
+    lesson: Lesson
+    practice: GrowthPractice
+    daily: tuple[str, ...] = Field(min_length=5, max_length=5)
+    milestone: str
+    self_evaluation: str
+    reflection: str
+
+
+class GrowthProgram(_Frozen):
+    id: str = Field(pattern=r"^[a-z0-9-]+$")
+    title: str
+    days: Literal[7, 30, 60, 90]
+    weeks: tuple[str, ...] = Field(min_length=1)
+    summary: str
+    objectives: tuple[str, ...] = Field(min_length=1)
+
+
+class GrowthAcademy(_Frozen):
+    """Development programmes built from weekly units: each week is a lesson day, five exercise days and a
+    milestone day with a self-evaluation. Days beyond the last full week are review days."""
+
+    id: str
+    version: str
+    locale: str
+    note: str
+    self_evaluation_scale: tuple[str, str, str, str, str]
+    review_days: tuple[str, ...]
+    weeks: tuple[GrowthWeek, ...]
+    programs: tuple[GrowthProgram, ...]
+
+    @model_validator(mode="after")
+    def _check(self) -> "GrowthAcademy":
+        week_ids = [w.id for w in self.weeks]
+        program_ids = [p.id for p in self.programs]
+        if len(set(week_ids)) != len(week_ids) or len(set(program_ids)) != len(program_ids):
+            raise ValueError("duplicate week or programme ids")
+        for p in self.programs:
+            unknown = set(p.weeks) - set(week_ids)
+            if unknown:
+                raise ValueError(f"programme {p.id} references unknown weeks {sorted(unknown)}")
+            extra = p.days - 7 * len(p.weeks)
+            if not 0 <= extra <= len(self.review_days):
+                raise ValueError(f"programme {p.id}: {len(p.weeks)} weeks do not fit {p.days} days")
+        return self
+
+    def program(self, program_id: str) -> GrowthProgram | None:
+        return next((p for p in self.programs if p.id == program_id), None)
+
+    def week(self, week_id: str) -> GrowthWeek:
+        return next(w for w in self.weeks if w.id == week_id)
+
+
 class LoadedFile[T: BaseModel](BaseModel):
     model_config = ConfigDict(frozen=True)
     data: T
@@ -289,6 +351,7 @@ class ContentBundle(BaseModel):
     relationships: LoadedFile[RelationshipInsights]
     leadership: LoadedFile[LeadershipProgram]
     emotional_awareness: LoadedFile[LearningTrack]
+    growth: LoadedFile[GrowthAcademy]
 
     def track(self, track_id: str) -> LearningTrack | None:
         """Learning tracks by their public id; None for unknown ids."""
@@ -342,6 +405,8 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
     leadership = LeadershipProgram.model_validate(lead_data)
     ea_data, ea_sha = _read(content_dir / "scoring-rules" / "emotional-awareness.v1.json")
     emotional_awareness = LearningTrack.model_validate(ea_data)
+    growth_data, growth_sha = _read(content_dir / "scoring-rules" / "growth-academy.v1.json")
+    growth = GrowthAcademy.model_validate(growth_data)
 
     trait_ids = set(archetypes.traits)
     for inst_file in instruments.values():
@@ -383,4 +448,5 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
         emotional_awareness=LoadedFile[LearningTrack](
             data=emotional_awareness, sha256=ea_sha, path="emotional-awareness.v1.json"
         ),
+        growth=LoadedFile[GrowthAcademy](data=growth, sha256=growth_sha, path="growth-academy.v1.json"),
     )

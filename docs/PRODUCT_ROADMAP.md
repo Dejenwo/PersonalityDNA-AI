@@ -16,7 +16,7 @@ Follows MASTER_PROMPT.md §24 (25 phases). Status is kept in DEVELOPMENT_PROGRES
 | 10 | Relationship intelligence | Done (PR #1) | Invitations, two-sided consent, band comparison, prompts and exercises, revoke |
 | 11 | Leadership intelligence | Done | Original unvalidated preferences questionnaire, 9 modules, progress tracking (ADR-014) |
 | 12 | Emotional awareness | Done (code); clinical safety review of wording and crisis resources per country before launch | Learning track with 7 modules, no score, support note, coach topic (ADR-015) |
-| 13 | Growth academy | Content writing | |
+| 13 | Growth academy | Done (code); content review by a learning designer before launch | 3 seven-day challenges, 30/60/90-day programmes from 12 weekly units, enrolment, daily progress, weekly self-checks (ADR-016) |
 | 14 | Journaling and habits | — | Field-level encryption |
 | 15 | Reports | — | PDF generation server-side |
 | 16 | Monetization | Stripe account, RevenueCat, Apple/Google developer accounts | Entitlement service first, providers after |
