@@ -22,7 +22,8 @@ Last updated: 2026-11-26.
 | 12 | Emotional awareness | Tested | Original learning track: 7 modules (self-awareness, reflective communication, active listening, empathy, stress reflection, interpersonal understanding, constructive expression) with lessons, activities, reflection and a support note; no score or test; shared learning-track API and progress (migration 0007); "Emotions and communication" coach topic; Learn page (ADR-015). Needs a clinical safety review of wording before launch. |
 | 13 | Personal growth academy | Tested | Original content: 12 weekly units across the 10 topics in the spec, composed into three 7-day challenges and 30, 60 and 90-day programmes with objectives, lessons, practice, daily exercises, weekly milestones, review days and weekly 1 to 5 self-checks; enrolment, day progress and self-checks for accounts (migration 0008); Learn page entry (ADR-016). Annual goals move to Phase 14 goals. |
 | 14 | Journaling, goals and habits | Tested | Journal: encrypted entries (title, text, tags), six kinds with original prompts, optional mood, tags, search after decryption (POST, not logged), Markdown and JSON export, delete one or all (ADR-017). Goals with milestones and adjustment, habits on chosen weekdays with history, neutral 7 and 30-day summaries and a four-week grid, no streaks (ADR-018). Reminders wait for the notification service. |
-| 15–25 | Reports onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
+| 15 | Reports | In Progress | Personality reports: a snapshot of the latest Big Five, interest and leadership results with profile, trait scores as text and bars, strengths, development, communication and relationship guidance, career interests, leadership preferences, values note, a development plan of growth programmes and leadership modules, methodology, references and limitations; stored encrypted with a body fingerprint (migration 0011); report library, report page and server-rendered PDF download (ADR-019). Shareable cards come next. |
+| 16–25 | Monetization onward | Not Started | See docs/PRODUCT_ROADMAP.md. |
 
 ## Task log
 
@@ -99,17 +100,22 @@ Last updated: 2026-11-26.
 | H-003 | Habits | Pure analytics: masks, 7 and 30-day windows from the start date, extra days, four-week grid; no streaks | P0 | Tested | `test_masks`, `test_window_counts_planned_and_extra_days`, `test_grid_is_whole_weeks_ending_this_week` |
 | H-004 | Web | Goals and habits page (today's habits, history grid, pause, new habit and goal forms) and goal page (adjust, milestones, complete, archive, delete, reflection links); nav link | P0 | Tested | e2e goals.spec.ts (desktop + mobile) + axe; vitest habit helpers |
 | H-005 | Habits | Opt-in reminders with quiet hours; annual goals view; coach awareness with a sharing choice | P1 | Not Started | Reminders need the notification service |
+| R-001 | Reports | Deterministic report builder from the latest result of each kind and versioned original content; plan grounded in existing programmes and modules; content fingerprint | P0 | Tested | `test_build_is_deterministic_and_plan_is_grounded` |
+| R-002 | Reports | Encrypted storage, library, read, PDF (attachment, `no-store`), delete, 50-report limit, owner-only access, privacy export, account deletion | P0 | Tested | `test_create_read_pdf_and_delete`, `test_reports_belong_to_their_owner`, `test_report_limit`, `test_export_and_account_deletion` |
+| R-003 | Web | Report library with create, report page with every section as text, PDF download, delete with confirmation; link from My results | P0 | Tested | e2e reports.spec.ts (desktop + mobile) + axe; vitest report helpers |
+| R-004 | Reports | Shareable personality cards (opt-in, revocable, minimal data) | P1 | Not Started | Next in Phase 15 |
+| R-005 | Reports | Values assessment section (needs a licensed values instrument); PDF accessibility tagging (PDF/UA) | P2 | Not Started | reportlab does not produce tagged PDFs; the web report is the accessible version |
 | M-001 | Monetization | Entitlements service with plan config; Stripe and RevenueCat webhooks | P0 | Not Started | Needs accounts; live keys needed for real payments |
 
 ## Test results (latest local run, 2026-11-27)
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend, SQLite | `pytest` | 178 passed |
-| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 178 passed |
+| Backend, SQLite | `pytest` | 184 passed |
+| Backend, PostgreSQL 16 | `PDNA_TEST_DATABASE_URL=... pytest` | 184 passed |
 | Coach evaluation (stand-in) | `python scripts/run_coach_eval.py` | all suites at threshold (32 cases) |
 | Backend lint/types | `ruff check`, `ruff format --check`, `mypy app` (strict) | clean |
 | Design tokens | `node --test` | 4 passed |
-| Web unit | `vitest run` | 31 passed |
+| Web unit | `vitest run` | 35 passed |
 | Web types/lint/build | `tsc --noEmit`, `eslint .`, `next build` | clean, build succeeded |
-| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 36 passed |
+| End-to-end + axe | `playwright test` (Chromium desktop + Pixel 7) | 38 passed |

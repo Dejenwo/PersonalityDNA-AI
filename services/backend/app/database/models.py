@@ -564,3 +564,21 @@ class HabitCheck(Base):
     )
     day: Mapped[date] = mapped_column(Date)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Report(Base):
+    """A generated personality report. The body (scores and texts) is stored encrypted as JSON, with a hash
+    of the plaintext so a rebuild from the same results and content can be checked for equality."""
+
+    __tablename__ = "reports"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", name="fk_reports_user_id_users"), index=True
+    )
+    report_version: Mapped[str] = mapped_column(String(16))
+    headline: Mapped[str] = mapped_column(String(120))
+    kinds: Mapped[list[str]] = mapped_column(JSON)
+    body_encrypted: Mapped[str] = mapped_column(Text)
+    body_sha256: Mapped[str] = mapped_column(String(64))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

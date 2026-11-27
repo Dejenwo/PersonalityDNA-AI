@@ -360,6 +360,25 @@ class JournalPrompts(_Frozen):
         return self
 
 
+class ReportTraitBand(_Frozen):
+    communication: str
+    relationships: str
+    program: str | None = None
+
+
+class ReportContent(_Frozen):
+    id: str
+    version: str
+    locale: str
+    note: str
+    values_note: str
+    general_limitations: tuple[str, ...]
+    default_program: str
+    interest_program: str
+    program_reasons: dict[str, str]
+    traits: dict[str, dict[Literal["lower", "middle", "higher"], ReportTraitBand]]
+
+
 class LoadedFile[T: BaseModel](BaseModel):
     model_config = ConfigDict(frozen=True)
     data: T
@@ -378,6 +397,7 @@ class ContentBundle(BaseModel):
     emotional_awareness: LoadedFile[LearningTrack]
     growth: LoadedFile[GrowthAcademy]
     journal: LoadedFile[JournalPrompts]
+    report: LoadedFile[ReportContent]
 
     def track(self, track_id: str) -> LearningTrack | None:
         """Learning tracks by their public id; None for unknown ids."""
@@ -435,6 +455,8 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
     growth = GrowthAcademy.model_validate(growth_data)
     journal_data, journal_sha = _read(content_dir / "scoring-rules" / "journal-prompts.v1.json")
     journal = JournalPrompts.model_validate(journal_data)
+    report_data, report_sha = _read(content_dir / "scoring-rules" / "report-content.v1.json")
+    report = ReportContent.model_validate(report_data)
 
     trait_ids = set(archetypes.traits)
     for inst_file in instruments.values():
@@ -452,6 +474,14 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
             raise ContentError(f"{inst.id}: {inst.family} instruments use {expected_scoring} scoring")
     if set(interpretations.traits) != trait_ids:
         raise ContentError("trait interpretations do not cover exactly the archetype traits")
+    if set(report.traits) != trait_ids or any(len(b) != 3 for b in report.traits.values()):
+        raise ContentError("report content must cover every trait in all three bands")
+    report_programs = {report.default_program, report.interest_program} | {
+        b.program for bands in report.traits.values() for b in bands.values() if b.program
+    }
+    for program_id in report_programs:
+        if growth.program(program_id) is None or program_id not in report.program_reasons:
+            raise ContentError(f"report content names programme {program_id} without a programme or a reason")
     if set(relationships.traits) != trait_ids:
         raise ContentError("relationship insights do not cover exactly the archetype traits")
     for t in relationships.traits.values():
@@ -478,4 +508,5 @@ def load_content(content_dir: Path, *, include_drafts: bool = True) -> ContentBu
         ),
         growth=LoadedFile[GrowthAcademy](data=growth, sha256=growth_sha, path="growth-academy.v1.json"),
         journal=LoadedFile[JournalPrompts](data=journal, sha256=journal_sha, path="journal-prompts.v1.json"),
+        report=LoadedFile[ReportContent](data=report, sha256=report_sha, path="report-content.v1.json"),
     )

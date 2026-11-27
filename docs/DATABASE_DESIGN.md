@@ -56,6 +56,12 @@ Comparisons are computed on request from each person's latest Big Five result an
 | --- | --- | --- | --- |
 | `learning_activity_progress` | Which learning activities a user marked done: track (`leadership`, `emotional-awareness`), module and activity ids and time, no free text | FK user CASCADE; unique (user, track, module, activity) | Until unmarked or account deletion |
 
+## Implemented (migration 0011, reports)
+
+| Table | Purpose | Key constraints | Retention |
+| --- | --- | --- | --- |
+| `reports` | Report snapshots: version, headline, result kinds used and creation time in the clear; the whole body encrypted (AES-256-GCM, row id as associated data) with its SHA-256 | FK user CASCADE; index (user, created) | Until the user deletes the report or the account |
+
 ## Implemented (migration 0010, goals and habits)
 
 | Table | Purpose | Key constraints | Retention |

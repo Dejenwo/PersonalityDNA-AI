@@ -106,6 +106,17 @@ Signed-in users only, except prompts. Entries belong to their author; other user
 | GET | `/api/v1/journal/export?format=markdown\|json` | Download every entry (attachment, `no-store`) |
 | POST | `/api/v1/journal/delete-all` | Delete every entry; body `{"confirm": true}` |
 
+## Reports (implemented)
+
+Signed-in users only; other users' reports return 404. A report is a snapshot and never changes after it is created.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/reports` | The user's reports, newest first (id, time, version, headline, result kinds used) |
+| POST | `/api/v1/reports` | Create from the latest Big Five (required), interest and leadership results; 409 `no_results` without a Big Five result, 409 `too_many_reports` past 50 |
+| GET / DELETE | `/api/v1/reports/{id}` | Read the full report body with its SHA-256, or delete it |
+| GET | `/api/v1/reports/{id}/pdf` | The report as a PDF (attachment, `no-store`) |
+
 ## Goals and habits (implemented)
 
 Signed-in users only; other users' goals and habits return 404. Habit endpoints take `?today=YYYY-MM-DD` (the person's local date, within a day of the server's).

@@ -16,10 +16,11 @@ dependencies = [
   "email-validator>=2.2,<3",
   "anthropic>=2.14,<3",
   "cryptography>=44",
+  "reportlab>=4.2,<5",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "httpx2>=2.13", "ruff>=0.8", "mypy>=1.13"]
+dev = ["pytest>=8", "httpx2>=2.13", "ruff>=0.8", "mypy>=1.13", "types-reportlab>=4.2"]
 
 [build-system]
 requires = ["setuptools>=75"]

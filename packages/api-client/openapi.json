@@ -2590,6 +2590,80 @@
         "title": "Methodology",
         "type": "object"
       },
+      "MethodologyItem": {
+        "properties": {
+          "answers_sha256": {
+            "title": "Answers Sha256",
+            "type": "string"
+          },
+          "attribution": {
+            "title": "Attribution",
+            "type": "string"
+          },
+          "band_note": {
+            "title": "Band Note",
+            "type": "string"
+          },
+          "content_sha256": {
+            "title": "Content Sha256",
+            "type": "string"
+          },
+          "engine_version": {
+            "title": "Engine Version",
+            "type": "string"
+          },
+          "instrument_name": {
+            "title": "Instrument Name",
+            "type": "string"
+          },
+          "instrument_version": {
+            "title": "Instrument Version",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "big_five",
+              "interests",
+              "leadership"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Limitations",
+            "type": "array"
+          },
+          "references": {
+            "items": {
+              "type": "string"
+            },
+            "title": "References",
+            "type": "array"
+          },
+          "scoring_summary": {
+            "title": "Scoring Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "instrument_name",
+          "instrument_version",
+          "engine_version",
+          "content_sha256",
+          "answers_sha256",
+          "scoring_summary",
+          "band_note",
+          "limitations",
+          "references",
+          "attribution"
+        ],
+        "title": "MethodologyItem",
+        "type": "object"
+      },
       "MilestoneIn": {
         "properties": {
           "due_date": {
@@ -2929,6 +3003,43 @@
           "summary"
         ],
         "title": "ModuleSummaryOut",
+        "type": "object"
+      },
+      "PlanItem": {
+        "properties": {
+          "href": {
+            "title": "Href",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "program",
+              "leadership_module"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "id",
+          "title",
+          "reason",
+          "href"
+        ],
+        "title": "PlanItem",
         "type": "object"
       },
       "PracticeOut": {
@@ -3305,6 +3416,473 @@
           "links"
         ],
         "title": "RelationshipsOut",
+        "type": "object"
+      },
+      "ReportArchetype": {
+        "properties": {
+          "disclaimer": {
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "secondary": {
+            "title": "Secondary",
+            "type": "string"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "weak_fit": {
+            "title": "Weak Fit",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "summary",
+          "secondary",
+          "weak_fit",
+          "disclaimer"
+        ],
+        "title": "ReportArchetype",
+        "type": "object"
+      },
+      "ReportBody": {
+        "description": "Everything a report shows. Built deterministically from results and versioned content.",
+        "properties": {
+          "content_sha256": {
+            "title": "Content Sha256",
+            "type": "string"
+          },
+          "development": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Development",
+            "type": "array"
+          },
+          "interests": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReportInterests"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "leadership": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReportLeadership"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Limitations",
+            "type": "array"
+          },
+          "methodology": {
+            "items": {
+              "$ref": "#/components/schemas/MethodologyItem"
+            },
+            "title": "Methodology",
+            "type": "array"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "plan": {
+            "items": {
+              "$ref": "#/components/schemas/PlanItem"
+            },
+            "title": "Plan",
+            "type": "array"
+          },
+          "profile": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReportArchetype"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "report_version": {
+            "title": "Report Version",
+            "type": "string"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/ReportSource"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "strengths": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Strengths",
+            "type": "array"
+          },
+          "traits": {
+            "items": {
+              "$ref": "#/components/schemas/ReportTrait"
+            },
+            "title": "Traits",
+            "type": "array"
+          },
+          "values_note": {
+            "title": "Values Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_version",
+          "content_sha256",
+          "sources",
+          "note",
+          "profile",
+          "traits",
+          "strengths",
+          "development",
+          "interests",
+          "leadership",
+          "values_note",
+          "plan",
+          "methodology",
+          "limitations"
+        ],
+        "title": "ReportBody",
+        "type": "object"
+      },
+      "ReportInterestArea": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "short": {
+            "title": "Short",
+            "type": "string"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "short",
+          "count",
+          "total"
+        ],
+        "title": "ReportInterestArea",
+        "type": "object"
+      },
+      "ReportInterests": {
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "fields": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Fields",
+            "type": "array"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "top": {
+            "items": {
+              "$ref": "#/components/schemas/ReportInterestArea"
+            },
+            "title": "Top",
+            "type": "array"
+          }
+        },
+        "required": [
+          "code",
+          "top",
+          "fields",
+          "note"
+        ],
+        "title": "ReportInterests",
+        "type": "object"
+      },
+      "ReportLeadership": {
+        "properties": {
+          "even": {
+            "title": "Even",
+            "type": "boolean"
+          },
+          "least_preferred": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Least Preferred",
+            "type": "array"
+          },
+          "most_preferred": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Most Preferred",
+            "type": "array"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "most_preferred",
+          "least_preferred",
+          "even",
+          "note"
+        ],
+        "title": "ReportLeadership",
+        "type": "object"
+      },
+      "ReportList": {
+        "properties": {
+          "reports": {
+            "items": {
+              "$ref": "#/components/schemas/ReportSummary"
+            },
+            "title": "Reports",
+            "type": "array"
+          }
+        },
+        "required": [
+          "reports"
+        ],
+        "title": "ReportList",
+        "type": "object"
+      },
+      "ReportOut": {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/ReportBody"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "created_at",
+          "body",
+          "sha256"
+        ],
+        "title": "ReportOut",
+        "type": "object"
+      },
+      "ReportSource": {
+        "properties": {
+          "completed_at": {
+            "format": "date-time",
+            "title": "Completed At",
+            "type": "string"
+          },
+          "instrument_name": {
+            "title": "Instrument Name",
+            "type": "string"
+          },
+          "instrument_version": {
+            "title": "Instrument Version",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "big_five",
+              "interests",
+              "leadership"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "result_id": {
+            "title": "Result Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "result_id",
+          "instrument_name",
+          "instrument_version",
+          "completed_at"
+        ],
+        "title": "ReportSource",
+        "type": "object"
+      },
+      "ReportSummary": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "headline": {
+            "title": "Headline",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kinds": {
+            "items": {
+              "enum": [
+                "big_five",
+                "interests",
+                "leadership"
+              ],
+              "type": "string"
+            },
+            "title": "Kinds",
+            "type": "array"
+          },
+          "report_version": {
+            "title": "Report Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "created_at",
+          "report_version",
+          "headline",
+          "kinds"
+        ],
+        "title": "ReportSummary",
+        "type": "object"
+      },
+      "ReportTrait": {
+        "properties": {
+          "band": {
+            "anyOf": [
+              {
+                "enum": [
+                  "lower",
+                  "middle",
+                  "higher"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Band"
+          },
+          "communication": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Communication"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "relationships": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Relationships"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "trait": {
+            "title": "Trait",
+            "type": "string"
+          }
+        },
+        "required": [
+          "trait",
+          "name",
+          "description",
+          "score",
+          "band",
+          "summary",
+          "communication",
+          "relationships"
+        ],
+        "title": "ReportTrait",
         "type": "object"
       },
       "ResetConfirmIn": {
@@ -9444,6 +10022,354 @@
         "summary": "Get Link",
         "tags": [
           "relationships"
+        ]
+      }
+    },
+    "/api/v1/reports": {
+      "get": {
+        "operationId": "list_reports_api_v1_reports_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Reports",
+        "tags": [
+          "reports"
+        ]
+      },
+      "post": {
+        "description": "Builds a new report from your latest Big Five, interest and leadership results.",
+        "operationId": "create_report_api_v1_reports_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Report",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/v1/reports/{report_id}": {
+      "delete": {
+        "operationId": "delete_report_api_v1_reports__report_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "report_id",
+            "required": true,
+            "schema": {
+              "title": "Report Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Report",
+        "tags": [
+          "reports"
+        ]
+      },
+      "get": {
+        "operationId": "get_report_api_v1_reports__report_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "report_id",
+            "required": true,
+            "schema": {
+              "title": "Report Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Report",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/v1/reports/{report_id}/pdf": {
+      "get": {
+        "operationId": "report_pdf_api_v1_reports__report_id__pdf_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "report_id",
+            "required": true,
+            "schema": {
+              "title": "Report Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {}
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Report Pdf",
+        "tags": [
+          "reports"
         ]
       }
     },

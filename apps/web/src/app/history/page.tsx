@@ -97,7 +97,10 @@ export default function HistoryPage() {
       <h1 className="text-3xl font-bold">My results</h1>
       {state.status === "signed-in" ? (
         <>
-          <p className="mt-2 text-ink-muted">Everything saved to your account, on any device.</p>
+          <p className="mt-2 text-ink-muted">
+            Everything saved to your account, on any device. Bring your results together in a{" "}
+            <Link href="/reports" className="text-primary underline">personality report</Link> you can download as a PDF.
+          </p>
           <AccountHistory />
         </>
       ) : state.status === "loading" || sessions === null ? (

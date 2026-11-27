@@ -51,6 +51,10 @@ export type Habit = Schemas["HabitOut"];
 export type HabitIn = Schemas["HabitIn"];
 export type HabitPatch = Schemas["HabitPatch"];
 export type HabitList = Schemas["HabitList"];
+export type Report = Schemas["ReportOut"];
+export type ReportBody = Schemas["ReportBody"];
+export type ReportSummary = Schemas["ReportSummary"];
+export type ReportList = Schemas["ReportList"];
 
 /** Events streamed by POST /coach/conversations/{id}/messages (server-sent events). */
 export type CoachEvent =
@@ -172,6 +176,12 @@ export function createApiClient({
     const res = await authorized("GET", path, { headers: { Accept: accept } });
     if (!res.ok) return fail(res);
     return res.text();
+  }
+
+  async function requestBlob(path: string, accept: string): Promise<Blob> {
+    const res = await authorized("GET", path, { headers: { Accept: accept } });
+    if (!res.ok) return fail(res);
+    return res.blob();
   }
 
   /** Sends a coach message and calls onEvent for each streamed event. Resolves when the stream ends. */
@@ -323,6 +333,12 @@ export function createApiClient({
 
     exportJournal: (format: "markdown" | "json") =>
       requestText(`/api/v1/journal/export?format=${format}`, format === "json" ? "application/json" : "text/markdown"),
+
+    reports: () => request<ReportList>("GET", "/api/v1/reports"),
+    report: (id: string) => request<Report>("GET", `/api/v1/reports/${seg(id)}`),
+    createReport: () => request<Report>("POST", "/api/v1/reports"),
+    deleteReport: (id: string) => request<void>("DELETE", `/api/v1/reports/${seg(id)}`),
+    reportPdf: (id: string) => requestBlob(`/api/v1/reports/${seg(id)}/pdf`, "application/pdf"),
   };
 }
 

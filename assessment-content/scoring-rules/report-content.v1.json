@@ -1,0 +1,101 @@
+{
+  "id": "report-content",
+  "version": "1.0.0",
+  "locale": "en",
+  "note": "Original PersonalityDNA descriptive text for reports. It describes tendencies people report about themselves, not abilities, and is not a diagnosis.",
+  "values_note": "A personal values questionnaire is not available yet, so this report does not describe your values. You can explore what matters to you in the growth programme \"Know yourself, set a direction\".",
+  "general_limitations": [
+    "This report is based only on your own answers. It describes how you see yourself at the moment you answered.",
+    "Scores show where you sit on the response scale. They are not percentiles and do not compare you with other people.",
+    "Results can change over time and with circumstances. Nothing here is a diagnosis or a measure of ability.",
+    "Do not use this report to make hiring, promotion or other selection decisions about anyone."
+  ],
+  "default_program": "foundations-30",
+  "interest_program": "work-and-career-60",
+  "program_reasons": {
+    "foundations-30": "You describe liking plans and follow-through, which suits a programme about setting a clear direction.",
+    "focus-7": "You describe preferring flexibility; a week of short focus blocks can help with tasks that need structure.",
+    "communication-30": "Communication habits are a good place to build on how you describe yourself with others.",
+    "clear-communication-7": "A short challenge on leading with your main point can make it easier to be heard in busy conversations.",
+    "confidence-7": "Small, planned steps can make it easier to put your own view forward.",
+    "work-and-career-60": "You have career interest results, and this programme helps you explore work that fits them."
+  },
+  "traits": {
+    "openness": {
+      "higher": {
+        "communication": "You may enjoy conversations that explore ideas and possibilities. Others may need concrete examples to follow you.",
+        "relationships": "You may bring new ideas and experiences into relationships. Check that the other person also wants change right now."
+      },
+      "middle": {
+        "communication": "You can usually move between big-picture talk and practical detail, depending on who you are talking to.",
+        "relationships": "You can often meet people halfway between trying something new and keeping familiar routines."
+      },
+      "lower": {
+        "communication": "You may prefer conversations that stay practical and concrete. Saying so can help others get to the point.",
+        "relationships": "You may offer steadiness and reliability. Now and then, try something new together on purpose."
+      }
+    },
+    "conscientiousness": {
+      "higher": {
+        "communication": "You may like clear agendas, plans and follow-through, and may notice when others are less prepared.",
+        "relationships": "You may show care by being dependable. Agree together which plans matter, so flexibility doesn't feel like a let-down.",
+        "program": "foundations-30"
+      },
+      "middle": {
+        "communication": "You can plan when it matters and stay flexible when it doesn't.",
+        "relationships": "You can often balance plans with spontaneity. Talk about which plans really matter to each of you."
+      },
+      "lower": {
+        "communication": "You may prefer open, flexible conversations to fixed agendas. Confirming next steps in writing can help others.",
+        "relationships": "You may bring spontaneity. Following up on small promises helps the people who rely on you.",
+        "program": "focus-7"
+      }
+    },
+    "extraversion": {
+      "higher": {
+        "communication": "You may think out loud and enjoy lively discussion. Leaving pauses gives quieter people room to speak.",
+        "relationships": "You may bring energy and social plans. Check how much social time the other person wants.",
+        "program": "communication-30"
+      },
+      "middle": {
+        "communication": "You can enjoy both group discussion and one-to-one conversation, depending on your energy.",
+        "relationships": "You can often adapt between busy and quiet time together."
+      },
+      "lower": {
+        "communication": "You may prefer to think before speaking and to talk one to one. Asking for time to reflect is a fair request.",
+        "relationships": "You may value quiet time together. Saying when you need to recharge helps others not take it personally.",
+        "program": "clear-communication-7"
+      }
+    },
+    "agreeableness": {
+      "higher": {
+        "communication": "You may focus on harmony and others' feelings. Saying your own view clearly is part of good communication too.",
+        "relationships": "You may be warm and accommodating. Make sure your own needs are heard as well.",
+        "program": "confidence-7"
+      },
+      "middle": {
+        "communication": "You can usually balance being considerate with saying what you think.",
+        "relationships": "You can often balance looking after others with standing up for yourself."
+      },
+      "lower": {
+        "communication": "You may be direct and comfortable with debate. Saying what you appreciate first can help your points land.",
+        "relationships": "You may be honest and straightforward. Checking how your words land helps others feel heard.",
+        "program": "communication-30"
+      }
+    },
+    "emotional_stability": {
+      "higher": {
+        "communication": "You may stay calm in tense conversations. Others may still need you to acknowledge their worries.",
+        "relationships": "You may offer steadiness when things are hard. Remember that others may feel more strongly than you do."
+      },
+      "middle": {
+        "communication": "You may feel some pressure in tense conversations but usually recover.",
+        "relationships": "You can often support others and ask for support when you need it."
+      },
+      "lower": {
+        "communication": "You may feel strong emotions in tense conversations. Taking a pause before replying can help.",
+        "relationships": "You may notice worries early. Telling people what helps you feel steady makes support easier."
+      }
+    }
+  }
+}

@@ -18,7 +18,7 @@ Follows MASTER_PROMPT.md §24 (25 phases). Status is kept in DEVELOPMENT_PROGRES
 | 12 | Emotional awareness | Done (code); clinical safety review of wording and crisis resources per country before launch | Learning track with 7 modules, no score, support note, coach topic (ADR-015) |
 | 13 | Growth academy | Done (code); content review by a learning designer before launch | 3 seven-day challenges, 30/60/90-day programmes from 12 weekly units, enrolment, daily progress, weekly self-checks (ADR-016) |
 | 14 | Journaling and habits | Done (code); reminders wait for notifications | Encrypted journal (ADR-017); goals, milestones and habits without streaks (ADR-018) |
-| 15 | Reports | — | PDF generation server-side |
+| 15 | Reports | In progress: reports, library and PDF done (code); shareable cards next | Encrypted report snapshots with a reportlab PDF (ADR-019) |
 | 16 | Monetization | Stripe account, RevenueCat, Apple/Google developer accounts | Entitlement service first, providers after |
 | 17 | Administration | — | |
 | 18 | Enterprise portal | Legal review of employer use | |

@@ -1,3 +1,5 @@
+import { downloadBlob } from "./download";
+
 /** Splits a comma-separated tag field into clean tags (the server normalises them again). */
 export function parseTags(text: string): string[] {
   const out: string[] = [];
@@ -36,10 +38,5 @@ export function preview(text: string, max = 160): string {
 
 /** Saves text as a file in the browser. */
 export function downloadText(text: string, filename: string, type: string): void {
-  const url = URL.createObjectURL(new Blob([text], { type }));
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+  downloadBlob(new Blob([text], { type }), filename);
 }

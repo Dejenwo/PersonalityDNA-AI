@@ -25,6 +25,7 @@ from app.journal.routes import router as journal_router
 from app.learning.routes import router as learning_router
 from app.notifications.email import make_email_sender
 from app.relationships.routes import router as relationships_router
+from app.reports.routes import router as reports_router
 from app.security.crypto import FieldCipher
 from app.security.headers import SecurityHeadersMiddleware
 from app.security.rate_limit import RateLimiter
@@ -92,6 +93,7 @@ def create_app(settings: Settings | None = None, *, create_schema: bool = False)
     app.include_router(growth_router)
     app.include_router(journal_router)
     app.include_router(goals_router)
+    app.include_router(reports_router)
     if settings.dev_outbox_endpoint and settings.environment in ("development", "test"):
         app.include_router(dev_router)
 
