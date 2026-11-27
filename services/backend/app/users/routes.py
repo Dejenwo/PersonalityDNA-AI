@@ -26,6 +26,7 @@ from app.database.models import (
     LearningActivityProgress,
     User,
 )
+from app.journal.service import JournalService
 from app.relationships import service as relationships
 
 router = APIRouter(prefix="/api/v1", tags=["account"], responses={401: {"model": ErrorResponse}})
@@ -153,6 +154,9 @@ def export(request: Request, user: CurrentUser, db: Db, content: Content) -> dic
         ],
         "relationships": relationships.export_for(db, user),
         "growth_programs": _growth_export(db, user),
+        "journal_entries": [
+            e.model_dump(mode="json") for e in JournalService(request.app.state.cipher).all_entries(db, user)
+        ],
         "learning_activities": [
             {
                 "track": p.track,

@@ -91,6 +91,21 @@ Tracks: `leadership` and `emotional-awareness` (no score, ADR-015). Unknown trac
 
 The coach accepts the topic `emotions` ("Emotions and communication").
 
+## Journal (implemented)
+
+Signed-in users only, except prompts. Entries belong to their author; other users get 404. Text is never logged.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/journal/prompts` | Kinds with prompts, mood scale, privacy and support notes (public) |
+| GET | `/api/v1/journal/entries?cursor=&limit=` | Newest first (entry date, then creation time); opaque `next_cursor` |
+| POST | `/api/v1/journal/entries` | Create (`kind`, `title`, `body`, `mood` 1–5, `tags`, `entry_date`) |
+| GET / PATCH / DELETE | `/api/v1/journal/entries/{id}` | Read, change only the sent fields (null clears title or mood), delete |
+| POST | `/api/v1/journal/search` | Words (all must match title, text or tags), tag, kind, date range, cursor, limit |
+| GET | `/api/v1/journal/tags` | The user's tags with counts |
+| GET | `/api/v1/journal/export?format=markdown\|json` | Download every entry (attachment, `no-store`) |
+| POST | `/api/v1/journal/delete-all` | Delete every entry; body `{"confirm": true}` |
+
 ## Growth programmes (implemented)
 
 Programmes are public to read; everything else needs an account. Progress calls on a programme the user has not started return 409 `not_enrolled`. Day and week numbers outside the programme return 404.

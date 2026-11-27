@@ -37,6 +37,13 @@ export type LearningTrack = "leadership" | "emotional-awareness";
 export type ProgramList = Schemas["ProgramList"];
 export type ProgramSummary = Schemas["ProgramSummary"];
 export type GrowthProgram = Schemas["ProgramOut"];
+export type JournalEntry = Schemas["EntryOut"];
+export type JournalEntryIn = Schemas["EntryIn"];
+export type JournalEntryPatch = Schemas["EntryPatch"];
+export type JournalList = Schemas["EntryList"];
+export type JournalSearch = Schemas["SearchIn"];
+export type JournalPrompts = Schemas["PromptsOut"];
+export type JournalKind = JournalEntry["kind"];
 
 /** Events streamed by POST /coach/conversations/{id}/messages (server-sent events). */
 export type CoachEvent =
@@ -154,6 +161,12 @@ export function createApiClient({
     return (await res.json().catch(() => undefined)) as T;
   }
 
+  async function requestText(path: string, accept: string): Promise<string> {
+    const res = await authorized("GET", path, { headers: { Accept: accept } });
+    if (!res.ok) return fail(res);
+    return res.text();
+  }
+
   /** Sends a coach message and calls onEvent for each streamed event. Resolves when the stream ends. */
   async function streamCoachMessage(
     conversationId: string,
@@ -267,6 +280,21 @@ export function createApiClient({
       request<void>(done ? "PUT" : "DELETE", `/api/v1/growth/programs/${seg(id)}/days/${day}/done`),
     setCheckIn: (id: string, week: number, rating: number) =>
       request<void>("PUT", `/api/v1/growth/programs/${seg(id)}/weeks/${week}/check-in`, { body: { rating } }),
+
+    // Private journal. Search is a POST so the words never appear in URLs or server logs.
+    journalPrompts: () => request<JournalPrompts>("GET", "/api/v1/journal/prompts", { auth: false }),
+    journalEntries: (cursor?: string | null) =>
+      request<JournalList>("GET", `/api/v1/journal/entries${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ""}`),
+    journalSearch: (body: Partial<JournalSearch>) => request<JournalList>("POST", "/api/v1/journal/search", { body }),
+    journalEntry: (id: string) => request<JournalEntry>("GET", `/api/v1/journal/entries/${seg(id)}`),
+    createJournalEntry: (body: JournalEntryIn) => request<JournalEntry>("POST", "/api/v1/journal/entries", { body }),
+    updateJournalEntry: (id: string, body: JournalEntryPatch) =>
+      request<JournalEntry>("PATCH", `/api/v1/journal/entries/${seg(id)}`, { body }),
+    deleteJournalEntry: (id: string) => request<void>("DELETE", `/api/v1/journal/entries/${seg(id)}`),
+    deleteAllJournalEntries: () => request<void>("POST", "/api/v1/journal/delete-all", { body: { confirm: true } }),
+    journalTags: () => request<Schemas["TagsOut"]>("GET", "/api/v1/journal/tags"),
+    exportJournal: (format: "markdown" | "json") =>
+      requestText(`/api/v1/journal/export?format=${format}`, format === "json" ? "application/json" : "text/markdown"),
   };
 }
 
